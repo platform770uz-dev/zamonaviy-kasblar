@@ -3,202 +3,127 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ZAMONAVIY KASBLAR — administrator vakansiyasi</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#F4ECDF">
+<title>Administrator vakansiyasi — suhbat</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#F7EEDF; --ink:#22160D; --muted:#6B5646; --line:#E3D2B9;
-  --chip:#FFF8EC; --chip-ink:#22160D; --accent:#F47B20; --accent-ink:#A84A0A;
-  --on-accent:#22160D; --focus:#A84A0A;
-  color-scheme:light;
-  box-sizing:border-box;
-  padding-top:env(safe-area-inset-top,0px);
-  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#F4ECDF; --card:#FFFDF8; --ink:#13181C; --muted:#6B6358; --line:#E4D8C4;
+  --teal:#0B7F7B; --teal-soft:rgba(11,127,123,.10); --yellow:#FFD23F; --clay:#B5543A;
+  --on-teal:#FFFFFF;
+  --fd:"Unbounded",system-ui,sans-serif; --fb:"Onest",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --tile:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256%22%20height%3D%2256%22%20viewBox%3D%220%200%2056%2056%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22rgba%2811%2C127%2C123%2C0.09%29%22%20stroke-width%3D%221%22%3E%3Cpath%20d%3D%22M28%204%2038%2014%2028%2024%2018%2014z%22%2F%3E%3Cpath%20d%3D%22M28%2032%2038%2042%2028%2052%2018%2042z%22%2F%3E%3Cpath%20d%3D%22M4%2028%2014%2018%2024%2028%2014%2038z%22%2F%3E%3Cpath%20d%3D%22M32%2028%2042%2018%2052%2028%2042%2038z%22%2F%3E%3Cpath%20d%3D%22M28%2014%2042%2028%2028%2042%2014%2028z%22%2F%3E%3Ccircle%20cx%3D%2228%22%20cy%3D%2228%22%20r%3D%223%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  --band:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2264%22%20height%3D%2214%22%20viewBox%3D%220%200%2064%2014%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%230B7F7B%22%20stroke-width%3D%221.1%22%3E%3Cpath%20d%3D%22M0%207h64%22%2F%3E%3Cpath%20d%3D%22M8%201.5%2014.5%207%208%2012.5%201.5%207z%22%2F%3E%3Cpath%20d%3D%22M8%203.6%2012.4%207%208%2010.4%203.6%207z%22%2F%3E%3Cpath%20d%3D%22M40%201.5%2046.5%207%2040%2012.5%2033.5%207z%22%2F%3E%3Cpath%20d%3D%22M40%203.6%2044.4%207%2040%2010.4%2035.6%207z%22%2F%3E%3Cpath%20d%3D%22M22%202.6v8.8M26.4%207h-8.8M19.5%204.5l5%205M24.5%204.5l-5%205%22%2F%3E%3Cpath%20d%3D%22M54%202.6v8.8M58.4%207h-8.8M51.5%204.5l5%205M56.5%204.5l-5%205%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  --head:60px;
 }
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#17100B; --ink:#F7EEDF; --muted:#CDB9A3; --line:#3A2A1E;
-    --chip:#22180F; --chip-ink:#F7EEDF; --accent-ink:#FF9A4D;
-    --on-accent:#17100B; --focus:#FF9A4D; color-scheme:dark;
+  :root{
+    --bg:#0C1014; --card:#161C21; --ink:#F1F4F6; --muted:#8C969D; --line:#263038;
+    --teal:#2BB3AD; --teal-soft:rgba(43,179,173,.14); --clay:#E0896F; --on-teal:#06201F;
   }
 }
-:root[data-theme="dark"]{
-  --bg:#17100B; --ink:#F7EEDF; --muted:#CDB9A3; --line:#3A2A1E;
-  --chip:#22180F; --chip-ink:#F7EEDF; --accent-ink:#FF9A4D;
-  --on-accent:#17100B; --focus:#FF9A4D; color-scheme:dark;
-}
 *,*::before,*::after{box-sizing:border-box}
-html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
-body{height:100%;margin:0;background:var(--bg);color:var(--ink);
-  font-family:'Onest',system-ui,-apple-system,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased}
-button,input,textarea{font:inherit}
-:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+html,body{height:100%}
+body{margin:0;background:var(--bg) var(--tile);background-size:56px 56px;color:var(--ink);font:400 16px/1.5 var(--fb);-webkit-font-smoothing:antialiased}
+button,input,textarea{font:inherit;color:inherit}
+[hidden]{display:none !important}
 
-/* top progress */
-.top{position:fixed;top:0;left:0;right:0;z-index:5;background:var(--bg);
-  padding:calc(env(safe-area-inset-top,0px) + 12px) 20px 12px}
-.top-in{max-width:560px;margin:0 auto}
-.top-label{display:flex;justify-content:space-between;font-size:14px;color:var(--muted);margin-bottom:8px}
-.bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden}
-.fill{height:100%;width:0;background:var(--accent);transition:width .35s ease}
+/* header */
+.top{position:fixed;top:0;left:0;right:0;z-index:5;background:var(--card);padding-top:env(safe-area-inset-top,0px);border-bottom:1px solid var(--line)}
+.top::after{content:"";position:absolute;left:0;right:0;bottom:-15px;height:14px;background-image:var(--band);background-size:64px 14px;opacity:.55;pointer-events:none}
+.top-row{display:flex;align-items:center;gap:10px;height:52px;max-width:560px;margin:0 auto;padding:0 16px}
+.logo{font:700 20px/1 var(--fd);letter-spacing:.02em}
+.vac{font-size:13px;color:var(--muted);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stage{margin-left:auto;font-weight:600;font-size:13px;color:var(--teal);white-space:nowrap}
+.bar{height:4px;background:var(--line)}
+.bar i{display:block;height:100%;width:0;background:var(--teal);transition:width .35s ease}
 
 /* feed */
-#feed{height:100%;overflow-y:auto;scroll-snap-type:y mandatory;overscroll-behavior:contain;scroll-behavior:smooth}
-.reel{position:relative;min-height:100%;scroll-snap-align:start;scroll-snap-stop:always;
-  display:flex;flex-direction:column;justify-content:flex-end;
-  max-width:560px;margin:0 auto;padding:84px 24px 44px}
-.reel.center{justify-content:center}
-.kicker{font-size:15px;color:var(--muted);margin:0 0 12px}
-.big{font-family:'Oswald','Arial Narrow',sans-serif;font-weight:700;font-size:clamp(56px,18vw,112px);
-  line-height:.95;letter-spacing:-.01em;margin:0 0 22px;overflow-wrap:anywhere}
-.big.mid{font-size:clamp(44px,13vw,84px)}
-.sticker{display:inline-block;background:var(--accent);color:var(--on-accent);
-  padding:.04em .16em .02em;border-radius:.08em;transform:rotate(-1.5deg)}
-.body{font-size:19px;line-height:1.5;margin:0;max-width:34ch}
-.list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px;font-size:18px;line-height:1.45;max-width:36ch}
-.list li{padding-left:22px;position:relative}
-.list li::before{content:"";position:absolute;left:0;top:.62em;width:10px;height:3px;background:var(--accent);border-radius:2px}
-.timeline{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:14px;max-width:38ch}
-.timeline li{display:grid;grid-template-columns:70px 1fr;gap:12px;font-size:18px;line-height:1.4}
-.timeline time{font-family:'Oswald',sans-serif;font-weight:500;font-size:21px;color:var(--accent-ink);line-height:1.2}
-.hint{margin-top:30px;font-size:15px;color:var(--muted);display:flex;align-items:center;gap:10px}
-.hint svg{animation:nudge 1.6s ease-in-out 3}
-@keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.feed{position:fixed;left:0;right:0;bottom:0;top:calc(var(--head) + env(safe-area-inset-top,0px) + 14px);overflow-y:auto;scroll-snap-type:y mandatory;overscroll-behavior:contain}
+.reel{min-height:100%;scroll-snap-align:start;display:flex;align-items:center;justify-content:center;padding:22px 16px calc(30px + env(safe-area-inset-bottom,0px))}
+.inner{width:100%;max-width:520px}
 
-/* form */
-.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
-.field label{font-size:15px;color:var(--muted)}
-.input{font-size:18px;padding:14px 16px;border-radius:14px;border:2px solid var(--line);
-  background:var(--chip);color:var(--chip-ink);width:100%}
-.input:focus{outline:none;border-color:var(--accent)}
-.btn{display:block;width:100%;font-weight:600;font-size:18px;padding:16px 20px;border-radius:999px;
-  border:none;background:var(--accent);color:var(--on-accent);cursor:pointer;text-align:center;text-decoration:none}
-.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
-.btn:disabled{opacity:.5;cursor:default}
-.err{min-height:22px;color:var(--accent-ink);font-size:15px;margin:4px 0 10px}
-.small{font-size:14px;color:var(--muted);line-height:1.45;margin:14px 0 0}
+/* HR */
+.hr{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.cart{flex:none;width:48px;height:48px;border-radius:24px;display:grid;place-items:center;color:var(--teal);background:var(--teal-soft);border:1.5px solid var(--teal);box-shadow:inset 0 -3px 0 var(--teal)}
+.hr b{display:block;font-weight:700;font-size:15px}
+.hr small{display:block;color:var(--muted);font-size:12.5px}
+.chat{display:flex;flex-direction:column;gap:8px;margin:0 0 12px}
+.bub{margin:0;max-width:92%;background:var(--card);border:1px solid var(--line);border-radius:4px 18px 18px 18px;padding:11px 14px;font-size:16.5px;line-height:1.45}
+.bub.me{align-self:flex-end;background:var(--teal);color:var(--on-teal);border-color:transparent;border-radius:18px 4px 18px 18px;font-weight:500;white-space:pre-wrap;overflow-wrap:anywhere}
+.typing{display:inline-flex;gap:5px;align-items:center;width:64px;padding:14px}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);opacity:.5;animation:dot 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes dot{0%,100%{transform:translateY(0);opacity:.35}50%{transform:translateY(-3px);opacity:.9}}
 
-/* questions */
-.qnum{font-family:'Oswald',sans-serif;font-weight:500;font-size:20px;color:var(--accent-ink);margin:0 0 12px}
-.qnote{font-size:14px;color:var(--muted);margin:-6px 0 12px}
-.scenario{font-size:22px;line-height:1.4;font-weight:600;margin:0 0 20px;max-width:32ch}
-.options{display:flex;flex-direction:column;gap:10px}
-.opt{font-size:17px;line-height:1.4;text-align:left;padding:14px 16px;border-radius:16px;
-  border:2px solid var(--line);background:var(--chip);color:var(--chip-ink);cursor:pointer;transition:background .2s,border-color .2s,opacity .2s}
-.opt[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+/* info card */
+.card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px 18px 16px;margin:0 0 12px;overflow:hidden}
+.card::before{content:"";position:absolute;left:0;right:0;top:6px;height:14px;background-image:var(--band);background-size:64px 14px;opacity:.45}
+.card-h{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.glyph{flex:none;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:var(--teal);background:var(--teal-soft)}
+.card h2{margin:0;font:700 19px/1.2 var(--fd)}
+.list{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.list li{position:relative;padding-left:22px;font-size:16px}
+.list li::before{content:"";position:absolute;left:3px;top:.55em;width:8px;height:8px;background:var(--teal);transform:rotate(45deg)}
+
+/* options */
+.opts{display:grid;gap:10px;margin:4px 0 0}
+.opt{display:flex;align-items:center;gap:12px;width:100%;min-height:54px;padding:12px 14px;border-radius:14px;border:1.5px solid var(--line);background:var(--card);font-weight:600;font-size:16px;text-align:left;cursor:pointer;transition:border-color .15s,background .15s}
+.opt:hover{border-color:var(--teal)}
+.opt:focus-visible,.btn:focus-visible,.inp:focus-visible,.link:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+.opt svg{flex:none;color:var(--teal)}
+.opt-savol svg{color:var(--ink)}
+.opt-mosemas svg{color:var(--clay)}
+.opt[aria-pressed="true"]{border-color:var(--teal);background:var(--teal-soft)}
 .opt:disabled{cursor:default}
-.opt:disabled:not([aria-pressed="true"]){opacity:.45}
+.opt:disabled:not([aria-pressed="true"]){opacity:.5}
 
-/* result */
-.sending{font-size:17px;color:var(--muted);margin:0 0 16px}
-.code{width:100%;min-height:92px;resize:none;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;line-height:1.4;
-  padding:12px 14px;border-radius:14px;border:2px solid var(--line);background:var(--chip);color:var(--chip-ink);margin:0 0 12px;word-break:break-all}
-.stack{display:flex;flex-direction:column;gap:10px}
-.ok{min-height:22px;font-size:15px;color:var(--accent-ink);margin:2px 0 0}
+/* forms */
+.stack{display:grid;gap:10px;margin-top:4px}
+.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--line);background:var(--card);font-size:16px}
+.inp:focus{outline:none;border-color:var(--teal)}
+textarea.inp{min-height:96px;resize:vertical}
+.btn{width:100%;min-height:54px;border:none;border-radius:14px;background:var(--teal);color:var(--on-teal);font-weight:700;font-size:16.5px;cursor:pointer}
+.btn:disabled{opacity:.45;cursor:default}
+.link{background:none;border:none;padding:6px 2px;color:var(--muted);font-size:14px;text-decoration:underline;cursor:pointer;justify-self:start}
+.err{margin:0;min-height:1.2em;color:var(--clay);font-size:14px}
+.hint{margin:0;color:var(--muted);font-size:13.5px}
 
-@media (prefers-reduced-motion: reduce){
-  #feed{scroll-behavior:auto}
-  .hint svg{animation:none}
-  .fill,.opt{transition:none}
-}
+/* situations */
+.chip{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--teal);background:var(--teal-soft);padding:5px 10px;border-radius:999px}
+.q-title{margin:12px 0 6px;font:700 20px/1.25 var(--fd)}
+.scenario{margin:0 0 14px;font-size:17px}
+.qnote{margin:0 0 4px;color:var(--muted);font-size:13.5px}
+
+/* slider */
+.meter{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px 16px 14px;margin:0 0 12px}
+.meter-val{font:700 56px/1 var(--fd);color:var(--teal);text-align:center;margin:4px 0 12px}
+.meter input[type=range]{width:100%;accent-color:var(--teal);height:32px}
+.scale{display:flex;justify-content:space-between;color:var(--muted);font-size:12.5px;margin-top:2px}
+
+/* done */
+.ros{display:block;margin:0 auto 14px;color:var(--teal)}
+.done-t{font:700 24px/1.25 var(--fd);text-align:center;margin:0 0 8px}
+.done-s{text-align:center;color:var(--muted);margin:0 0 16px}
+
+@media (prefers-reduced-motion: reduce){ .bar i,.opt{transition:none} .typing i{animation:none} }
 </style>
 </head>
 <body>
 
-<div class="top" aria-hidden="false">
-  <div class="top-in">
-    <div class="top-label"><span id="stage">Ish bilan tanishuv</span><span id="count"></span></div>
-    <div class="bar"><div class="fill" id="fill"></div></div>
+<header class="top">
+  <div class="top-row">
+    <span class="logo">1924</span>
+    <span class="vac">Vakansiya: administrator</span>
+    <span class="stage" id="stage">Tanishuv</span>
   </div>
-</div>
+  <div class="bar" aria-hidden="true"><i id="fill"></i></div>
+</header>
 
-<main id="feed">
-
-  <section class="reel" data-step="intro">
-    <p class="kicker">ZAMONAVIY KASBLAR</p>
-    <h1 class="big">Admini&shy;strator</h1>
-    <p class="body">3 daqiqada ish bilan tanishing, keyin 12 ta qisqa vaziyatga javob bering.</p>
-    <p class="hint">
-      <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Yuqoriga suring
-    </p>
-  </section>
-
-  <section class="reel" data-step="intro">
-    <h2 class="big mid">Birinchi yuz</h2>
-    <p class="body">Ofisga kelgan har bir qiz va ota-ona avval sizni koʻradi. Telefonda ham loyihani birinchi boʻlib siz tanishtirasiz.</p>
-  </section>
-
-  <section class="reel" data-step="intro">
-    <h2 class="big mid">Sizning kuningiz</h2>
-    <ol class="timeline">
-      <li><time>11:00</time><span>Ish boshlanadi, yangi arizalarni koʻrasiz</span></li>
-      <li><time>Kun</time><span>Qoʻngʻiroqlar va ofisdagi uchrashuvlar</span></li>
-      <li><time>Kun</time><span>Shartnoma va toʻlovlarni rasmiylashtirasiz</span></li>
-      <li><time>20:00</time><span>Kun natijasi platformada koʻrinadi</span></li>
-    </ol>
-  </section>
-
-  <section class="reel" data-step="intro">
-    <h2 class="big"><span class="sticker">5 daqiqa</span></h2>
-    <p class="body">Yangi ariza keldi — 5 daqiqa ichida qoʻngʻiroq qilasiz. Bir soatdan keyin odam reklamani unutib qoʻyadi.</p>
-  </section>
-
-  <section class="reel" data-step="intro">
-    <h2 class="big mid">30 soniya</h2>
-    <p class="body">Qoʻngʻiroqda kursni 30 soniyada tushuntirasiz, savollarga javob berasiz va uchrashuvga yoki shartnomaga taklif qilasiz.</p>
-  </section>
-
-  <section class="reel" data-step="intro">
-    <h2 class="big mid">Click, Payme</h2>
-    <p class="body">Toʻlov faqat Click yoki Payme orqali. Pul tushganini kabinetda tekshirasiz — skrinshotga ishonilmaydi. Shartnoma havola orqali yuboriladi.</p>
-  </section>
-
-  <section class="reel" data-step="intro">
-    <h2 class="big mid">Mumkin emas</h2>
-    <ul class="list">
-      <li>Chegirma vaʼda qilish — buni faqat rahbar hal qiladi</li>
-      <li>Daromad kafolatini vaʼda qilish</li>
-      <li>Naqd pul olish</li>
-    </ul>
-  </section>
-
-  <section class="reel" data-step="intro">
-    <h2 class="big mid">Kamera</h2>
-    <p class="body">Loyiha — realiti-shou. Ofisda suratga olishlar boʻladi, siz ham kadrga tushishingiz mumkin.</p>
-  </section>
-
-  <section class="reel" data-step="intro">
-    <h2 class="big mid"><span class="sticker">2 500 000 soʻm</span></h2>
-    <ul class="list">
-      <li>Har bir shartnomadan yana 120 000 soʻm</li>
-      <li>Haftada 5 kun, 11:00 dan 20:00 gacha</li>
-      <li>Kirguli mavzesi</li>
-      <li>1 hafta haq toʻlanadigan stajirovka</li>
-    </ul>
-  </section>
-
-  <section class="reel" data-step="start" id="startReel">
-    <h2 class="big mid">Endi siz</h2>
-    <p class="body" style="margin-bottom:22px">12 ta vaziyat. Har birida oʻzingiz qanday qilgan boʻlsangiz, shuni tanlang. Taxminan 4 daqiqa.</p>
-    <form id="startForm" novalidate>
-      <div class="field">
-        <label for="name">Ismingiz</label>
-        <input class="input" id="name" name="name" autocomplete="name" required>
-      </div>
-      <div class="field">
-        <label for="phone">Telefon raqamingiz</label>
-        <input class="input" id="phone" name="phone" inputmode="tel" autocomplete="tel" placeholder="+998" required>
-      </div>
-      <p class="err" id="startErr" role="alert"></p>
-      <button class="btn" type="submit" id="startBtn">Testni boshlash</button>
-      <p class="small">Maʼlumotlaringiz faqat shu vakansiya boʻyicha tanlov uchun ishlatiladi.</p>
-    </form>
-  </section>
-
-</main>
+<main class="feed" id="feed" aria-live="polite"></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
@@ -216,70 +141,344 @@ button,input,textarea{font:inherit}
   }catch(e){ sb = null; }
 
   var PENDING = "zk_nomzod_pending";
-  var INTRO_COUNT = document.querySelectorAll('[data-step="intro"]').length;
-  var TOTAL = INTRO_COUNT + 1 + Q.length + 1;
-  var feed = document.getElementById("feed");
-  var stage = document.getElementById("stage");
-  var count = document.getElementById("count");
-  var fill = document.getElementById("fill");
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var feed = document.getElementById("feed");
+  var stageEl = document.getElementById("stage");
+  var fill = document.getElementById("fill");
 
-  var state = {name:"",phone:"",answers:[],loadAt:Date.now(),startAt:0,introSec:0};
+  /* oʻyma belgilar (1924 uslubi) */
+  function sv(inner, w, sw){ return '<svg viewBox="0 0 24 24" width="' + (w||24) + '" height="' + (w||24) + '" fill="none" stroke="currentColor" stroke-width="' + (sw||1.7) + '" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">' + inner + '</svg>'; }
+  var G = {
+    figure:  sv('<path d="M14.4 4.4a3.1 3.1 0 1 0-2.6 5.3l-2.3 1.2"/><path d="M5.6 20c.7-4 3.4-6.2 6.4-6.2s5.7 2.2 6.4 6.2z"/>', 26),
+    ankh:    sv('<path d="M12 21V11"/><path d="M8.6 13.4h6.8"/><path d="M12 3.2a2.9 2.9 0 0 1 2.9 2.9c0 2.2-2.9 4.9-2.9 4.9S9.1 8.3 9.1 6.1A2.9 2.9 0 0 1 12 3.2z"/>', 26, 1.9),
+    mouth:   sv('<ellipse cx="11.5" cy="10.6" rx="7.2" ry="3.4"/><path d="M4.3 10.6h14.4"/><path d="M15.8 15.4c1.2.7 2 1.8 2.3 3.1"/><path d="M11.8 16c.7 1 1.1 2.1 1.2 3.3"/>', 26),
+    neg:     sv('<path d="M3.2 14.6c1.9-3.4 5-5.2 8.8-5.2s6.9 1.8 8.8 5.2"/><path d="M3.2 14.6l-.4 2.8M3.2 14.6l2.5.9"/><path d="M20.8 14.6l.4 2.8M20.8 14.6l-2.5.9"/>', 26),
+    palette: sv('<rect x="2.6" y="10.5" width="12.4" height="7.4" rx="1.6"/><circle cx="6.2" cy="14.2" r="1.25"/><circle cx="11" cy="14.2" r="1.25"/><path d="M16.4 16.6 21.4 4.6l1.1 2.6-4.6 11"/>', 26),
+    papyrus: sv('<path d="M7 4.6h10v15l-5-3.4-5 3.4z"/><path d="M7 9.4h10"/>', 26),
+    sun:     sv('<circle cx="12" cy="12" r="6.4"/><circle cx="12" cy="12" r="1.6"/><path d="M5.6 12H2.8M21.2 12h-2.8"/>', 26),
+    bowl:    sv('<path d="M3.6 10.8h16.8c-.5 4.8-3.9 8-8.4 8s-7.9-3.2-8.4-8z"/><path d="M7.6 10.8c.6-2.4 2.3-3.8 4.4-3.8s3.8 1.4 4.4 3.8"/>', 26),
+    eye:     sv('<path d="M3.2 12.2c2.6-3.6 5.8-5.4 8.8-5.4s6.2 1.8 8.8 5.4c-2.6 3.2-5.8 4.8-8.8 4.8s-6.2-1.6-8.8-4.8z"/><circle cx="12" cy="12" r="2.3"/><path d="M15.6 16.6c1.5 1.3 2.8 2 4.6 2.2"/><path d="M9.6 16.8c-.5 2-1.9 3-3.6 3.2"/>', 26),
+    temple:  sv('<path d="M5.5 20 7 9h10l1.5 11z"/><path d="M6.4 9 12 4.2 17.6 9"/><path d="M10 20v-5.5h4V20"/>', 26)
+  };
+  var ROSETTE = '<svg class="ros" viewBox="0 0 96 96" width="104" height="104" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">' +
+    '<rect x="21" y="21" width="54" height="54"/><rect x="21" y="21" width="54" height="54" transform="rotate(45 48 48)"/>' +
+    '<circle cx="48" cy="48" r="17"/><rect x="36" y="36" width="24" height="24" transform="rotate(45 48 48)"/><circle cx="48" cy="48" r="4"/></svg>';
 
-  function goTo(el){ el.scrollIntoView({behavior: reduce ? "auto" : "smooth", block:"start"}); }
+  var BLOKLAR = [
+    {id:"vazifa", nom:"Vazifalar", icon:"palette",
+     pre:["Endi ish haqida. Loyihamiz haqida batafsil uchrashuvda aytaman — hozir faqat administrator nima qilishi haqida."],
+     list:["Yangi arizaga 5 daqiqa ichida qoʻngʻiroq qilish","Qisqa va aniq maʼlumot berib, uchrashuvga taklif qilish","Kelganlarni kutib olish, hujjatlarni yuritish","Toʻlovni qabul qilish — faqat Click yoki Payme orqali","Kun yakunida hisobot — platformada"],
+     ask:"Shu vazifalar sizga qanday?"},
+    {id:"qoida", nom:"Qatʼiy qoidalar", icon:"papyrus",
+     list:["Chegirma va daromad vaʼda qilinmaydi","Naqd pul olinmaydi","Toʻlov skrinshot bilan emas, kabinetda tekshiriladi","Boʻsh vaqtda — «oʻylab koʻraman» deganlarga qayta qoʻngʻiroq"],
+     ask:"Bu qoidalar sizga qanday?"},
+    {id:"tartib", nom:"Ish tartibi", icon:"sun",
+     list:["11:00 dan 20:00 gacha","Haftada 5 kun","Ofis — Qirgʻuli, Fargʻona"],
+     ask:"Ish tartibi sizga mos keladimi?"},
+    {id:"maosh", nom:"Maosh", icon:"bowl",
+     list:["Oyiga 2 500 000 soʻm — fiks","Har bir shartnoma uchun +120 000 soʻm","Birinchi hafta — sinov muddati, u ham toʻlanadi"],
+     ask:"Maosh sizga mos keladimi?"},
+    {id:"kamera", nom:"Kamera", icon:"eye",
+     list:["Ish jarayoni videoga olinadi","Baʼzan siz ham kadrda boʻlasiz"],
+     ask:"Bunga tayyormisiz?"}
+  ];
+  var JAVOB = [
+    {k:"mos", t:"Tushunarli, menga mos", g:"ankh"},
+    {k:"savol", t:"Savolim bor", g:"mouth"},
+    {k:"mosemas", t:"Menga mos emas", g:"neg"}
+  ];
 
-  function setProgress(el){
-    var idx = Array.prototype.indexOf.call(feed.children, el);
-    fill.style.width = Math.round(((idx+1)/TOTAL)*100) + "%";
-    var step = el.getAttribute("data-step");
-    if(step === "intro"){ stage.textContent = "Ish bilan tanishuv"; count.textContent = ""; }
-    else if(step === "start"){ stage.textContent = "Testga tayyorlanish"; count.textContent = ""; }
-    else if(step === "q"){ stage.textContent = "Vaziyatlar"; count.textContent = el.getAttribute("data-n") + " / " + Q.length; }
-    else if(step === "done"){ stage.textContent = "Tayyor"; count.textContent = ""; }
-  }
+  var state = {ism:"", telefon:"", answers:[], t0:0, introSec:0, testStart:0, testSec:0, tushunish:null,
+               suhbat:{v:1, bloklar:{}}};
+  var TOTAL = 1 + 1 + 3 + BLOKLAR.length + 1 + Q.length + 1 + 1 + 1;
+
+  /* ---------- yordamchilar ---------- */
+  function el(tag, cls, text){ var n = document.createElement(tag); if(cls) n.className = cls; if(text != null) n.textContent = text; return n; }
+  function wait(ms){ return new Promise(function(r){ setTimeout(r, reduce ? 0 : ms); }); }
+  function name(s){ return s.replace(/\{ism\}/g, state.ism); }
+  function btn(text){ var b = el("button","btn",text); b.type = "button"; return b; }
 
   var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){ if(e.isIntersecting){ setProgress(e.target); } });
-  }, {root: feed, threshold: 0.55});
-  Array.prototype.forEach.call(feed.children, function(r){ io.observe(r); });
+    entries.forEach(function(e){
+      if(!e.isIntersecting) return;
+      var idx = Array.prototype.indexOf.call(feed.children, e.target);
+      fill.style.width = Math.min(100, Math.round(((idx + 1) / TOTAL) * 100)) + "%";
+      stageEl.textContent = e.target.getAttribute("data-stage") || "";
+    });
+  }, {root: feed, threshold: 0.5});
 
-  function shuffle(a){ a = a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
-  function el(tag, cls, text){ var n=document.createElement(tag); if(cls) n.className=cls; if(text!=null) n.textContent=text; return n; }
+  function reel(stage){
+    var r = el("section","reel");
+    r.setAttribute("data-stage", stage);
+    var inner = el("div","inner");
+    r.appendChild(inner);
+    feed.appendChild(r);
+    io.observe(r);
+    requestAnimationFrame(function(){ r.scrollIntoView({behavior: reduce ? "auto" : "smooth", block:"start"}); });
+    return inner;
+  }
+  function hrHead(inner){
+    var h = el("div","hr");
+    var c = el("span","cart"); c.innerHTML = G.figure; h.appendChild(c);
+    var t = el("div"); t.appendChild(el("b",null,"Virtual HR")); t.appendChild(el("small",null,"Administrator vakansiyasi")); h.appendChild(t);
+    inner.appendChild(h);
+  }
+  function say(inner, lines){
+    var box = el("div","chat"); inner.appendChild(box);
+    var p = Promise.resolve();
+    (lines || []).forEach(function(line){
+      p = p.then(function(){
+        var text = name(line);
+        if(reduce){ box.appendChild(el("p","bub",text)); return; }
+        var t = el("p","bub typing"); t.setAttribute("aria-hidden","true"); t.innerHTML = "<i></i><i></i><i></i>";
+        box.appendChild(t);
+        return wait(Math.min(1100, 320 + text.length * 7)).then(function(){ t.remove(); box.appendChild(el("p","bub",text)); });
+      });
+    });
+    return p.then(function(){ return box; });
+  }
+  function me(box, text){ box.appendChild(el("p","bub me",text)); }
+  function show(n){ requestAnimationFrame(function(){ try{ n.scrollIntoView({behavior: reduce ? "auto" : "smooth", block:"nearest"}); }catch(e){} }); }
+  function focusSoft(n){ try{ n.focus({preventScroll:true}); }catch(e){} }
+  function lock(group, chosen){
+    Array.prototype.forEach.call(group.querySelectorAll("button.opt"), function(b){ b.disabled = true; b.setAttribute("aria-pressed", b === chosen ? "true" : "false"); });
+  }
+  function unlock(group){
+    Array.prototype.forEach.call(group.querySelectorAll("button.opt"), function(b){ b.disabled = false; b.setAttribute("aria-pressed","false"); });
+  }
+  /* matn soʻrash: majburiy (kamida 3 belgi) */
+  function textForm(placeholder, max, onDone, onBack){
+    var f = el("form","stack");
+    var ta = el("textarea","inp"); ta.maxLength = max; ta.placeholder = placeholder; ta.setAttribute("aria-label", placeholder);
+    var err = el("p","err"); err.setAttribute("role","alert");
+    var b = el("button","btn","Davom etish"); b.type = "submit";
+    f.appendChild(ta); f.appendChild(err); f.appendChild(b);
+    if(onBack){
+      var back = el("button","link","Boshqa variantni tanlash"); back.type = "button";
+      back.addEventListener("click", function(){ f.remove(); onBack(); });
+      f.appendChild(back);
+    }
+    f.addEventListener("submit", function(ev){
+      ev.preventDefault();
+      var v = ta.value.trim();
+      if(v.length < 3){ err.textContent = "Bir-ikki soʻz boʻlsa ham yozing."; focusSoft(ta); return; }
+      b.disabled = true;
+      onDone(v.slice(0, max));
+    });
+    setTimeout(function(){ focusSoft(ta); }, 50);
+    return f;
+  }
 
-  function addQuestion(i){
+  /* ---------- qadamlar ---------- */
+  function stepHello(){
+    var inner = reel("Tanishuv"); hrHead(inner);
+    say(inner, [
+      "Assalomu alaykum! Men — virtual HR.",
+      "Administrator vakansiyasi boʻyicha qisqa suhbat qilamiz: avval siz haqingizda, keyin ish haqida, oxirida 12 ta hayotiy vaziyat. Hammasi 7–8 daqiqa.",
+      "Qaysidir band tushunarsiz yoki sizga mos boʻlmasa — oʻsha joyning oʻzida yozib qoldiring. Bizga halol javob muhim."
+    ]).then(function(){
+      var b = btn("Boshladik"); inner.appendChild(b); show(b);
+      b.addEventListener("click", function(){ b.disabled = true; b.remove(); state.t0 = Date.now(); stepIsm(); });
+    });
+  }
+
+  function stepIsm(){
+    var inner = reel("Tanishuv"); hrHead(inner);
+    say(inner, ["Keling, tanishamiz. Ismingiz nima?"]).then(function(box){
+      var f = el("form","stack");
+      var inp = el("input","inp"); inp.type = "text"; inp.autocomplete = "given-name"; inp.maxLength = 60; inp.placeholder = "Ismingiz"; inp.setAttribute("aria-label","Ismingiz");
+      var err = el("p","err"); err.setAttribute("role","alert");
+      var b = el("button","btn","Davom etish"); b.type = "submit";
+      f.appendChild(inp); f.appendChild(err); f.appendChild(b);
+      inner.appendChild(f); show(f);
+      setTimeout(function(){ focusSoft(inp); }, 50);
+      f.addEventListener("submit", function(ev){
+        ev.preventDefault();
+        var v = inp.value.trim().replace(/\s+/g, " ");
+        if(v.length < 2){ err.textContent = "Ismingizni yozing."; focusSoft(inp); return; }
+        state.ism = v.slice(0, 60);
+        f.remove(); me(box, state.ism);
+        wait(300).then(stepFaoliyat);
+      });
+    });
+  }
+
+  function stepChoice(key, lines, opts, next){
+    var inner = reel("Tanishuv"); hrHead(inner);
+    say(inner, lines).then(function(box){
+      var g = el("div","opts"); g.setAttribute("role","group"); g.setAttribute("aria-label","Javob variantlari");
+      opts.forEach(function(o){
+        var b = el("button","opt"); b.type = "button"; b.setAttribute("aria-pressed","false"); b.appendChild(el("span",null,o));
+        b.addEventListener("click", function(){
+          if(b.disabled) return;
+          lock(g, b);
+          if(o === "Boshqa"){
+            var f = textForm("Qisqacha yozing", 120, function(txt){
+              state.suhbat[key] = "Boshqa: " + txt;
+              g.remove(); f.remove(); me(box, txt); wait(300).then(next);
+            }, function(){ unlock(g); });
+            inner.appendChild(f); show(f);
+            return;
+          }
+          state.suhbat[key] = o;
+          g.remove(); me(box, o); wait(300).then(next);
+        });
+        g.appendChild(b);
+      });
+      inner.appendChild(g); show(g);
+    });
+  }
+  function stepFaoliyat(){
+    stepChoice("faoliyat", ["{ism}, tanishganimdan xursandman.", "Hozir nima bilan bandsiz?"],
+      ["Oʻqiyman","Ishlayman","Ish qidiryapman","Uydaman (oila, farzand)","Boshqa"], stepTajriba);
+  }
+  function stepTajriba(){
+    stepChoice("tajriba", ["Oldin mijozlar bilan ishlaganmisiz?"],
+      ["Ha, savdoda","Ha, administrator yoki kassir boʻlib","Ha, call-markazda","Yoʻq, birinchi marta"], stepRus);
+  }
+  function stepRus(){
+    stepChoice("rus", ["Rus tilida gaplasha olasizmi?"],
+      ["Erkin gaplashaman","Oʻrtacha","Tushunaman, lekin gapirish qiyin","Yoʻq"], function(){ stepBlok(0); });
+  }
+
+  function stepBlok(i){
+    var B = BLOKLAR[i];
+    var next = (i + 1 < BLOKLAR.length) ? function(){ stepBlok(i + 1); } : stepBridge;
+    var inner = reel("Ish haqida"); hrHead(inner);
+    say(inner, B.pre || []).then(function(){
+      var card = el("div","card");
+      var h = el("div","card-h");
+      var gl = el("span","glyph"); gl.innerHTML = G[B.icon]; h.appendChild(gl);
+      h.appendChild(el("h2",null,B.nom));
+      card.appendChild(h);
+      var ul = el("ul","list");
+      B.list.forEach(function(t){ ul.appendChild(el("li",null,t)); });
+      card.appendChild(ul);
+      inner.appendChild(card);
+      return say(inner, [B.ask]);
+    }).then(function(box){
+      var g = el("div","opts"); g.setAttribute("role","group"); g.setAttribute("aria-label", B.ask);
+      JAVOB.forEach(function(o){
+        var b = el("button","opt opt-" + o.k); b.type = "button"; b.setAttribute("aria-pressed","false");
+        b.innerHTML = G[o.g]; b.appendChild(el("span",null,o.t));
+        b.addEventListener("click", function(){
+          if(b.disabled) return;
+          lock(g, b);
+          if(o.k === "mos"){
+            state.suhbat.bloklar[B.id] = {j:"mos"};
+            g.remove(); me(box, o.t);
+            say(inner, ["Yaxshi, davom etamiz."]).then(function(){ return wait(350); }).then(next);
+            return;
+          }
+          var ph = o.k === "savol" ? "Savolingizni yozing" : "Nima mos emas? Qanday boʻlsa mos kelardi?";
+          var f = textForm(ph, 500, function(txt){
+            state.suhbat.bloklar[B.id] = {j:o.k, izoh:txt};
+            g.remove(); f.remove(); me(box, o.t + ":\n" + txt);
+            say(inner, [o.k === "savol" ? "Savolingizni yozib oldim — uchrashuvda javob beraman." : "Rahmat, ochiq aytganingiz uchun. Buni hisobga olamiz."])
+              .then(function(){ return wait(450); }).then(next);
+          }, function(){ unlock(g); });
+          inner.appendChild(f); show(f);
+        });
+        g.appendChild(b);
+      });
+      inner.appendChild(g); show(g);
+    });
+  }
+
+  function stepBridge(){
+    var inner = reel("Vaziyatlar"); hrHead(inner);
+    say(inner, [
+      "Rahmat, {ism}! Endi 12 ta vaziyat.",
+      "Bunda toʻgʻri yoki notoʻgʻri javob yoʻq — oʻzingiz qanday qilgan boʻlardingiz, shuni tanlang. Taxminan 4 daqiqa."
+    ]).then(function(){
+      var b = btn("Vaziyatlarni boshlash"); inner.appendChild(b); show(b);
+      b.addEventListener("click", function(){
+        b.remove();
+        state.introSec = Math.round((Date.now() - state.t0) / 1000);
+        state.testStart = Date.now();
+        stepQ(0);
+      });
+    });
+  }
+
+  function shuffle(a){ a = a.slice(); for(var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function stepQ(i){
     var q = Q[i];
-    var sec = el("section","reel center");
-    sec.setAttribute("data-step","q");
-    sec.setAttribute("data-n", String(i+1));
-    sec.appendChild(el("p","qnum","Vaziyat " + (i+1) + " / " + Q.length));
-    if(q.note){ sec.appendChild(el("p","qnote",q.note)); }
-    var sc = el("p","scenario",q.text);
-    if(q.ru){ sc.lang = "ru"; }
-    sec.appendChild(sc);
-    var box = el("div","options");
-    box.setAttribute("role","group");
-    box.setAttribute("aria-label","Javob variantlari");
+    var inner = reel("Vaziyatlar " + (i + 1) + " / " + Q.length);
+    var chip = el("span","chip"); chip.innerHTML = sv('<path d="M8 7v10M12 7v10M16 7v10"/>', 16, 1.9);
+    chip.appendChild(document.createTextNode("Vaziyat " + (i + 1) + " / " + Q.length));
+    inner.appendChild(chip);
+    inner.appendChild(el("h2","q-title",q.sarlavha));
+    if(q.note){ inner.appendChild(el("p","qnote",q.note)); }
+    var sc = el("p","scenario",q.text); if(q.ru){ sc.lang = "ru"; } inner.appendChild(sc);
+    var g = el("div","opts"); g.setAttribute("role","group"); g.setAttribute("aria-label","Javob variantlari");
     shuffle(q.opts).forEach(function(o){
-      var b = el("button","opt",o.t);
-      b.type = "button";
-      b.setAttribute("aria-pressed","false");
-      if(q.ru){ b.lang = "ru"; }
+      var b = el("button","opt"); b.type = "button"; b.setAttribute("aria-pressed","false");
+      var s = el("span",null,o.t); if(q.ru){ s.lang = "ru"; } b.appendChild(s);
       b.addEventListener("click", function(){
         if(b.disabled) return;
         state.answers[i] = o.k;
-        Array.prototype.forEach.call(box.children, function(x){ x.disabled = true; });
-        b.setAttribute("aria-pressed","true");
-        setTimeout(function(){
-          var next = (i+1 < Q.length) ? addQuestion(i+1) : addResult();
-          goTo(next);
-        }, reduce ? 50 : 420);
+        lock(g, b);
+        wait(380).then(function(){
+          if(i + 1 < Q.length){ stepQ(i + 1); }
+          else { state.testSec = Math.round((Date.now() - state.testStart) / 1000); stepTushunish(); }
+        });
       });
-      box.appendChild(b);
+      g.appendChild(b);
     });
-    sec.appendChild(box);
-    feed.appendChild(sec);
-    io.observe(sec);
-    return sec;
+    inner.appendChild(g);
+  }
+
+  function stepTushunish(){
+    var inner = reel("Yakun"); hrHead(inner);
+    say(inner, ["Deyarli tayyor, {ism}.", "Oʻzingizni baholang: administrator vazifasini necha foiz tushundingiz?"]).then(function(box){
+      var m = el("div","meter");
+      var val = el("div","meter-val","?"); val.setAttribute("aria-hidden","true");
+      var r = el("input"); r.type = "range"; r.min = "0"; r.max = "100"; r.step = "10"; r.value = "50";
+      r.setAttribute("aria-label","Vazifani necha foiz tushundingiz");
+      var sc = el("div","scale"); sc.appendChild(el("span",null,"0% — tushunmadim")); sc.appendChild(el("span",null,"100% — toʻliq"));
+      m.appendChild(val); m.appendChild(r); m.appendChild(sc);
+      inner.appendChild(m);
+      var f = el("div","stack");
+      var ta = el("textarea","inp"); ta.maxLength = 500; ta.placeholder = "Nima tushunarsiz qoldi? (ixtiyoriy)"; ta.setAttribute("aria-label","Nima tushunarsiz qoldi, ixtiyoriy");
+      var hint = el("p","hint","Surgichni suring — keyin «Davom etish» faollashadi.");
+      var b = btn("Davom etish"); b.disabled = true;
+      f.appendChild(ta); f.appendChild(hint); f.appendChild(b);
+      inner.appendChild(f); show(m);
+      function upd(){ val.textContent = r.value + "%"; r.setAttribute("aria-valuetext", r.value + " foiz"); b.disabled = false; hint.hidden = true; }
+      r.addEventListener("input", upd);
+      r.addEventListener("change", upd);
+      b.addEventListener("click", function(){
+        if(b.disabled) return;
+        state.tushunish = parseInt(r.value, 10);
+        var izoh = ta.value.trim();
+        if(izoh){ state.suhbat.tushunish_izoh = izoh.slice(0, 500); }
+        m.remove(); f.remove();
+        me(box, "Tushundim: " + state.tushunish + "%" + (izoh ? "\n" + izoh : ""));
+        wait(300).then(stepTelefon);
+      });
+    });
+  }
+
+  function stepTelefon(){
+    var inner = reel("Yakun"); hrHead(inner);
+    say(inner, ["Oxirgisi — telefon raqamingiz.", "Mos kelsangiz, 1–2 kun ichida shu raqamga qoʻngʻiroq qilamiz."]).then(function(box){
+      var f = el("form","stack");
+      var inp = el("input","inp"); inp.type = "tel"; inp.autocomplete = "tel"; inp.inputMode = "tel"; inp.maxLength = 30; inp.placeholder = "+998 90 123 45 67"; inp.setAttribute("aria-label","Telefon raqamingiz");
+      var err = el("p","err"); err.setAttribute("role","alert");
+      var b = el("button","btn","Yuborish"); b.type = "submit";
+      f.appendChild(inp); f.appendChild(err); f.appendChild(b);
+      inner.appendChild(f); show(f);
+      setTimeout(function(){ focusSoft(inp); }, 50);
+      f.addEventListener("submit", function(ev){
+        ev.preventDefault();
+        var v = inp.value.trim();
+        if(v.replace(/\D/g, "").length < 9){ err.textContent = "Raqamni toʻliq yozing, masalan +998 90 123 45 67."; focusSoft(inp); return; }
+        state.telefon = v.slice(0, 30);
+        f.remove(); me(box, state.telefon);
+        wait(300).then(stepDone);
+      });
+    });
   }
 
   function send(payload){
@@ -290,32 +489,32 @@ button,input,textarea{font:inherit}
     });
   }
 
-  function addResult(){
+  function stepDone(){
     var payload = {
       vakansiya: "administrator",
-      ism: state.name,
-      telefon: state.phone,
+      ism: state.ism,
+      telefon: state.telefon,
       javoblar: state.answers.join(""),
-      test_sek: Math.round((Date.now()-state.startAt)/1000),
-      tanishuv_sek: state.introSec
+      test_sek: state.testSec,
+      tanishuv_sek: state.introSec,
+      tushunish: state.tushunish,
+      suhbat: state.suhbat
     };
     try{ localStorage.setItem(PENDING, JSON.stringify(payload)); }catch(e){}
 
-    var sec = el("section","reel center");
-    sec.setAttribute("data-step","done");
-    var title = el("h2","big mid","Rahmat, " + state.name + "!");
-    var status = el("p","sending","Javoblaringiz yuborilmoqda…");
-    status.setAttribute("role","status");
-    var retry = el("button","btn","Qayta yuborish"); retry.type = "button"; retry.hidden = true;
-    sec.appendChild(title); sec.appendChild(status); sec.appendChild(retry);
-    feed.appendChild(sec);
-    io.observe(sec);
+    var inner = reel("Tayyor");
+    var ros = el("div"); ros.innerHTML = ROSETTE; inner.appendChild(ros);
+    inner.appendChild(el("h2","done-t","Rahmat, " + state.ism + "!"));
+    var status = el("p","done-s","Javoblaringiz yuborilmoqda…"); status.setAttribute("role","status");
+    inner.appendChild(status);
+    var retry = btn("Qayta yuborish"); retry.hidden = true; inner.appendChild(retry);
+    fill.style.width = "100%";
 
     function attempt(){
       retry.hidden = true;
       status.textContent = "Javoblaringiz yuborilmoqda…";
       send(payload).then(function(){
-        status.textContent = "Javoblaringiz qabul qilindi. 1–2 kun ichida siz bilan telefon orqali bogʻlanamiz.";
+        status.textContent = "Javoblaringiz HRga yetib bordi. Mos kelsangiz, 1–2 kun ichida qoʻngʻiroq qilamiz.";
       }, function(){
         status.textContent = "Yuborib boʻlmadi. Internetni tekshirib, qayta urinib koʻring — javoblaringiz saqlangan.";
         retry.hidden = false;
@@ -323,31 +522,15 @@ button,input,textarea{font:inherit}
     }
     retry.addEventListener("click", attempt);
     attempt();
-    return sec;
   }
 
-  /* Oldingi safar yuborilmay qolgan javoblar boʻlsa — jimgina qayta yuboramiz */
+  /* oldingi safar yuborilmay qolgan javoblar — jimgina qayta yuboramiz */
   try{
     var old = localStorage.getItem(PENDING);
     if(old){ send(JSON.parse(old)).catch(function(){}); }
   }catch(e){}
 
-  document.getElementById("startForm").addEventListener("submit", function(ev){
-    ev.preventDefault();
-    var name = document.getElementById("name").value.trim();
-    var phone = document.getElementById("phone").value.trim();
-    var digits = phone.replace(/\D/g,"");
-    var err = document.getElementById("startErr");
-    if(name.length < 2){ err.textContent = "Ismingizni yozing."; document.getElementById("name").focus(); return; }
-    if(digits.length < 9){ err.textContent = "Telefon raqamini toʻliq yozing, masalan +998 90 123 45 67."; document.getElementById("phone").focus(); return; }
-    err.textContent = "";
-    state.name = name.slice(0,80); state.phone = phone.slice(0,30);
-    state.startAt = Date.now();
-    state.introSec = Math.round((state.startAt - state.loadAt)/1000);
-    Array.prototype.forEach.call(this.elements, function(x){ x.disabled = true; });
-    document.getElementById("startBtn").textContent = "Test boshlandi";
-    goTo(addQuestion(0));
-  });
+  stepHello();
 })();
 </script>
 </body>

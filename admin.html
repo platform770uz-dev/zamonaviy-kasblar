@@ -83,7 +83,7 @@ body:has(.dlg:not([hidden])){padding:16px 12px calc(var(--taskbar) + env(safe-ar
 
 /* list view */
 .lv-wrap{background:#fff;box-shadow:var(--sunken);overflow:auto;max-height:58vh;padding:2px}
-table.lv{border-collapse:collapse;width:100%;min-width:720px}
+table.lv{border-collapse:collapse;width:100%;min-width:940px}
 .lv th{position:sticky;top:0;background:var(--face);box-shadow:var(--button);text-align:left;font-weight:normal;padding:6px 10px;white-space:nowrap;z-index:1}
 .lv th button{background:none;border:none;padding:0;cursor:pointer;width:100%;text-align:left}
 .lv td{padding:8px 10px;white-space:nowrap;vertical-align:middle}
@@ -212,6 +212,8 @@ table.lv{border-collapse:collapse;width:100%;min-width:720px}
           <thead><tr>
             <th scope="col">Ism</th>
             <th scope="col" id="thScore"><button type="button" data-sort="score">Natija</button></th>
+            <th scope="col" id="thTush"><button type="button" data-sort="tush">Tushungan</button></th>
+            <th scope="col">Suhbat</th>
             <th scope="col">Holat</th>
             <th scope="col">Belgilar</th>
             <th scope="col">Telefon</th>
@@ -279,6 +281,15 @@ table.lv{border-collapse:collapse;width:100%;min-width:720px}
     if(dg.length >= 12 && dg.indexOf("998") === 0) return "tel:+" + dg.slice(0,12);
     if(dg.length === 9) return "tel:+998" + dg;
     return "tel:" + dg;
+  }
+  var BLOK = [["vazifa","Vazifalar"],["qoida","Qoidalar"],["tartib","Ish tartibi"],["maosh","Maosh"],["kamera","Kamera"]];
+  var JNOM = {mos:"Tushunarli, mos", savol:"Savoli bor", mosemas:"Mos emas"};
+  function suhbatSum(x){
+    var b = (x.suhbat && x.suhbat.bloklar) || null;
+    if(!b) return null;
+    var r = {savol:[], mosemas:[]};
+    BLOK.forEach(function(k){ var v = b[k[0]]; if(v && r[v.j]) r[v.j].push(k[1]); });
+    return r;
   }
   function warnIcon(){ var s = document.createElementNS("http://www.w3.org/2000/svg","svg"); s.setAttribute("class","warnic"); s.setAttribute("aria-hidden","true"); var u = document.createElementNS("http://www.w3.org/2000/svg","use"); u.setAttribute("href","#i-warn"); s.appendChild(u); return s; }
 
@@ -355,22 +366,37 @@ table.lv{border-collapse:collapse;width:100%;min-width:720px}
       return true;
     });
     if(sortBy === "score"){ view.sort(function(a,b){ return b._s.foiz - a._s.foiz; }); }
+    if(sortBy === "tush"){ view.sort(function(a,b){ return (b.tushunish==null?-1:b.tushunish) - (a.tushunish==null?-1:a.tushunish); }); }
 
     $("thDate").querySelector("button").textContent = "Sana" + (sortBy === "new" ? " ▼" : "");
     $("thScore").querySelector("button").textContent = "Natija" + (sortBy === "score" ? " ▼" : "");
+    $("thTush").querySelector("button").textContent = "Tushungan" + (sortBy === "tush" ? " ▼" : "");
+    $("thTush").setAttribute("aria-sort", sortBy === "tush" ? "descending" : "none");
     $("thDate").setAttribute("aria-sort", sortBy === "new" ? "descending" : "none");
     $("thScore").setAttribute("aria-sort", sortBy === "score" ? "descending" : "none");
 
     var tb = $("rows"); tb.innerHTML = "";
     if(!view.length){
       var tr = el("tr"); var td = el("td","empty", rows.length ? "Bu boʻlimda nomzod yoʻq." : "Hozircha arizalar yoʻq. Test havolasini nomzodlarga yuboring.");
-      td.colSpan = 6; tr.appendChild(td); tb.appendChild(tr);
+      td.colSpan = 8; tr.appendChild(td); tb.appendChild(tr);
     }
     view.forEach(function(x, i){
       var tr = el("tr"); tr.tabIndex = 0;
       tr.appendChild(el("td", null, x.ism));
       var tds = el("td"); var mini = el("span","mini"); var f = el("i"); f.style.width = x._s.foiz + "%"; mini.appendChild(f);
       tds.appendChild(mini); tds.appendChild(document.createTextNode(x._s.foiz + "%")); tr.appendChild(tds);
+      tr.appendChild(el("td", null, x.tushunish == null ? "—" : x.tushunish + "%"));
+      var sm = suhbatSum(x), tdh = el("td");
+      if(!sm){ tdh.textContent = "—"; }
+      else if(!sm.savol.length && !sm.mosemas.length){ tdh.textContent = "✔ hammasi mos"; }
+      else {
+        var parts = [];
+        if(sm.mosemas.length) parts.push("✖ " + sm.mosemas.join(", "));
+        if(sm.savol.length) parts.push("? " + sm.savol.join(", "));
+        tdh.textContent = parts.join("  ");
+        if(sm.mosemas.length) tdh.style.color = "#a00000";
+      }
+      tr.appendChild(tdh);
       tr.appendChild(el("td", null, HOLAT[x.holat] || x.holat));
       var tdf = el("td");
       var n = x._s.flags.length + (x._dup ? 1 : 0);
@@ -411,10 +437,41 @@ table.lv{border-collapse:collapse;width:100%;min-width:720px}
     var a = el("a", null, x.telefon); a.href = telHref(x.telefon);
     pair("Telefon:", a);
     pair("Sana:", fmtDate(x.created_at));
-    pair("Ish tavsifi:", (x.tanishuv_sek||0) + " soniya oʻqigan");
+    pair("HR suhbati:", (x.tanishuv_sek||0) + " soniya");
     pair("Test:", (x.test_sek||0) + " soniyada yechgan");
     if(x._dup){ pair("Takror:", x._dup + " ta ariza shu raqamdan"); }
     g1.appendChild(kv); b.appendChild(g1);
+
+    var S = x.suhbat || null;
+    if(S || x.tushunish != null){
+      var gS = el("fieldset","grp"); gS.appendChild(el("legend",null,"Suhbat (virtual HR)"));
+      var kv2 = el("div","kv");
+      function pair2(k, v, red){ kv2.appendChild(el("span","muted",k)); var s2 = el("span",null,v); if(red) s2.style.color = "#a00000"; kv2.appendChild(s2); }
+      if(S){
+        if(S.faoliyat) pair2("Hozir:", S.faoliyat);
+        if(S.tajriba) pair2("Tajriba:", S.tajriba);
+        if(S.rus) pair2("Rus tili:", S.rus);
+        BLOK.forEach(function(k){
+          var v = S.bloklar && S.bloklar[k[0]];
+          if(!v) return;
+          var txt = (v.j === "mos" ? "✔ " : v.j === "savol" ? "? " : "✖ ") + (JNOM[v.j] || v.j) + (v.izoh ? " — «" + v.izoh + "»" : "");
+          pair2(k[1] + ":", txt, v.j === "mosemas");
+        });
+      }
+      gS.appendChild(kv2);
+      if(x.tushunish != null){
+        var tr2 = el("div","dimrow"); tr2.style.marginTop = "12px";
+        tr2.appendChild(el("span",null,"Oʻzi baholagan tushunish"));
+        var pb2 = el("div","pbar"); pb2.setAttribute("role","img"); pb2.setAttribute("aria-label","Tushunish: " + x.tushunish + "%");
+        var f2 = el("i"); f2.style.width = x.tushunish + "%"; pb2.appendChild(f2); tr2.appendChild(pb2);
+        tr2.appendChild(el("span",null,x.tushunish + "%"));
+        gS.appendChild(tr2);
+      }
+      if(S && S.tushunish_izoh){
+        var q2 = el("p",null,"Tushunarsiz qolgan: «" + S.tushunish_izoh + "»"); q2.style.margin = "6px 0 0"; gS.appendChild(q2);
+      }
+      b.appendChild(gS);
+    }
 
     var g2 = el("fieldset","grp"); g2.appendChild(el("legend",null,"Natija"));
     var top = el("div","row"); top.appendChild(el("span","big", s.foiz + "%")); top.appendChild(el("span",null, s.xulosa));
@@ -494,13 +551,17 @@ table.lv{border-collapse:collapse;width:100%;min-width:720px}
 
   /* ---------- CSV ---------- */
   $("csv").addEventListener("click", function(){
-    var head = ["Sana","Ism","Telefon","Foiz","Stressga chidamlilik","Intizom","Muloqot va sotuv","Oʻsish salohiyati","Xulosa","Holat","Izoh","Belgilar","Tavsif soniya","Test soniya"];
+    var head = ["Sana","Ism","Telefon","Foiz","Stressga chidamlilik","Intizom","Muloqot va sotuv","Oʻsish salohiyati","Xulosa","Tushungan %","Hozir","Tajriba","Rus tili","Vazifalar","Qoidalar","Ish tartibi","Maosh","Kamera","Tushunarsiz qolgan","Holat","Izoh","Belgilar","Suhbat soniya","Test soniya"];
+    function bl(x, k){ var v = x.suhbat && x.suhbat.bloklar && x.suhbat.bloklar[k]; return v ? (JNOM[v.j] || v.j) + (v.izoh ? ": " + v.izoh : "") : ""; }
     function q(v){ v = (v==null?"":String(v)); return '"' + v.replace(/"/g,'""') + '"'; }
     var lines = [head.map(q).join(",")];
     rows.forEach(function(x){
       var s = x._s;
+      var S = x.suhbat || {};
       lines.push([fmtDate(x.created_at), x.ism, x.telefon, s.foiz, s.dims.s.foiz, s.dims.d.foiz, s.dims.c.foiz, s.dims.p.foiz,
-        s.xulosa, HOLAT[x.holat]||x.holat, x.izoh||"", s.flags.join("; "), x.tanishuv_sek, x.test_sek].map(q).join(","));
+        s.xulosa, x.tushunish == null ? "" : x.tushunish, S.faoliyat||"", S.tajriba||"", S.rus||"",
+        bl(x,"vazifa"), bl(x,"qoida"), bl(x,"tartib"), bl(x,"maosh"), bl(x,"kamera"), S.tushunish_izoh||"",
+        HOLAT[x.holat]||x.holat, x.izoh||"", s.flags.join("; "), x.tanishuv_sek, x.test_sek].map(q).join(","));
     });
     var blob = new Blob(["\ufeff" + lines.join("\r\n")], {type:"text/csv;charset=utf-8"});
     var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "nomzodlar.csv";

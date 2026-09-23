@@ -63,7 +63,7 @@ window.ZK = (function(){
     {id:"c2",dim:"c",sarlavha:"Daromad kafolati",
      text:"Qiz soʻrayapti: «Kursdan keyin pul ishlashim aniqmi?»",
      opts:[
-      {k:"A",v:4,t:"«Kafolat bermaymiz. Lekin 3 oyda portfolio va brendlar bilan amaliyot boʻladi, eng yaxshi oʻquvchi prodyuserlik oladi»"},
+      {k:"A",v:4,t:"«Kafolat bermaymiz. Kursda amaliyot va portfolio boʻladi — batafsil uchrashuvda tushuntiramiz»"},
       {k:"B",v:1,t:"«Ha, albatta pul ishlaysiz»",f:"Daromad kafolatini vaʼda qiladi"},
       {k:"C",v:2,t:"«Bilmayman, rahbardan soʻrang»"},
       {k:"D",v:2,t:"«Hammasi oʻzingizga bogʻliq»"}]},
@@ -116,7 +116,7 @@ window.ZK = (function(){
       rows.push({sarlavha:q.sarlavha, javob:o.t, ball:o.v});
     }
     if(typeof testSek === "number" && testSek < 90) flags.push("12 ta vaziyatga " + testSek + " soniyada javob berdi — oʻqimagan boʻlishi mumkin");
-    if(typeof tanishuvSek === "number" && tanishuvSek < 40) flags.push("Ish tavsifini " + tanishuvSek + " soniyada varaqlab oʻtdi");
+    if(typeof tanishuvSek === "number" && tanishuvSek < 40) flags.push("HR suhbatini " + tanishuvSek + " soniyada oʻtdi — oʻqimagan boʻlishi mumkin");
     var dims = {};
     Object.keys(DIMS).forEach(function(k){ dims[k] = {nom:DIMS[k], ball:sums[k], foiz:Math.round(sums[k]/12*100)}; });
     var foiz = Math.round(jami/(Q.length*4)*100);
