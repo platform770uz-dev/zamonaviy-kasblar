@@ -1,9 +1,8 @@
 /* 1924 — Supabase sozlamalari.
-   Supabase → Project Settings → API boʻlimidan ikkita qiymatni shu yerga qoʻying:
-   1) Project URL
-   2) Publishable key (yoki anon public key)
-   DIQQAT: service_role / secret kalitni bu yerga HECH QACHON qoʻymang — bu fayl hammaga ochiq. */
+   Faqat Project URL va publishable kalit. Bu fayl hammaga ochiq — bu normal:
+   publishable kalit ochiq boʻlishi uchun moʻljallangan, maʼlumotlarni RLS himoya qiladi.
+   service_role / secret kalitni bu yerga HECH QACHON qoʻymang. */
 window.ZK_CONFIG = {
-  url: "https://XXXXXXXX.supabase.co",
-  key: "SHU_YERGA_PUBLISHABLE_KALIT"
+  url: "https://uzivivmrixstxjvzkksz.supabase.co",
+  key: "sb_publishable_8z5WQbInjqHDvigfDSOcuQ_FOq7LQWJ"
 };
