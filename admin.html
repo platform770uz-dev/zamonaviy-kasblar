@@ -4,165 +4,239 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>1924 — admin</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
+<title>1924 — Nomzodlar</title>
 <style>
 :root{
-  --bg:#F7EEDF; --panel:#FFF8EC; --ink:#22160D; --muted:#6B5646; --line:#E3D2B9;
-  --accent:#F47B20; --accent-ink:#A84A0A; --on-accent:#22160D; --focus:#A84A0A; --warn-bg:#FBE3CF;
-  color-scheme:light;
-  box-sizing:border-box;
-  padding-top:env(safe-area-inset-top,0px);
-  padding-bottom:env(safe-area-inset-bottom,0px);
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#17100B; --panel:#22180F; --ink:#F7EEDF; --muted:#CDB9A3; --line:#3A2A1E;
-    --accent-ink:#FF9A4D; --on-accent:#17100B; --focus:#FF9A4D; --warn-bg:#3A2112; color-scheme:dark;
-  }
+  --face:#c0c0c0; --hi:#ffffff; --lite:#dfdfdf; --shadow:#808080; --dark:#0a0a0a;
+  --title:#000080; --desk:#008080; --sel:#000080; --warn:#ffff00;
+  --raised: inset -1px -1px var(--dark), inset 1px 1px var(--lite), inset -2px -2px var(--shadow), inset 2px 2px var(--hi);
+  --button: inset -1px -1px var(--dark), inset 1px 1px var(--hi), inset -2px -2px var(--shadow), inset 2px 2px var(--lite);
+  --pressed: inset -1px -1px var(--hi), inset 1px 1px var(--dark), inset -2px -2px var(--lite), inset 2px 2px var(--shadow);
+  --sunken: inset -1px -1px var(--hi), inset 1px 1px var(--shadow), inset -2px -2px var(--lite), inset 2px 2px var(--dark);
+  --thin: inset -1px -1px var(--hi), inset 1px 1px var(--shadow);
 }
 *,*::before,*::after{box-sizing:border-box}
 html{min-height:100%}
-body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);
-  font-family:'Onest',system-ui,-apple-system,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased}
-button,input,select,textarea{font:inherit;color:inherit}
-:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+body{margin:0;min-height:100vh;background:var(--desk);color:#000;
+  font-family:Tahoma,"MS Sans Serif","Microsoft Sans Serif",Verdana,Arial,sans-serif;font-size:14px;
+  padding:14px 10px calc(56px + env(safe-area-inset-bottom,0px))}
+button,input,select,textarea{font:inherit;color:#000}
 [hidden]{display:none !important}
-.wrap{max-width:980px;margin:0 auto;padding:20px 16px 48px}
-.brand{font-family:'Oswald','Arial Narrow',sans-serif;font-weight:700;font-size:34px;line-height:1;margin:0}
-.muted{color:var(--muted)}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px}
-.input{width:100%;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--bg);font-size:16px}
-.input:focus{outline:none;border-color:var(--accent)}
-.btn{display:inline-block;padding:12px 18px;border-radius:999px;border:none;background:var(--accent);color:var(--on-accent);
-  font-weight:600;font-size:16px;cursor:pointer;text-decoration:none;text-align:center}
-.btn.ghost{background:transparent;border:2px solid var(--line);color:var(--ink)}
-.btn.small{padding:8px 14px;font-size:14px}
-.btn:disabled{opacity:.5;cursor:default}
-.err{color:var(--accent-ink);min-height:20px;font-size:15px;margin:8px 0}
-.field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
-.field label{font-size:14px;color:var(--muted)}
+a{color:#0000ee}
 
-/* login */
-.center{min-height:80vh;display:flex;align-items:center;justify-content:center}
-.login{width:100%;max-width:380px}
-.login .brand{margin-bottom:6px}
-.login p{margin:0 0 18px}
-
-/* app header */
-.head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
-.head .who{font-size:14px;color:var(--muted);margin-left:auto}
-.tabs{display:flex;gap:8px;margin-bottom:16px}
-.tab{padding:8px 14px;border-radius:999px;border:2px solid var(--accent);background:var(--accent);color:var(--on-accent);font-weight:600;font-size:15px}
-
-/* tiles */
-.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:16px}
-.tile{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
-.tile b{display:block;font-family:'Oswald',sans-serif;font-weight:700;font-size:32px;line-height:1.05}
-.tile span{font-size:13px;color:var(--muted)}
-@media (max-width:560px){ .tiles{grid-template-columns:repeat(2,minmax(0,1fr))} }
+/* window */
+.win{background:var(--face);box-shadow:var(--raised);padding:3px;max-width:1100px;margin:0 auto}
+.title{background:var(--title);color:#fff;font-weight:bold;padding:3px 3px 3px 5px;display:flex;align-items:center;gap:6px;min-height:24px;user-select:none}
+.title .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tbtns{display:flex;gap:2px}
+.tbtn{width:20px;height:18px;padding:0;border:none;background:var(--face);box-shadow:var(--button);
+  font:bold 12px/1 Tahoma,Arial,sans-serif;display:flex;align-items:center;justify-content:center;cursor:default}
+.tbtn.x{margin-left:2px;cursor:pointer}
+.tbtn:active{box-shadow:var(--pressed)}
+.wbody{padding:10px}
 
 /* controls */
-.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
-.chip{padding:7px 12px;border-radius:999px;border:2px solid var(--line);background:transparent;font-size:14px;cursor:pointer}
-.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.controls .grow{flex:1 1 200px}
-.select{padding:9px 12px;border-radius:12px;border:2px solid var(--line);background:var(--panel);font-size:14px}
+.btn{background:var(--face);border:none;padding:6px 14px;min-width:84px;box-shadow:var(--button);cursor:pointer}
+.btn:active{box-shadow:var(--pressed);padding:7px 13px 5px 15px}
+.btn:focus-visible,.tab:focus-visible,.tbtn:focus-visible{outline:1px dotted #000;outline-offset:-5px}
+.btn:disabled{color:var(--shadow);text-shadow:1px 1px var(--hi);cursor:default}
+.field{background:#fff;border:none;padding:6px 7px;box-shadow:var(--sunken);width:100%}
+.field:focus{outline:1px dotted #000;outline-offset:-4px}
+select.field{width:auto;padding:5px 6px}
+textarea.field{resize:vertical;min-height:64px}
+label{display:block;margin-bottom:4px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.right{justify-content:flex-end}
+.grp{border:1px solid var(--shadow);box-shadow:inset 1px 1px var(--hi),1px 1px var(--hi);margin:0 0 12px;padding:14px 10px 10px}
+.grp legend{padding:0 4px}
+.err{color:#a00000;min-height:18px;margin:6px 0}
+.muted{color:#404040}
 
-/* list */
-.list{display:flex;flex-direction:column;gap:12px}
-.nz{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px}
-.nz-top{display:flex;gap:14px;align-items:flex-start}
-.nz-main{flex:1;min-width:0}
-.nz-name{font-size:19px;font-weight:600;margin:0 0 4px;overflow-wrap:anywhere}
-.nz-meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;color:var(--muted)}
-.nz-meta a{color:var(--accent-ink);font-weight:600;text-decoration:none}
-.dup{background:var(--warn-bg);color:var(--ink);border-radius:999px;padding:1px 9px;font-size:12px;font-weight:600}
-.pct{text-align:right;flex:none}
-.pct b{display:block;font-family:'Oswald',sans-serif;font-weight:700;font-size:40px;line-height:1}
-.pct span{font-size:13px;color:var(--muted);display:block;max-width:170px}
-.dims{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px;margin:14px 0 4px}
-@media (max-width:560px){ .dims{grid-template-columns:1fr} }
-.dim-top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
-.dim-bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
-.dim-fill{height:100%;background:var(--accent)}
-.flags{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 0}
-.flag{background:var(--warn-bg);border-radius:10px;padding:5px 10px;font-size:13px;line-height:1.35}
-.nz-bottom{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start;margin-top:14px}
-.nz-bottom .select{flex:0 0 auto}
-.note{flex:1 1 240px;display:flex;gap:8px}
-.note textarea{flex:1;min-height:40px;resize:vertical;padding:9px 12px;border-radius:12px;border:2px solid var(--line);background:var(--bg);font-size:14px}
-.saved{font-size:13px;color:var(--accent-ink);min-height:18px;margin-top:4px}
-details{margin-top:12px}
-summary{cursor:pointer;font-size:14px;color:var(--accent-ink);font-weight:600}
-.ans{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}
-.ans td{padding:8px 4px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.4}
-.ans td:last-child{text-align:right;white-space:nowrap;font-weight:600}
-.empty{padding:28px;text-align:center;color:var(--muted)}
+/* dialogs (login, deny, config) */
+.dlg{max-width:440px;margin:8vh auto 0}
+.dlg .inner{display:flex;gap:14px;align-items:flex-start}
+.dlg .ico{flex:none;width:32px;height:32px}
+.dlg .fields{flex:1;min-width:0}
+
+/* toolbar + counters */
+.toolbar{display:flex;gap:6px;flex-wrap:wrap;padding:4px;margin-bottom:10px;box-shadow:var(--thin)}
+.counters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.counter span{display:block;margin-bottom:4px}
+.counter b{display:block;background:#000;color:#00ff00;box-shadow:var(--sunken);padding:6px 8px;
+  font:bold 24px/1 "Courier New",Courier,monospace;text-align:right}
+@media (max-width:600px){ .counters{grid-template-columns:repeat(2,minmax(0,1fr))} }
+
+/* tabs */
+.tabs{display:flex;flex-wrap:wrap;position:relative;z-index:1;margin-bottom:-2px;padding-left:2px}
+.tab{background:var(--face);border:none;padding:5px 10px;margin-top:3px;cursor:pointer;
+  box-shadow:inset -1px 0 var(--dark),inset 1px 1px var(--hi),inset -2px 0 var(--shadow),inset 2px 2px var(--lite);
+  border-radius:3px 3px 0 0}
+.tab[aria-selected="true"]{margin-top:0;padding-bottom:8px;position:relative;z-index:2}
+.panel{box-shadow:var(--raised);padding:10px}
+
+/* list view */
+.lv-wrap{background:#fff;box-shadow:var(--sunken);overflow:auto;max-height:58vh;padding:2px}
+table.lv{border-collapse:collapse;width:100%;min-width:720px}
+.lv th{position:sticky;top:0;background:var(--face);box-shadow:var(--button);text-align:left;font-weight:normal;padding:4px 8px;white-space:nowrap;z-index:1}
+.lv th button{background:none;border:none;padding:0;cursor:pointer;width:100%;text-align:left}
+.lv td{padding:5px 8px;white-space:nowrap;vertical-align:middle}
+.lv tbody tr{cursor:pointer}
+.lv tbody tr:focus{outline:1px dotted #000;outline-offset:-2px}
+.lv tbody tr.sel td,.lv tbody tr:focus td{background:var(--sel);color:#fff}
+.lv tbody tr.sel a,.lv tbody tr:focus a{color:#fff}
+.mini{display:inline-block;width:70px;height:12px;vertical-align:middle;margin-right:6px;background:#fff;box-shadow:var(--thin);padding:1px}
+.mini i,.pbar i{display:block;height:100%;background:repeating-linear-gradient(90deg,var(--title) 0 8px,transparent 8px 10px)}
+.warnic{display:inline-block;width:14px;height:14px;vertical-align:-2px;margin-right:4px}
+.empty{padding:22px;text-align:center}
+
+/* status bar */
+.status{display:flex;gap:3px;margin-top:6px}
+.status span{flex:1;padding:3px 6px;box-shadow:var(--thin);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* detail dialog */
+.modal{position:fixed;inset:0;z-index:20;display:flex;align-items:flex-start;justify-content:center;
+  padding:18px 8px calc(56px + env(safe-area-inset-bottom,0px));overflow:auto;background:rgba(0,0,0,.25)}
+.modal .win{width:min(760px,100%);margin:0}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px}
+.big{font:bold 34px/1 Tahoma,Arial,sans-serif}
+.pbar{height:22px;background:#fff;box-shadow:var(--sunken);padding:3px;flex:1;min-width:120px}
+.dimrow{display:grid;grid-template-columns:180px 1fr 46px;gap:10px;align-items:center;margin-bottom:8px}
+@media (max-width:560px){ .dimrow{grid-template-columns:1fr 46px} .dimrow .pbar{grid-column:1 / -1;grid-row:2} }
+.flags{list-style:none;padding-left:0;margin:0}
+.flags li{margin-bottom:6px}
+.ans{width:100%;border-collapse:collapse;background:#fff;box-shadow:var(--sunken)}
+.ans td{padding:6px 8px;border-bottom:1px solid #e4e4e4;vertical-align:top;line-height:1.35}
+.ans td:last-child{text-align:right;white-space:nowrap;font-weight:bold}
+.saved{min-height:18px;margin-top:6px}
+
+/* taskbar */
+.taskbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--face);
+  box-shadow:inset 0 1px var(--lite),inset 0 2px var(--hi);display:flex;align-items:center;gap:6px;
+  padding:4px 4px calc(4px + env(safe-area-inset-bottom,0px))}
+.start{font-weight:bold;display:flex;align-items:center;gap:6px;min-width:0}
+.taskwin{box-shadow:var(--pressed);padding:6px 12px;background:repeating-conic-gradient(var(--face) 0 25%,#d6d6d6 0 50%) 0 0/2px 2px;
+  max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tray{margin-left:auto;padding:6px 10px;box-shadow:var(--thin)}
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <!-- config.js toʻldirilmagan -->
-  <section id="vConfig" class="center" hidden>
-    <div class="card login">
-      <h1 class="brand">1924 admin</h1>
-      <p class="muted">config.js faylida Supabase manzili va kaliti koʻrsatilmagan. Project Settings → API boʻlimidan Project URL va publishable kalitni config.js ga qoʻying.</p>
+<!-- ikonalar -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-app" viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="12" fill="#fff" stroke="#000"/><rect x="1.5" y="2.5" width="13" height="3" fill="#000080"/><rect x="3" y="7" width="6" height="1" fill="#000"/><rect x="3" y="9" width="9" height="1" fill="#000"/><rect x="3" y="11" width="7" height="1" fill="#000"/></symbol>
+    <symbol id="i-key" viewBox="0 0 32 32"><circle cx="11" cy="16" r="7" fill="#ffd700" stroke="#000" stroke-width="1.5"/><circle cx="11" cy="16" r="2.5" fill="#c0c0c0" stroke="#000"/><rect x="17" y="14.5" width="12" height="3" fill="#ffd700" stroke="#000"/><rect x="24" y="17.5" width="2" height="4" fill="#ffd700" stroke="#000"/><rect x="27" y="17.5" width="2" height="3" fill="#ffd700" stroke="#000"/></symbol>
+    <symbol id="i-err" viewBox="0 0 32 32"><circle cx="16" cy="16" r="13" fill="#ff0000" stroke="#000" stroke-width="1.5"/><path d="M10 10l12 12M22 10L10 22" stroke="#fff" stroke-width="3.5"/></symbol>
+    <symbol id="i-warn" viewBox="0 0 16 16"><path d="M8 1L15 14H1z" fill="#ffff00" stroke="#000"/><rect x="7.2" y="5" width="1.6" height="5" fill="#000"/><rect x="7.2" y="11" width="1.6" height="1.6" fill="#000"/></symbol>
+  </defs>
+</svg>
+
+<!-- sozlama yoʻq -->
+<section id="vConfig" class="win dlg" hidden>
+  <div class="title"><span class="t">Sozlama topilmadi</span></div>
+  <div class="wbody"><div class="inner">
+    <svg class="ico" aria-hidden="true"><use href="#i-err"/></svg>
+    <div class="fields">config.js faylida Supabase manzili yoki kaliti yoʻq. Project Settings → API boʻlimidan Project URL va publishable kalitni config.js ga qoʻying.</div>
+  </div></div>
+</section>
+
+<!-- kirish -->
+<section id="vLogin" class="win dlg" hidden>
+  <div class="title"><svg width="16" height="16" aria-hidden="true"><use href="#i-app"/></svg><span class="t">Tizimga kirish</span></div>
+  <form class="wbody" id="loginForm" novalidate>
+    <div class="inner">
+      <svg class="ico" aria-hidden="true"><use href="#i-key"/></svg>
+      <div class="fields">
+        <p style="margin:0 0 12px">1924 admin paneli. Email va parolingizni kiriting.</p>
+        <label for="email">Email:</label>
+        <input class="field" id="email" type="email" autocomplete="username" required>
+        <div style="height:10px"></div>
+        <label for="pass">Parol:</label>
+        <input class="field" id="pass" type="password" autocomplete="current-password" required>
+        <p class="err" id="loginErr" role="alert"></p>
+        <div class="row right"><button class="btn" type="submit" id="loginBtn">OK</button></div>
+      </div>
     </div>
+  </form>
+</section>
+
+<!-- ruxsat yoʻq -->
+<section id="vDeny" class="win dlg" hidden>
+  <div class="title"><span class="t">Xato</span></div>
+  <div class="wbody">
+    <div class="inner">
+      <svg class="ico" aria-hidden="true"><use href="#i-err"/></svg>
+      <div class="fields"><span id="denyEmail"></span> adminlar roʻyxatida yoʻq.</div>
+    </div>
+    <div class="row right" style="margin-top:14px"><button class="btn" type="button" id="denyOut">OK</button></div>
+  </div>
+</section>
+
+<!-- asosiy oyna -->
+<section id="vApp" class="win" hidden>
+  <div class="title">
+    <svg width="16" height="16" aria-hidden="true"><use href="#i-app"/></svg>
+    <span class="t">1924 — Nomzodlar</span>
+    <div class="tbtns" aria-hidden="true"><span class="tbtn">_</span><span class="tbtn">□</span></div>
+    <button class="tbtn x" type="button" id="closeX" aria-label="Chiqish">×</button>
+  </div>
+  <div class="wbody">
+    <div class="toolbar">
+      <button class="btn" type="button" id="refresh">Yangilash</button>
+      <button class="btn" type="button" id="csv">CSV yuklab olish</button>
+      <button class="btn" type="button" id="logout">Chiqish</button>
+    </div>
+
+    <fieldset class="grp">
+      <legend>Umumiy</legend>
+      <div class="counters" id="counters"></div>
+    </fieldset>
+
+    <div class="tabs" role="tablist" id="tabs" aria-label="Holat boʻyicha"></div>
+    <div class="panel" role="tabpanel">
+      <div class="row" style="margin-bottom:8px">
+        <label for="search" style="margin:0">Qidirish:</label>
+        <input class="field" id="search" type="search" placeholder="Ism yoki telefon" style="flex:1;min-width:180px">
+      </div>
+      <div class="lv-wrap">
+        <table class="lv">
+          <thead><tr>
+            <th scope="col">Ism</th>
+            <th scope="col" id="thScore"><button type="button" data-sort="score">Natija</button></th>
+            <th scope="col">Holat</th>
+            <th scope="col">Belgilar</th>
+            <th scope="col">Telefon</th>
+            <th scope="col" aria-sort="descending" id="thDate"><button type="button" data-sort="new">Sana ▼</button></th>
+          </tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="status" role="status">
+      <span id="stShown"></span>
+      <span id="stTime"></span>
+      <span id="stUser"></span>
+    </div>
+  </div>
+</section>
+
+<!-- nomzod oynasi -->
+<div class="modal" id="modal" hidden>
+  <section class="win" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <div class="title">
+      <svg width="16" height="16" aria-hidden="true"><use href="#i-app"/></svg>
+      <span class="t" id="mTitle">Nomzod</span>
+      <button class="tbtn x" type="button" id="mX" aria-label="Yopish">×</button>
+    </div>
+    <div class="wbody" id="mBody"></div>
   </section>
+</div>
 
-  <!-- kirish -->
-  <section id="vLogin" class="center" hidden>
-    <form class="card login" id="loginForm" novalidate>
-      <h1 class="brand">1924 admin</h1>
-      <p class="muted">Admin email va parol bilan kiring.</p>
-      <div class="field"><label for="email">Email</label><input class="input" id="email" type="email" autocomplete="username" required></div>
-      <div class="field"><label for="pass">Parol</label><input class="input" id="pass" type="password" autocomplete="current-password" required></div>
-      <p class="err" id="loginErr" role="alert"></p>
-      <button class="btn" type="submit" id="loginBtn" style="width:100%">Kirish</button>
-    </form>
-  </section>
-
-  <!-- ruxsat yoʻq -->
-  <section id="vDeny" class="center" hidden>
-    <div class="card login">
-      <h1 class="brand">Ruxsat yoʻq</h1>
-      <p class="muted"><span id="denyEmail"></span> adminlar roʻyxatida yoʻq. Supabase SQL Editor’da uni adminlar jadvaliga qoʻshing.</p>
-      <button class="btn ghost" type="button" id="denyOut">Chiqish</button>
-    </div>
-  </section>
-
-  <!-- asosiy -->
-  <section id="vApp" hidden>
-    <div class="head">
-      <h1 class="brand">1924 admin</h1>
-      <span class="who" id="who"></span>
-      <button class="btn ghost small" type="button" id="logout">Chiqish</button>
-    </div>
-    <nav class="tabs" aria-label="Boʻlimlar"><span class="tab">Nomzodlar</span></nav>
-
-    <div class="tiles" id="tiles"></div>
-
-    <div class="controls">
-      <div id="chips" style="display:flex;flex-wrap:wrap;gap:8px"></div>
-    </div>
-    <div class="controls">
-      <input class="input grow" id="search" type="search" placeholder="Ism yoki telefon boʻyicha qidirish" aria-label="Qidirish">
-      <select class="select" id="sort" aria-label="Saralash">
-        <option value="new">Yangilari birinchi</option>
-        <option value="score">Ball boʻyicha</option>
-      </select>
-      <button class="btn ghost small" type="button" id="refresh">Yangilash</button>
-      <button class="btn ghost small" type="button" id="csv">CSV yuklab olish</button>
-    </div>
-
-    <p class="muted" id="listMsg" role="status"></p>
-    <div class="list" id="list"></div>
-  </section>
-
+<div class="taskbar" aria-hidden="true">
+  <span class="btn start"><svg width="16" height="16"><use href="#i-app"/></svg>1924</span>
+  <span class="taskwin" id="taskwin">Nomzodlar</span>
+  <span class="tray" id="clock"></span>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -179,30 +253,31 @@ summary{cursor:pointer;font-size:14px;color:var(--accent-ink);font-weight:600}
   function $(id){ return document.getElementById(id); }
   function el(tag, cls, text){ var n=document.createElement(tag); if(cls) n.className=cls; if(text!=null) n.textContent=text; return n; }
   function show(id){ ["vConfig","vLogin","vDeny","vApp"].forEach(function(v){ $(v).hidden = (v !== id); }); }
+  function pad(n){ return (n<10?"0":"")+n; }
+  function tick(){ var d=new Date(); $("clock").textContent = pad(d.getHours())+":"+pad(d.getMinutes()); }
+  tick(); setInterval(tick, 15000);
 
   if(!window.supabase || !cfg.url || cfg.url.indexOf("XXXX") !== -1 || !cfg.key || cfg.key.indexOf("SHU_YERGA") !== -1){
     show("vConfig"); return;
   }
   var sb = window.supabase.createClient(cfg.url, cfg.key);
 
-  var rows = [], filter = "hammasi", sortBy = "new", query = "";
+  var rows = [], view = [], filter = "hammasi", sortBy = "new", query = "", current = -1, loadedAt = null;
 
-  function fmtDate(iso){
-    var d = new Date(iso); function p(n){ return (n<10?"0":"")+n; }
-    return p(d.getDate())+"."+p(d.getMonth()+1)+"."+d.getFullYear()+" "+p(d.getHours())+":"+p(d.getMinutes());
-  }
+  function fmtDate(iso){ var d = new Date(iso); return pad(d.getDate())+"."+pad(d.getMonth()+1)+"."+d.getFullYear()+" "+pad(d.getHours())+":"+pad(d.getMinutes()); }
   function telHref(t){
     var dg = (t||"").replace(/\D/g,"");
     if(dg.length >= 12 && dg.indexOf("998") === 0) return "tel:+" + dg.slice(0,12);
     if(dg.length === 9) return "tel:+998" + dg;
     return "tel:" + dg;
   }
+  function warnIcon(){ var s = document.createElementNS("http://www.w3.org/2000/svg","svg"); s.setAttribute("class","warnic"); s.setAttribute("aria-hidden","true"); var u = document.createElementNS("http://www.w3.org/2000/svg","use"); u.setAttribute("href","#i-warn"); s.appendChild(u); return s; }
 
+  /* ---------- kirish ---------- */
   async function boot(){
     var r = await sb.auth.getSession();
     if(r.data && r.data.session){ await enter(r.data.session); } else { show("vLogin"); $("email").focus(); }
   }
-
   $("loginForm").addEventListener("submit", async function(ev){
     ev.preventDefault();
     var btn = $("loginBtn"), err = $("loginErr");
@@ -212,24 +287,25 @@ summary{cursor:pointer;font-size:14px;color:var(--accent-ink);font-weight:600}
     if(r.error){ err.textContent = "Email yoki parol notoʻgʻri."; return; }
     await enter(r.data.session);
   });
-
-  async function out(){ await sb.auth.signOut(); rows = []; $("list").innerHTML = ""; show("vLogin"); }
+  async function out(){ closeModal(); await sb.auth.signOut(); rows = []; $("rows").innerHTML = ""; show("vLogin"); }
   $("logout").addEventListener("click", out);
+  $("closeX").addEventListener("click", out);
   $("denyOut").addEventListener("click", out);
 
   async function enter(session){
     var email = session && session.user ? session.user.email : "";
     var r = await sb.rpc("is_admin");
     if(r.error || r.data !== true){ $("denyEmail").textContent = email; show("vDeny"); return; }
-    $("who").textContent = email;
+    $("stUser").textContent = email;
     show("vApp");
     await load();
   }
 
+  /* ---------- maʼlumot ---------- */
   async function load(){
-    $("listMsg").textContent = "Yuklanmoqda…";
+    $("stShown").textContent = "Yuklanmoqda…";
     var r = await sb.from("nomzodlar").select("*").order("created_at", {ascending:false}).limit(2000);
-    if(r.error){ $("listMsg").textContent = "Yuklab boʻlmadi: " + r.error.message; return; }
+    if(r.error){ $("stShown").textContent = "Xato: " + r.error.message; return; }
     var seen = {};
     rows = r.data.map(function(x){
       x._s = ZK.score(x.javoblar, x.test_sek, x.tanishuv_sek);
@@ -238,6 +314,8 @@ summary{cursor:pointer;font-size:14px;color:var(--accent-ink);font-weight:600}
       return x;
     });
     rows.forEach(function(x){ x._dup = seen[x._key] > 1 ? seen[x._key] : 0; });
+    loadedAt = new Date();
+    $("stTime").textContent = "Yangilangan: " + pad(loadedAt.getHours()) + ":" + pad(loadedAt.getMinutes());
     render();
   }
 
@@ -245,20 +323,20 @@ summary{cursor:pointer;font-size:14px;color:var(--accent-ink);font-weight:600}
     var c = {hammasi: rows.length}; ORDER.forEach(function(k){ c[k] = 0; });
     rows.forEach(function(x){ c[x.holat] = (c[x.holat]||0) + 1; });
 
-    var tiles = $("tiles"); tiles.innerHTML = "";
+    var ct = $("counters"); ct.innerHTML = "";
     [["Jami", c.hammasi], ["Yangi", c.yangi], ["Uchrashuvga", c.uchrashuv], ["Qabul", c.qabul]].forEach(function(t){
-      var d = el("div","tile"); d.appendChild(el("b",null,String(t[1]))); d.appendChild(el("span",null,t[0])); tiles.appendChild(d);
+      var d = el("div","counter"); d.appendChild(el("span",null,t[0])); d.appendChild(el("b",null,String(t[1]))); ct.appendChild(d);
     });
 
-    var chips = $("chips"); chips.innerHTML = "";
-    [["hammasi","Hammasi"]].concat(ORDER.map(function(k){ return [k, HOLAT[k]]; })).forEach(function(ch){
-      var b = el("button","chip", ch[1] + " (" + (c[ch[0]]||0) + ")");
-      b.type = "button"; b.setAttribute("aria-pressed", filter === ch[0] ? "true" : "false");
-      b.addEventListener("click", function(){ filter = ch[0]; render(); });
-      chips.appendChild(b);
+    var tabs = $("tabs"); tabs.innerHTML = "";
+    [["hammasi","Hammasi"]].concat(ORDER.map(function(k){ return [k, HOLAT[k]]; })).forEach(function(t){
+      var b = el("button","tab", t[1] + " (" + (c[t[0]]||0) + ")");
+      b.type = "button"; b.setAttribute("role","tab"); b.setAttribute("aria-selected", filter === t[0] ? "true" : "false");
+      b.addEventListener("click", function(){ filter = t[0]; render(); });
+      tabs.appendChild(b);
     });
 
-    var list = rows.filter(function(x){
+    view = rows.filter(function(x){
       if(filter !== "hammasi" && x.holat !== filter) return false;
       if(query){
         var q = query.toLowerCase(), qd = query.replace(/\D/g,"");
@@ -267,72 +345,110 @@ summary{cursor:pointer;font-size:14px;color:var(--accent-ink);font-weight:600}
       }
       return true;
     });
-    if(sortBy === "score"){ list.sort(function(a,b){ return b._s.foiz - a._s.foiz; }); }
+    if(sortBy === "score"){ view.sort(function(a,b){ return b._s.foiz - a._s.foiz; }); }
 
-    var box = $("list"); box.innerHTML = "";
-    $("listMsg").textContent = rows.length ? "" : "";
-    if(!list.length){
-      box.appendChild(el("div","empty card", rows.length ? "Bu filtr boʻyicha nomzod yoʻq." : "Hozircha arizalar yoʻq. Test havolasini nomzodlarga yuboring."));
-      return;
+    $("thDate").querySelector("button").textContent = "Sana" + (sortBy === "new" ? " ▼" : "");
+    $("thScore").querySelector("button").textContent = "Natija" + (sortBy === "score" ? " ▼" : "");
+    $("thDate").setAttribute("aria-sort", sortBy === "new" ? "descending" : "none");
+    $("thScore").setAttribute("aria-sort", sortBy === "score" ? "descending" : "none");
+
+    var tb = $("rows"); tb.innerHTML = "";
+    if(!view.length){
+      var tr = el("tr"); var td = el("td","empty", rows.length ? "Bu boʻlimda nomzod yoʻq." : "Hozircha arizalar yoʻq. Test havolasini nomzodlarga yuboring.");
+      td.colSpan = 6; tr.appendChild(td); tb.appendChild(tr);
     }
-    list.forEach(function(x){ box.appendChild(card(x)); });
+    view.forEach(function(x, i){
+      var tr = el("tr"); tr.tabIndex = 0;
+      tr.appendChild(el("td", null, x.ism));
+      var tds = el("td"); var mini = el("span","mini"); var f = el("i"); f.style.width = x._s.foiz + "%"; mini.appendChild(f);
+      tds.appendChild(mini); tds.appendChild(document.createTextNode(x._s.foiz + "%")); tr.appendChild(tds);
+      tr.appendChild(el("td", null, HOLAT[x.holat] || x.holat));
+      var tdf = el("td");
+      var n = x._s.flags.length + (x._dup ? 1 : 0);
+      if(n){ tdf.appendChild(warnIcon()); tdf.appendChild(document.createTextNode(n + " ta")); } else { tdf.textContent = "—"; }
+      tr.appendChild(tdf);
+      tr.appendChild(el("td", null, x.telefon));
+      tr.appendChild(el("td", null, fmtDate(x.created_at)));
+      tr.addEventListener("click", function(){ openModal(i); });
+      tr.addEventListener("keydown", function(e){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); openModal(i); } });
+      tb.appendChild(tr);
+    });
+    $("stShown").textContent = "Koʻrsatilgan: " + view.length + " ta";
   }
 
-  function card(x){
+  $("search").addEventListener("input", function(){ query = this.value.trim(); render(); });
+  Array.prototype.forEach.call(document.querySelectorAll(".lv th button"), function(b){
+    b.addEventListener("click", function(){ sortBy = b.getAttribute("data-sort"); render(); });
+  });
+  $("refresh").addEventListener("click", load);
+
+  /* ---------- nomzod oynasi ---------- */
+  function closeModal(){ $("modal").hidden = true; $("taskwin").textContent = "Nomzodlar"; current = -1; }
+  $("mX").addEventListener("click", closeModal);
+  $("modal").addEventListener("click", function(e){ if(e.target === this) closeModal(); });
+  document.addEventListener("keydown", function(e){ if(e.key === "Escape" && !$("modal").hidden) closeModal(); });
+
+  function openModal(i){
+    current = i;
+    var x = view[i]; if(!x) return;
     var s = x._s;
-    var n = el("article","nz");
+    $("mTitle").textContent = "Nomzod — " + x.ism;
+    $("taskwin").textContent = x.ism;
+    var b = $("mBody"); b.innerHTML = "";
 
-    var top = el("div","nz-top");
-    var main = el("div","nz-main");
-    main.appendChild(el("h2","nz-name", x.ism));
-    var meta = el("div","nz-meta");
-    var a = el("a", null, x.telefon); a.href = telHref(x.telefon); meta.appendChild(a);
-    meta.appendChild(el("span", null, fmtDate(x.created_at)));
-    if(x._dup){ meta.appendChild(el("span","dup","Takror: " + x._dup + " ta ariza")); }
-    main.appendChild(meta);
-    var tm = el("div","nz-meta");
-    tm.appendChild(el("span", null, "Ish tavsifi: " + (x.tanishuv_sek||0) + " soniya"));
-    tm.appendChild(el("span", null, "Test: " + (x.test_sek||0) + " soniya"));
-    tm.style.marginTop = "4px";
-    main.appendChild(tm);
-    top.appendChild(main);
-    var pct = el("div","pct"); pct.appendChild(el("b",null, s.foiz + "%")); pct.appendChild(el("span",null, s.xulosa));
-    top.appendChild(pct);
-    n.appendChild(top);
+    var g1 = el("fieldset","grp"); g1.appendChild(el("legend",null,"Maʼlumot"));
+    var kv = el("div","kv");
+    function pair(k, v){ kv.appendChild(el("span","muted",k)); if(typeof v === "string"){ kv.appendChild(el("span",null,v)); } else { kv.appendChild(v); } }
+    var a = el("a", null, x.telefon); a.href = telHref(x.telefon);
+    pair("Telefon:", a);
+    pair("Sana:", fmtDate(x.created_at));
+    pair("Ish tavsifi:", (x.tanishuv_sek||0) + " soniya oʻqigan");
+    pair("Test:", (x.test_sek||0) + " soniyada yechgan");
+    if(x._dup){ pair("Takror:", x._dup + " ta ariza shu raqamdan"); }
+    g1.appendChild(kv); b.appendChild(g1);
 
-    var dims = el("div","dims");
+    var g2 = el("fieldset","grp"); g2.appendChild(el("legend",null,"Natija"));
+    var top = el("div","row"); top.appendChild(el("span","big", s.foiz + "%")); top.appendChild(el("span",null, s.xulosa));
+    g2.appendChild(top);
+    var gap = el("div"); gap.style.height = "12px"; g2.appendChild(gap);
     Object.keys(s.dims).forEach(function(k){
       var d = s.dims[k];
-      var w = el("div");
-      var t = el("div","dim-top"); t.appendChild(el("span",null,d.nom)); t.appendChild(el("span",null,d.foiz + "%"));
-      var bar = el("div","dim-bar"); var f = el("div","dim-fill"); f.style.width = d.foiz + "%"; bar.appendChild(f);
-      bar.setAttribute("role","img"); bar.setAttribute("aria-label", d.nom + ": " + d.foiz + "%");
-      w.appendChild(t); w.appendChild(bar); dims.appendChild(w);
+      var r = el("div","dimrow");
+      r.appendChild(el("span",null,d.nom));
+      var pb = el("div","pbar"); pb.setAttribute("role","img"); pb.setAttribute("aria-label", d.nom + ": " + d.foiz + "%");
+      var f = el("i"); f.style.width = d.foiz + "%"; pb.appendChild(f); r.appendChild(pb);
+      r.appendChild(el("span",null,d.foiz + "%"));
+      g2.appendChild(r);
     });
-    n.appendChild(dims);
+    b.appendChild(g2);
 
-    if(s.flags.length){
-      var fl = el("div","flags");
-      s.flags.forEach(function(f){ fl.appendChild(el("span","flag", f)); });
-      n.appendChild(fl);
+    if(s.flags.length || x._dup){
+      var g3 = el("fieldset","grp"); g3.appendChild(el("legend",null,"Diqqat"));
+      var ul = el("ul","flags");
+      s.flags.forEach(function(fl){ var li = el("li"); li.appendChild(warnIcon()); li.appendChild(document.createTextNode(fl)); ul.appendChild(li); });
+      if(x._dup){ var li = el("li"); li.appendChild(warnIcon()); li.appendChild(document.createTextNode("Shu raqamdan " + x._dup + " ta ariza keldi")); ul.appendChild(li); }
+      g3.appendChild(ul); b.appendChild(g3);
     }
 
-    var bottom = el("div","nz-bottom");
-    var sel = el("select","select"); sel.setAttribute("aria-label","Holat");
+    var g4 = el("fieldset","grp"); g4.appendChild(el("legend",null,"Holat va izoh"));
+    var lab = el("label",null,"Holat:"); lab.htmlFor = "mHolat"; g4.appendChild(lab);
+    var sel = el("select","field"); sel.id = "mHolat";
     ORDER.forEach(function(k){ var o = el("option", null, HOLAT[k]); o.value = k; if(k === x.holat) o.selected = true; sel.appendChild(o); });
-    var note = el("div","note");
-    var ta = el("textarea"); ta.value = x.izoh || ""; ta.placeholder = "Izoh: qoʻngʻiroq natijasi, uchrashuv vaqti…"; ta.setAttribute("aria-label","Izoh");
-    var save = el("button","btn small","Saqlash"); save.type = "button";
-    note.appendChild(ta); note.appendChild(save);
-    bottom.appendChild(sel); bottom.appendChild(note);
-    n.appendChild(bottom);
-    var saved = el("div","saved"); saved.setAttribute("role","status"); n.appendChild(saved);
+    g4.appendChild(sel);
+    var gap2 = el("div"); gap2.style.height = "10px"; g4.appendChild(gap2);
+    var lab2 = el("label",null,"Izoh:"); lab2.htmlFor = "mIzoh"; g4.appendChild(lab2);
+    var ta = el("textarea","field"); ta.id = "mIzoh"; ta.value = x.izoh || ""; ta.placeholder = "Qoʻngʻiroq natijasi, uchrashuv vaqti…"; g4.appendChild(ta);
+    var saved = el("div","saved"); saved.setAttribute("role","status");
+    var rowb = el("div","row right"); rowb.style.marginTop = "8px";
+    var save = el("button","btn","Izohni saqlash"); save.type = "button"; rowb.appendChild(save);
+    g4.appendChild(rowb); g4.appendChild(saved);
+    b.appendChild(g4);
 
     sel.addEventListener("change", async function(){
       var prev = x.holat; x.holat = sel.value; saved.textContent = "Saqlanmoqda…";
       var r = await sb.from("nomzodlar").update({holat: x.holat}).eq("id", x.id);
       if(r.error){ x.holat = prev; sel.value = prev; saved.textContent = "Saqlanmadi: " + r.error.message; return; }
-      saved.textContent = "Holat saqlandi."; setTimeout(render, 700);
+      saved.textContent = "Holat saqlandi."; render();
     });
     save.addEventListener("click", async function(){
       save.disabled = true; saved.textContent = "Saqlanmoqda…";
@@ -343,22 +459,31 @@ summary{cursor:pointer;font-size:14px;color:var(--accent-ink);font-weight:600}
       x.izoh = val; saved.textContent = "Izoh saqlandi.";
     });
 
-    var det = el("details");
-    det.appendChild(el("summary", null, "Javoblarni koʻrish"));
-    var tb = el("table","ans"); var body = el("tbody");
+    var g5 = el("fieldset","grp"); g5.appendChild(el("legend",null,"Javoblar"));
+    var t = el("table","ans"); var tb = el("tbody");
     s.rows.forEach(function(rw){
       var tr = el("tr"); var td = el("td");
       td.appendChild(el("strong", null, rw.sarlavha)); td.appendChild(document.createElement("br")); td.appendChild(document.createTextNode(rw.javob));
-      tr.appendChild(td); tr.appendChild(el("td", null, rw.ball + " / 4")); body.appendChild(tr);
+      tr.appendChild(td); tr.appendChild(el("td", null, rw.ball + " / 4")); tb.appendChild(tr);
     });
-    tb.appendChild(body); det.appendChild(tb); n.appendChild(det);
-    return n;
+    t.appendChild(tb); g5.appendChild(t); b.appendChild(g5);
+
+    var nav = el("div","row right");
+    var prevB = el("button","btn","◀ Oldingi"); prevB.type = "button"; prevB.disabled = i === 0;
+    var nextB = el("button","btn","Keyingi ▶"); nextB.type = "button"; nextB.disabled = i >= view.length - 1;
+    var closeB = el("button","btn","Yopish"); closeB.type = "button";
+    prevB.addEventListener("click", function(){ openModal(i-1); });
+    nextB.addEventListener("click", function(){ openModal(i+1); });
+    closeB.addEventListener("click", closeModal);
+    nav.appendChild(prevB); nav.appendChild(nextB); nav.appendChild(closeB);
+    b.appendChild(nav);
+
+    $("modal").hidden = false;
+    $("modal").scrollTop = 0;
+    closeB.focus({preventScroll:true});
   }
 
-  $("search").addEventListener("input", function(){ query = this.value.trim(); render(); });
-  $("sort").addEventListener("change", function(){ sortBy = this.value; render(); });
-  $("refresh").addEventListener("click", load);
-
+  /* ---------- CSV ---------- */
   $("csv").addEventListener("click", function(){
     var head = ["Sana","Ism","Telefon","Foiz","Stressga chidamlilik","Intizom","Muloqot va sotuv","Oʻsish salohiyati","Xulosa","Holat","Izoh","Belgilar","Tavsif soniya","Test soniya"];
     function q(v){ v = (v==null?"":String(v)); return '"' + v.replace(/"/g,'""') + '"'; }
@@ -373,7 +498,7 @@ summary{cursor:pointer;font-size:14px;color:var(--accent-ink);font-weight:600}
     document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
   });
 
-  sb.auth.onAuthStateChange(function(event){ if(event === "SIGNED_OUT"){ show("vLogin"); } });
+  sb.auth.onAuthStateChange(function(event){ if(event === "SIGNED_OUT"){ closeModal(); show("vLogin"); } });
   boot();
 })();
 </script>
