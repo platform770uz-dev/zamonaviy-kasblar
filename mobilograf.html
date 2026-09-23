@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mobilograf bo‘lish — 1924 · ZAMONAVIY KASBLAR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --page-bg:#E9E1D2; --page-fg:#12302E;
+  --cam-bg:#0B3B39; --cam-deep:#062422; --cam-fg:#F4ECDF; --cam-dim:rgba(244,236,223,.68);
+  --line:rgba(244,236,223,.14); --accent:#FFD23F; --teal:#37C2B6; --rec:#FF4D3D; --ink:#0B2A28;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --page-bg:#0A1716; --page-fg:#E8E2D6; } }
+:root[data-theme="dark"]{ --page-bg:#0A1716; --page-fg:#E8E2D6; }
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--page-bg);color:var(--page-fg);font-family:'Onest',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+.app{height:100%;display:flex;align-items:center;justify-content:center}
+.reel{position:relative;height:100%;width:100%;max-width:100%;overflow:hidden;color:var(--cam-fg);
+  background:radial-gradient(120% 90% at 50% 30%, var(--cam-bg) 0%, var(--cam-deep) 100%);}
+@media (min-width:600px){
+  .reel{height:min(100%,880px);width:auto;aspect-ratio:9/16;border-radius:28px;box-shadow:0 30px 80px rgba(0,0,0,.35)}
+}
+/* rule-of-thirds grid, like a camera screen */
+.grid{position:absolute;inset:0;pointer-events:none;
+  background:
+    linear-gradient(to right, transparent calc(33.33% - .5px), var(--line) calc(33.33% - .5px), var(--line) calc(33.33% + .5px), transparent calc(33.33% + .5px), transparent calc(66.66% - .5px), var(--line) calc(66.66% - .5px), var(--line) calc(66.66% + .5px), transparent calc(66.66% + .5px)),
+    linear-gradient(to bottom, transparent calc(33.33% - .5px), var(--line) calc(33.33% - .5px), var(--line) calc(33.33% + .5px), transparent calc(33.33% + .5px), transparent calc(66.66% - .5px), var(--line) calc(66.66% - .5px), var(--line) calc(66.66% + .5px), transparent calc(66.66% + .5px));
+  opacity:.55}
+/* viewfinder corners */
+.c{position:absolute;width:26px;height:26px;border-color:var(--cam-fg);border-style:solid;opacity:.85;pointer-events:none}
+.c.tl{top:52px;left:14px;border-width:2px 0 0 2px}
+.c.tr{top:52px;right:14px;border-width:2px 2px 0 0}
+.c.bl{bottom:14px;left:14px;border-width:0 0 2px 2px}
+.c.br{bottom:14px;right:14px;border-width:0 2px 2px 0}
+/* story progress */
+.bars{position:absolute;top:12px;left:14px;right:14px;display:flex;gap:4px;z-index:5}
+.bars i{flex:1;height:3px;border-radius:2px;background:rgba(244,236,223,.25);overflow:hidden;position:relative}
+.bars i b{position:absolute;inset:0;background:var(--cam-fg);transform-origin:left;transform:scaleX(0);transition:transform .35s ease}
+.bars i.done b{transform:scaleX(1)}
+/* REC */
+.rec{position:absolute;top:24px;left:18px;display:flex;align-items:center;gap:7px;font:600 12px/1 'Onest',sans-serif;letter-spacing:.4px;z-index:5;color:var(--cam-fg)}
+.rec .dot{width:9px;height:9px;border-radius:50%;background:var(--rec);animation:blink 1.2s steps(2,start) infinite}
+.brandmark{position:absolute;top:24px;right:18px;font:600 12px/1 'Onest',sans-serif;color:var(--cam-dim);z-index:5}
+@keyframes blink{to{visibility:hidden}}
+/* screens */
+.screen{position:absolute;inset:0;padding:78px 30px 40px;display:none;flex-direction:column;overflow-y:auto;z-index:3}
+.screen.active{display:flex}
+.screen .top{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px}
+.screen .bottom{display:flex;flex-direction:column;gap:10px;padding-top:14px}
+h1,h2{font-family:'Unbounded','Onest',sans-serif;margin:0;letter-spacing:-.2px;line-height:1.12;overflow-wrap:break-word}
+h1{font-weight:800;font-size:clamp(30px,9.4vw,42px)}
+h2{font-weight:800;font-size:clamp(25px,7.4vw,32px)}
+p{margin:0;font-size:17px;line-height:1.45}
+.q{font-size:18px;font-weight:600}
+.small{font-size:14px;line-height:1.45;color:var(--cam-dim)}
+.caption{align-self:flex-start;background:rgba(6,36,34,.72);border:1px solid var(--line);border-radius:12px;padding:10px 13px;font-size:15px;line-height:1.4;color:var(--cam-fg)}
+.caption:empty{display:none}
+.choice{appearance:none;border:1.5px solid rgba(244,236,223,.55);background:rgba(6,36,34,.35);color:var(--cam-fg);
+  font:600 17px/1.2 'Onest',sans-serif;padding:16px 18px;border-radius:16px;text-align:left;cursor:pointer;transition:background .18s,border-color .18s,color .18s,transform .12s}
+.choice:hover{border-color:var(--cam-fg)}
+.choice:active{transform:scale(.98)}
+.choice.picked{background:var(--accent);border-color:var(--accent);color:var(--ink)}
+.choice:focus-visible,.cta:focus-visible,.ghost:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.hint{font-size:13px;color:var(--cam-dim);text-align:center}
+.shots{display:flex;gap:10px}
+.shot{flex:1;aspect-ratio:9/14;border:1.5px solid rgba(244,236,223,.5);border-radius:10px;display:flex;align-items:flex-end;padding:8px;font-weight:600;font-size:14px;position:relative;background:rgba(6,36,34,.35)}
+.shot::before{content:"";position:absolute;top:8px;left:8px;width:7px;height:7px;border-radius:50%;background:var(--rec)}
+ol.months{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;counter-reset:m}
+ol.months li{display:grid;grid-template-columns:62px 1fr;gap:10px;font-size:16px;line-height:1.4}
+ol.months li b{font-family:'Unbounded',sans-serif;font-weight:600;font-size:14px;color:var(--accent);padding-top:2px}
+.grant{border-left:3px solid var(--accent);padding:4px 0 4px 12px;font-size:16px;line-height:1.45}
+.grant b{color:var(--accent)}
+/* price reveal: autofocus moment */
+.af{position:relative;align-self:flex-start;padding:18px 22px;margin:4px 0}
+.af .num{display:block;white-space:nowrap;font-family:'Unbounded',sans-serif;font-weight:800;font-size:clamp(46px,13.6vw,72px);line-height:1;color:var(--accent);letter-spacing:-1px}
+.af .cur{display:block;font-weight:600;font-size:18px;margin-top:6px}
+.af i{position:absolute;width:22px;height:22px;border-color:var(--accent);border-style:solid}
+.af i:nth-child(1){top:0;left:0;border-width:2.5px 0 0 2.5px}
+.af i:nth-child(2){top:0;right:0;border-width:2.5px 2.5px 0 0}
+.af i:nth-child(3){bottom:0;left:0;border-width:0 0 2.5px 2.5px}
+.af i:nth-child(4){bottom:0;right:0;border-width:0 2.5px 2.5px 0}
+.screen.active .af.go .num,.screen.active .af.go .cur{animation:focus 1.1s cubic-bezier(.2,.7,.2,1) both}
+.screen.active .af.go i{animation:snap 1.1s cubic-bezier(.2,.7,.2,1) both}
+@keyframes focus{0%{filter:blur(14px);opacity:.35;letter-spacing:6px}55%{filter:blur(3px);opacity:.9}100%{filter:blur(0);opacity:1}}
+@keyframes snap{0%{transform:scale(1.9);opacity:0}60%{transform:scale(.92);opacity:1}100%{transform:scale(1);opacity:1}}
+.pay{font-weight:600;font-size:17px}
+.tariffs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tariff{border:1.5px solid rgba(244,236,223,.4);border-radius:14px;padding:12px;background:rgba(6,36,34,.35)}
+.tariff.pro{border-color:var(--accent)}
+.tariff h3{margin:0 0 2px;font:800 17px/1.2 'Unbounded',sans-serif}
+.tariff .p{font-family:'Unbounded',sans-serif;font-weight:600;font-size:15px;color:var(--accent);margin-bottom:8px}
+.tariff .p small{display:block;font-family:'Onest',sans-serif;font-weight:500;font-size:12px;color:var(--cam-dim);margin-top:2px}
+.tariff ul{margin:0;padding-left:16px;font-size:13.5px;line-height:1.4}
+.tariff li{margin-bottom:4px}
+.cta{display:block;text-align:center;text-decoration:none;background:var(--accent);color:var(--ink);font:700 18px/1.2 'Onest',sans-serif;padding:17px 18px;border-radius:16px}
+.ghost{appearance:none;background:transparent;border:1.5px solid rgba(244,236,223,.45);color:var(--cam-fg);font:600 16px/1.2 'Onest',sans-serif;padding:14px 18px;border-radius:16px;cursor:pointer}
+.chip{align-self:flex-start;background:rgba(255,210,63,.14);border:1px solid rgba(255,210,63,.55);color:var(--accent);border-radius:999px;padding:8px 14px;font-weight:600;font-size:15px}
+.nav{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);z-index:6;display:flex;gap:8px}
+.nav button{width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;background:transparent}
+.nav button:focus-visible{width:auto;height:auto;margin:0;clip:auto;padding:8px 12px;border-radius:10px;background:var(--accent);color:var(--ink);font:600 13px 'Onest',sans-serif}
+.screen[data-type="info"]{cursor:pointer}
+@media (prefers-reduced-motion: reduce){
+  .rec .dot{animation:none}
+  .screen.active .af.go .num,.screen.active .af.go .cur,.screen.active .af.go i{animation:none}
+  .bars i b{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<main class="reel" id="reel" aria-live="polite">
+  <div class="grid" aria-hidden="true"></div>
+  <span class="c tl" aria-hidden="true"></span><span class="c tr" aria-hidden="true"></span>
+  <span class="c bl" aria-hidden="true"></span><span class="c br" aria-hidden="true"></span>
+  <div class="bars" id="bars" aria-hidden="true"></div>
+  <div class="rec" aria-hidden="true"><span class="dot"></span><span id="tc">00:00</span></div>
+  <div class="brandmark">1924</div>
+  <div class="nav" id="nav"><button type="button" id="prev">Orqaga</button><button type="button" id="next">Keyingisi</button></div>
+
+  <!-- 0: hook -->
+  <section class="screen" data-type="choice" data-key="now">
+    <div class="top">
+      <h1>Kasbingiz — telefonda.</h1>
+      <p class="q">Hozir telefonda ko‘proq nima qilasiz?</p>
+    </div>
+    <div class="bottom">
+      <button class="choice" data-val="shoot">Video olaman</button>
+      <button class="choice" data-val="watch">Ko‘proq tomosha qilaman</button>
+    </div>
+  </section>
+
+  <!-- 1 -->
+  <section class="screen" data-type="info">
+    <div class="top">
+      <div class="caption" data-reply="now"></div>
+      <h2>Mobilograf — bu kim?</h2>
+      <p>Do‘kon, kafe va salonlar uchun telefonda reklama rolik oladi va montaj qiladi.</p>
+      <div class="shots" aria-hidden="true"><div class="shot">Do‘kon</div><div class="shot">Kafe</div><div class="shot">Salon</div></div>
+    </div>
+    <div class="bottom"><p class="hint">Davom etish uchun ekranga bosing</p></div>
+  </section>
+
+  <!-- 2 -->
+  <section class="screen" data-type="choice" data-key="goal">
+    <div class="top">
+      <h2>Siz uchun nima muhimroq?</h2>
+    </div>
+    <div class="bottom">
+      <button class="choice" data-val="skill">Kasb o‘rganish</button>
+      <button class="choice" data-val="money">Pul topish</button>
+      <button class="choice" data-val="own">O‘z sahifam uchun kontent</button>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="screen" data-type="info">
+    <div class="top">
+      <div class="caption" data-reply="goal"></div>
+      <h2>3 oyda nima bo‘ladi</h2>
+      <ol class="months">
+        <li><b>1-oy</b><span>Kadr, yorug‘lik va ovoz. Har hafta — brend-feys bilan suratga olish.</span></li>
+        <li><b>2-oy</b><span>CapCut’da montaj, Reels ritmi va birinchi 2 soniya.</span></li>
+        <li><b>3-oy</b><span>Haqiqiy brif, portfolio va birinchi mijozni topish.</span></li>
+      </ol>
+      <p class="small">Oflayn, Farg‘onada. Haftasiga 2 ta dars va 2 soat suratga olish. Guruh — 12 kishigacha. Amaliyotchi trener olib boradi.</p>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="screen" data-type="choice" data-key="age">
+    <div class="top">
+      <h2>Yoshingiz nechida?</h2>
+      <p class="small">Buyurtmalar qoidasi yoshga bog‘liq — shuning uchun so‘raymiz.</p>
+    </div>
+    <div class="bottom">
+      <button class="choice" data-val="u18">16–17 yosh</button>
+      <button class="choice" data-val="a18">18 va undan katta</button>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="screen" data-type="info">
+    <div class="top">
+      <h2>Buyurtmalar haqida ochiq gapiramiz</h2>
+      <div class="caption" data-reply="age"></div>
+      <p>Buyurtma bo‘lsa beriladi — oldindan va’da qilmaymiz. Portfolio va mijoz topish yo‘riqnomasi esa hammaga.</p>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="screen" data-type="info">
+    <div class="top">
+      <h2>Hammasi musobaqa haftasidan boshlanadi</h2>
+      <p>Bir hafta: brend-feyslar bilan 3 ta suratga olish va yakuniy rolik. Trener va kurator ball qo‘yadi.</p>
+      <div class="grant"><b>Eng yaxshisi grant oladi:</b> bepul o‘qish va 3 oy davomida oyiga 1 mln so‘m fiks — 1924 uchun kontent olish evaziga.</div>
+      <p class="small">Qolganlar xohlasa, kursni davom ettiradi. Grant shartlari joyida tushuntiriladi.</p>
+    </div>
+  </section>
+
+  <!-- 7: price reveal -->
+  <section class="screen" data-type="info" data-reveal="1">
+    <div class="top">
+      <h2>Musobaqa haftasiga kirish</h2>
+      <div class="af" id="af"><i></i><i></i><i></i><i></i><span class="num">99&nbsp;000</span><span class="cur">so‘m</span></div>
+      <p class="pay">To‘lov — joyida, ofisda: Click yoki Payme orqali.</p>
+      <p class="small">Kursni davom ettirsangiz, 99 000 birinchi oy to‘loviga hisoblanadi.</p>
+    </div>
+  </section>
+
+  <!-- 8: tariffs -->
+  <section class="screen" data-type="info">
+    <div class="top">
+      <h2>Keyin — ikki tarif</h2>
+      <div class="tariffs">
+        <div class="tariff">
+          <h3>Baza</h3>
+          <div class="p">499&nbsp;000 <small>so‘m / oy</small></div>
+          <ul><li>Guruh darslari va suratga olish</li><li>Portfolio va eng yaxshi ishlar roligi</li><li>Mijoz topish yo‘riqnomasi</li></ul>
+        </div>
+        <div class="tariff pro">
+          <h3>Pro</h3>
+          <div class="p">799&nbsp;000 <small>so‘m / oy</small></div>
+          <ul><li>Bazadagi hammasi</li><li>Har bir ishingizning shaxsiy tahlili</li><li>Birinchi mijoz bilan hamrohlik</li><li>Tayyorlik tekshiruvi va buyurtmalarga ruxsat (18+)</li></ul>
+        </div>
+      </div>
+      <p class="small">2-oy oxirida Bazadan Pro’ga o‘tish mumkin. Musobaqasiz, to‘g‘ridan-to‘g‘ri yozilish ham mumkin.</p>
+    </div>
+  </section>
+
+  <!-- 9: CTA -->
+  <section class="screen" data-type="final">
+    <div class="top">
+      <h2>Joyingizni band qiling</h2>
+      <span class="chip">99&nbsp;000 so‘m — joyida to‘lanadi</span>
+      <p>Instagram’da yozing — administrator vaqt va manzilni aytadi.</p>
+      <p class="small">Guruh — 12 kishigacha. Farg‘ona, oflayn.</p>
+    </div>
+    <div class="bottom">
+      <a class="cta" href="https://ig.me/m/zamonaviykasb.uz" target="_blank" rel="noopener">Instagram’da yozish</a>
+      <button class="ghost" id="restart" type="button">Boshidan ko‘rish</button>
+    </div>
+  </section>
+</main>
+</div>
+<script>
+(function(){
+  var screens = Array.prototype.slice.call(document.querySelectorAll('.screen'));
+  var bars = document.getElementById('bars');
+  var nav = document.getElementById('nav');
+  var i = 0, answers = {}, t0 = Date.now();
+  var replies = {
+    now: {
+      shoot: 'Demak, birinchi qadam bosilgan. Qolganini tartibga solamiz.',
+      watch: 'Tomoshabin ko‘zi — yaxshi boshlanish. Kurs noldan boshlanadi.'
+    },
+    goal: {
+      skill: '3 oyda kadrdan montajgacha — tizimli kasb.',
+      money: 'Kursda mijoz topish va daromad qilish yo‘riqnomasi bor. Daromadni kafolatlamaymiz — yo‘lini o‘rgatamiz.',
+      own: 'O‘z sahifangiz uchun ham ishlaydi: kadr, yorug‘lik va montaj.'
+    },
+    age: {
+      u18: '16–17 yoshda — o‘qish, o‘quv suratga olish va portfolio. Pullik buyurtmalar — 18 yoshdan.',
+      a18: '18 yoshdan: Pro tarifida tayyorlik tekshiruvidan o‘tsangiz — pullik buyurtmalarga chiqasiz.'
+    }
+  };
+  screens.forEach(function(){ var s = document.createElement('i'); s.appendChild(document.createElement('b')); bars.appendChild(s); });
+
+  function render(){
+    screens.forEach(function(s, k){ s.classList.toggle('active', k === i); });
+    Array.prototype.forEach.call(bars.children, function(b, k){ b.classList.toggle('done', k <= i); });
+    var s = screens[i];
+    s.querySelectorAll('[data-reply]').forEach(function(el){
+      var key = el.getAttribute('data-reply');
+      el.textContent = (answers[key] && replies[key][answers[key]]) || '';
+    });
+    var type = s.getAttribute('data-type');
+    nav.style.display = (type === 'info') ? 'flex' : 'none';
+    if (s.getAttribute('data-reveal')) {
+      var af = document.getElementById('af');
+      af.classList.remove('go'); void af.offsetWidth; af.classList.add('go');
+    }
+    s.scrollTop = 0;
+  }
+  function go(d){
+    var n = i + d;
+    if (n < 0 || n >= screens.length) return;
+    if (d > 0 && screens[i].getAttribute('data-type') === 'choice' && !answers[screens[i].getAttribute('data-key')]) return;
+    i = n; render();
+  }
+  screens.forEach(function(s){
+    s.querySelectorAll('.choice').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var key = s.getAttribute('data-key');
+        answers[key] = btn.getAttribute('data-val');
+        s.querySelectorAll('.choice').forEach(function(b){ b.classList.toggle('picked', b === btn); b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'); });
+        setTimeout(function(){ go(1); }, 380);
+      });
+    });
+  });
+  document.getElementById('prev').addEventListener('click', function(){ go(-1); });
+  document.getElementById('reel').addEventListener('click', function(e){
+    var s = screens[i];
+    if (s.getAttribute('data-type') !== 'info') return;
+    if (e.target.closest('button, a')) return;
+    var r = this.getBoundingClientRect();
+    if (e.clientX - r.left < r.width * 0.32) go(-1); else go(1);
+  });
+  document.getElementById('next').addEventListener('click', function(){ go(1); });
+  document.getElementById('restart').addEventListener('click', function(){
+    answers = {}; document.querySelectorAll('.choice').forEach(function(b){ b.classList.remove('picked'); b.removeAttribute('aria-pressed'); });
+    i = 0; render();
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight') go(1);
+    if (e.key === 'ArrowLeft') go(-1);
+  });
+  var tc = document.getElementById('tc');
+  setInterval(function(){
+    var s = Math.floor((Date.now() - t0) / 1000);
+    tc.textContent = String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+  }, 1000);
+  render();
+})();
+</script>
+</body>
+</html>
