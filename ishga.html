@@ -190,7 +190,7 @@ textarea.inp{min-height:96px;resize:vertical}
 
   var state = {ism:"", telefon:"", answers:[], t0:0, introSec:0, testStart:0, testSec:0, tushunish:null,
                suhbat:{v:1, bloklar:{}}};
-  var TOTAL = 1 + 1 + 3 + BLOKLAR.length + 1 + Q.length + 1 + 1 + 1;
+  var TOTAL = 1 + 1 + 3 + BLOKLAR.length + 1 + Q.length + 1 + 1 + 1 + 1;
 
   /* ---------- yordamchilar ---------- */
   function el(tag, cls, text){ var n = document.createElement(tag); if(cls) n.className = cls; if(text != null) n.textContent = text; return n; }
@@ -455,8 +455,33 @@ textarea.inp{min-height:96px;resize:vertical}
         if(izoh){ state.suhbat.tushunish_izoh = izoh.slice(0, 500); }
         m.remove(); f.remove();
         me(box, "Tushundim: " + state.tushunish + "%" + (izoh ? "\n" + izoh : ""));
-        wait(300).then(stepTelefon);
+        wait(300).then(stepSinov);
       });
+    });
+  }
+
+  function stepSinov(){
+    var inner = reel("Yakun"); hrHead(inner);
+    say(inner, [
+      "Yana bitta savol, {ism}.",
+      "Agar sizni 7 kunlik sinov muddatiga taklif qilsak, oʻsha kuniyoq ishga chiqa olasizmi?",
+      "Taklif avval jonli suhbatdan keyin tasdiqlanadi."
+    ]).then(function(box){
+      var g = el("div","opts"); g.setAttribute("role","group"); g.setAttribute("aria-label","Sinov muddatiga chiqish");
+      [["darhol","Ha, oʻsha kuniyoq ishlayman","ankh","Ajoyib, yozib oldim."],
+       ["korib","Yoʻq, jonli suhbatda ishni koʻrishim kerak","eye","Tushunarli — jonli suhbatda hammasini koʻrsatamiz."]].forEach(function(o){
+        var b = el("button","opt"); b.type = "button"; b.setAttribute("aria-pressed","false");
+        b.innerHTML = G[o[2]]; b.appendChild(el("span",null,o[1]));
+        b.addEventListener("click", function(){
+          if(b.disabled) return;
+          lock(g, b);
+          state.suhbat.sinov = o[0];
+          g.remove(); me(box, o[1]);
+          say(inner, [o[3]]).then(function(){ return wait(350); }).then(stepTelefon);
+        });
+        g.appendChild(b);
+      });
+      inner.appendChild(g); show(g);
     });
   }
 
