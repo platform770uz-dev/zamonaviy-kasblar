@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ZAMONAVIY KASBLAR — administrator vakansiyasi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F7EEDF; --ink:#22160D; --muted:#6B5646; --line:#E3D2B9;
+  --chip:#FFF8EC; --chip-ink:#22160D; --accent:#F47B20; --accent-ink:#A84A0A;
+  --on-accent:#22160D; --focus:#A84A0A;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#17100B; --ink:#F7EEDF; --muted:#CDB9A3; --line:#3A2A1E;
+    --chip:#22180F; --chip-ink:#F7EEDF; --accent-ink:#FF9A4D;
+    --on-accent:#17100B; --focus:#FF9A4D; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#17100B; --ink:#F7EEDF; --muted:#CDB9A3; --line:#3A2A1E;
+  --chip:#22180F; --chip-ink:#F7EEDF; --accent-ink:#FF9A4D;
+  --on-accent:#17100B; --focus:#FF9A4D; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{height:100%;margin:0;background:var(--bg);color:var(--ink);
+  font-family:'Onest',system-ui,-apple-system,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased}
+button,input,textarea{font:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+
+/* top progress */
+.top{position:fixed;top:0;left:0;right:0;z-index:5;background:var(--bg);
+  padding:calc(env(safe-area-inset-top,0px) + 12px) 20px 12px}
+.top-in{max-width:560px;margin:0 auto}
+.top-label{display:flex;justify-content:space-between;font-size:14px;color:var(--muted);margin-bottom:8px}
+.bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden}
+.fill{height:100%;width:0;background:var(--accent);transition:width .35s ease}
+
+/* feed */
+#feed{height:100%;overflow-y:auto;scroll-snap-type:y mandatory;overscroll-behavior:contain;scroll-behavior:smooth}
+.reel{position:relative;min-height:100%;scroll-snap-align:start;scroll-snap-stop:always;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  max-width:560px;margin:0 auto;padding:84px 24px 44px}
+.reel.center{justify-content:center}
+.kicker{font-size:15px;color:var(--muted);margin:0 0 12px}
+.big{font-family:'Oswald','Arial Narrow',sans-serif;font-weight:700;font-size:clamp(56px,18vw,112px);
+  line-height:.95;letter-spacing:-.01em;margin:0 0 22px;overflow-wrap:anywhere}
+.big.mid{font-size:clamp(44px,13vw,84px)}
+.sticker{display:inline-block;background:var(--accent);color:var(--on-accent);
+  padding:.04em .16em .02em;border-radius:.08em;transform:rotate(-1.5deg)}
+.body{font-size:19px;line-height:1.5;margin:0;max-width:34ch}
+.list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px;font-size:18px;line-height:1.45;max-width:36ch}
+.list li{padding-left:22px;position:relative}
+.list li::before{content:"";position:absolute;left:0;top:.62em;width:10px;height:3px;background:var(--accent);border-radius:2px}
+.timeline{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:14px;max-width:38ch}
+.timeline li{display:grid;grid-template-columns:70px 1fr;gap:12px;font-size:18px;line-height:1.4}
+.timeline time{font-family:'Oswald',sans-serif;font-weight:500;font-size:21px;color:var(--accent-ink);line-height:1.2}
+.hint{margin-top:30px;font-size:15px;color:var(--muted);display:flex;align-items:center;gap:10px}
+.hint svg{animation:nudge 1.6s ease-in-out 3}
+@keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* form */
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.field label{font-size:15px;color:var(--muted)}
+.input{font-size:18px;padding:14px 16px;border-radius:14px;border:2px solid var(--line);
+  background:var(--chip);color:var(--chip-ink);width:100%}
+.input:focus{outline:none;border-color:var(--accent)}
+.btn{display:block;width:100%;font-weight:600;font-size:18px;padding:16px 20px;border-radius:999px;
+  border:none;background:var(--accent);color:var(--on-accent);cursor:pointer;text-align:center;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+.btn:disabled{opacity:.5;cursor:default}
+.err{min-height:22px;color:var(--accent-ink);font-size:15px;margin:4px 0 10px}
+.small{font-size:14px;color:var(--muted);line-height:1.45;margin:14px 0 0}
+
+/* questions */
+.qnum{font-family:'Oswald',sans-serif;font-weight:500;font-size:20px;color:var(--accent-ink);margin:0 0 12px}
+.qnote{font-size:14px;color:var(--muted);margin:-6px 0 12px}
+.scenario{font-size:22px;line-height:1.4;font-weight:600;margin:0 0 20px;max-width:32ch}
+.options{display:flex;flex-direction:column;gap:10px}
+.opt{font-size:17px;line-height:1.4;text-align:left;padding:14px 16px;border-radius:16px;
+  border:2px solid var(--line);background:var(--chip);color:var(--chip-ink);cursor:pointer;transition:background .2s,border-color .2s,opacity .2s}
+.opt[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.opt:disabled{cursor:default}
+.opt:disabled:not([aria-pressed="true"]){opacity:.45}
+
+/* result */
+.sending{font-size:17px;color:var(--muted);margin:0 0 16px}
+.code{width:100%;min-height:92px;resize:none;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;line-height:1.4;
+  padding:12px 14px;border-radius:14px;border:2px solid var(--line);background:var(--chip);color:var(--chip-ink);margin:0 0 12px;word-break:break-all}
+.stack{display:flex;flex-direction:column;gap:10px}
+.ok{min-height:22px;font-size:15px;color:var(--accent-ink);margin:2px 0 0}
+
+@media (prefers-reduced-motion: reduce){
+  #feed{scroll-behavior:auto}
+  .hint svg{animation:none}
+  .fill,.opt{transition:none}
+}
+</style>
+</head>
+<body>
+
+<div class="top" aria-hidden="false">
+  <div class="top-in">
+    <div class="top-label"><span id="stage">Ish bilan tanishuv</span><span id="count"></span></div>
+    <div class="bar"><div class="fill" id="fill"></div></div>
+  </div>
+</div>
+
+<main id="feed">
+
+  <section class="reel" data-step="intro">
+    <p class="kicker">ZAMONAVIY KASBLAR</p>
+    <h1 class="big">Admini&shy;strator</h1>
+    <p class="body">3 daqiqada ish bilan tanishing, keyin 12 ta qisqa vaziyatga javob bering.</p>
+    <p class="hint">
+      <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Yuqoriga suring
+    </p>
+  </section>
+
+  <section class="reel" data-step="intro">
+    <h2 class="big mid">Birinchi yuz</h2>
+    <p class="body">Ofisga kelgan har bir qiz va ota-ona avval sizni koʻradi. Telefonda ham loyihani birinchi boʻlib siz tanishtirasiz.</p>
+  </section>
+
+  <section class="reel" data-step="intro">
+    <h2 class="big mid">Sizning kuningiz</h2>
+    <ol class="timeline">
+      <li><time>11:00</time><span>Ish boshlanadi, yangi arizalarni koʻrasiz</span></li>
+      <li><time>Kun</time><span>Qoʻngʻiroqlar va ofisdagi uchrashuvlar</span></li>
+      <li><time>Kun</time><span>Shartnoma va toʻlovlarni rasmiylashtirasiz</span></li>
+      <li><time>20:00</time><span>Kun natijasi platformada koʻrinadi</span></li>
+    </ol>
+  </section>
+
+  <section class="reel" data-step="intro">
+    <h2 class="big"><span class="sticker">5 daqiqa</span></h2>
+    <p class="body">Yangi ariza keldi — 5 daqiqa ichida qoʻngʻiroq qilasiz. Bir soatdan keyin odam reklamani unutib qoʻyadi.</p>
+  </section>
+
+  <section class="reel" data-step="intro">
+    <h2 class="big mid">30 soniya</h2>
+    <p class="body">Qoʻngʻiroqda kursni 30 soniyada tushuntirasiz, savollarga javob berasiz va uchrashuvga yoki shartnomaga taklif qilasiz.</p>
+  </section>
+
+  <section class="reel" data-step="intro">
+    <h2 class="big mid">Click, Payme</h2>
+    <p class="body">Toʻlov faqat Click yoki Payme orqali. Pul tushganini kabinetda tekshirasiz — skrinshotga ishonilmaydi. Shartnoma havola orqali yuboriladi.</p>
+  </section>
+
+  <section class="reel" data-step="intro">
+    <h2 class="big mid">Mumkin emas</h2>
+    <ul class="list">
+      <li>Chegirma vaʼda qilish — buni faqat rahbar hal qiladi</li>
+      <li>Daromad kafolatini vaʼda qilish</li>
+      <li>Naqd pul olish</li>
+    </ul>
+  </section>
+
+  <section class="reel" data-step="intro">
+    <h2 class="big mid">Kamera</h2>
+    <p class="body">Loyiha — realiti-shou. Ofisda suratga olishlar boʻladi, siz ham kadrga tushishingiz mumkin.</p>
+  </section>
+
+  <section class="reel" data-step="intro">
+    <h2 class="big mid"><span class="sticker">2 500 000 soʻm</span></h2>
+    <ul class="list">
+      <li>Har bir shartnomadan yana 120 000 soʻm</li>
+      <li>Haftada 5 kun, 11:00 dan 20:00 gacha</li>
+      <li>Kirguli mavzesi</li>
+      <li>1 hafta haq toʻlanadigan stajirovka</li>
+    </ul>
+  </section>
+
+  <section class="reel" data-step="start" id="startReel">
+    <h2 class="big mid">Endi siz</h2>
+    <p class="body" style="margin-bottom:22px">12 ta vaziyat. Har birida oʻzingiz qanday qilgan boʻlsangiz, shuni tanlang. Taxminan 4 daqiqa.</p>
+    <form id="startForm" novalidate>
+      <div class="field">
+        <label for="name">Ismingiz</label>
+        <input class="input" id="name" name="name" autocomplete="name" required>
+      </div>
+      <div class="field">
+        <label for="phone">Telefon raqamingiz</label>
+        <input class="input" id="phone" name="phone" inputmode="tel" autocomplete="tel" placeholder="+998" required>
+      </div>
+      <p class="err" id="startErr" role="alert"></p>
+      <button class="btn" type="submit" id="startBtn">Testni boshlash</button>
+      <p class="small">Maʼlumotlaringiz faqat shu vakansiya boʻyicha tanlov uchun ishlatiladi.</p>
+    </form>
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="savollar.js"></script>
+<script>
+(function(){
+  "use strict";
+  var Q = window.ZK.Q;
+  var cfg = window.ZK_CONFIG || {};
+  var sb = null;
+  try{
+    if(window.supabase && cfg.url && cfg.key && cfg.url.indexOf("XXXX") === -1){
+      sb = window.supabase.createClient(cfg.url, cfg.key, {auth:{persistSession:false}});
+    }
+  }catch(e){ sb = null; }
+
+  var PENDING = "zk_nomzod_pending";
+  var INTRO_COUNT = document.querySelectorAll('[data-step="intro"]').length;
+  var TOTAL = INTRO_COUNT + 1 + Q.length + 1;
+  var feed = document.getElementById("feed");
+  var stage = document.getElementById("stage");
+  var count = document.getElementById("count");
+  var fill = document.getElementById("fill");
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var state = {name:"",phone:"",answers:[],loadAt:Date.now(),startAt:0,introSec:0};
+
+  function goTo(el){ el.scrollIntoView({behavior: reduce ? "auto" : "smooth", block:"start"}); }
+
+  function setProgress(el){
+    var idx = Array.prototype.indexOf.call(feed.children, el);
+    fill.style.width = Math.round(((idx+1)/TOTAL)*100) + "%";
+    var step = el.getAttribute("data-step");
+    if(step === "intro"){ stage.textContent = "Ish bilan tanishuv"; count.textContent = ""; }
+    else if(step === "start"){ stage.textContent = "Testga tayyorlanish"; count.textContent = ""; }
+    else if(step === "q"){ stage.textContent = "Vaziyatlar"; count.textContent = el.getAttribute("data-n") + " / " + Q.length; }
+    else if(step === "done"){ stage.textContent = "Tayyor"; count.textContent = ""; }
+  }
+
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ setProgress(e.target); } });
+  }, {root: feed, threshold: 0.55});
+  Array.prototype.forEach.call(feed.children, function(r){ io.observe(r); });
+
+  function shuffle(a){ a = a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+  function el(tag, cls, text){ var n=document.createElement(tag); if(cls) n.className=cls; if(text!=null) n.textContent=text; return n; }
+
+  function addQuestion(i){
+    var q = Q[i];
+    var sec = el("section","reel center");
+    sec.setAttribute("data-step","q");
+    sec.setAttribute("data-n", String(i+1));
+    sec.appendChild(el("p","qnum","Vaziyat " + (i+1) + " / " + Q.length));
+    if(q.note){ sec.appendChild(el("p","qnote",q.note)); }
+    var sc = el("p","scenario",q.text);
+    if(q.ru){ sc.lang = "ru"; }
+    sec.appendChild(sc);
+    var box = el("div","options");
+    box.setAttribute("role","group");
+    box.setAttribute("aria-label","Javob variantlari");
+    shuffle(q.opts).forEach(function(o){
+      var b = el("button","opt",o.t);
+      b.type = "button";
+      b.setAttribute("aria-pressed","false");
+      if(q.ru){ b.lang = "ru"; }
+      b.addEventListener("click", function(){
+        if(b.disabled) return;
+        state.answers[i] = o.k;
+        Array.prototype.forEach.call(box.children, function(x){ x.disabled = true; });
+        b.setAttribute("aria-pressed","true");
+        setTimeout(function(){
+          var next = (i+1 < Q.length) ? addQuestion(i+1) : addResult();
+          goTo(next);
+        }, reduce ? 50 : 420);
+      });
+      box.appendChild(b);
+    });
+    sec.appendChild(box);
+    feed.appendChild(sec);
+    io.observe(sec);
+    return sec;
+  }
+
+  function send(payload){
+    if(!sb){ return Promise.reject(new Error("no-client")); }
+    return sb.from("nomzodlar").insert(payload).then(function(res){
+      if(res.error){ throw res.error; }
+      try{ localStorage.removeItem(PENDING); }catch(e){}
+    });
+  }
+
+  function addResult(){
+    var payload = {
+      vakansiya: "administrator",
+      ism: state.name,
+      telefon: state.phone,
+      javoblar: state.answers.join(""),
+      test_sek: Math.round((Date.now()-state.startAt)/1000),
+      tanishuv_sek: state.introSec
+    };
+    try{ localStorage.setItem(PENDING, JSON.stringify(payload)); }catch(e){}
+
+    var sec = el("section","reel center");
+    sec.setAttribute("data-step","done");
+    var title = el("h2","big mid","Rahmat, " + state.name + "!");
+    var status = el("p","sending","Javoblaringiz yuborilmoqda…");
+    status.setAttribute("role","status");
+    var retry = el("button","btn","Qayta yuborish"); retry.type = "button"; retry.hidden = true;
+    sec.appendChild(title); sec.appendChild(status); sec.appendChild(retry);
+    feed.appendChild(sec);
+    io.observe(sec);
+
+    function attempt(){
+      retry.hidden = true;
+      status.textContent = "Javoblaringiz yuborilmoqda…";
+      send(payload).then(function(){
+        status.textContent = "Javoblaringiz qabul qilindi. 1–2 kun ichida siz bilan telefon orqali bogʻlanamiz.";
+      }, function(){
+        status.textContent = "Yuborib boʻlmadi. Internetni tekshirib, qayta urinib koʻring — javoblaringiz saqlangan.";
+        retry.hidden = false;
+      });
+    }
+    retry.addEventListener("click", attempt);
+    attempt();
+    return sec;
+  }
+
+  /* Oldingi safar yuborilmay qolgan javoblar boʻlsa — jimgina qayta yuboramiz */
+  try{
+    var old = localStorage.getItem(PENDING);
+    if(old){ send(JSON.parse(old)).catch(function(){}); }
+  }catch(e){}
+
+  document.getElementById("startForm").addEventListener("submit", function(ev){
+    ev.preventDefault();
+    var name = document.getElementById("name").value.trim();
+    var phone = document.getElementById("phone").value.trim();
+    var digits = phone.replace(/\D/g,"");
+    var err = document.getElementById("startErr");
+    if(name.length < 2){ err.textContent = "Ismingizni yozing."; document.getElementById("name").focus(); return; }
+    if(digits.length < 9){ err.textContent = "Telefon raqamini toʻliq yozing, masalan +998 90 123 45 67."; document.getElementById("phone").focus(); return; }
+    err.textContent = "";
+    state.name = name.slice(0,80); state.phone = phone.slice(0,30);
+    state.startAt = Date.now();
+    state.introSec = Math.round((state.startAt - state.loadAt)/1000);
+    Array.prototype.forEach.call(this.elements, function(x){ x.disabled = true; });
+    document.getElementById("startBtn").textContent = "Test boshlandi";
+    goTo(addQuestion(0));
+  });
+})();
+</script>
+</body>
+</html>
