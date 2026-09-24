@@ -83,7 +83,7 @@ body:has(.dlg:not([hidden])){padding:16px 12px calc(var(--taskbar) + env(safe-ar
 
 /* list view */
 .lv-wrap{background:#fff;box-shadow:var(--sunken);overflow:auto;max-height:58vh;padding:2px}
-table.lv{border-collapse:collapse;width:100%;min-width:1060px}
+table.lv{border-collapse:collapse;width:100%;min-width:1440px}
 .lv th{position:sticky;top:0;background:var(--face);box-shadow:var(--button);text-align:left;font-weight:normal;padding:6px 10px;white-space:nowrap;z-index:1}
 .lv th button{background:none;border:none;padding:0;cursor:pointer;width:100%;text-align:left}
 .lv td{padding:8px 10px;white-space:nowrap;vertical-align:middle}
@@ -117,6 +117,20 @@ table.lv{border-collapse:collapse;width:100%;min-width:1060px}
 .ans td{padding:6px 8px;border-bottom:1px solid #e4e4e4;vertical-align:top;line-height:1.35}
 .ans td:last-child{text-align:right;white-space:nowrap;font-weight:bold}
 .saved{min-height:18px;margin-top:6px}
+
+/* amallar va izoh */
+.lv td.acts{white-space:nowrap}
+.sbtn{background:var(--face);border:none;padding:4px 10px;box-shadow:var(--button);cursor:pointer;margin-right:4px;font-size:13px;color:#000}
+.sbtn:active{box-shadow:var(--pressed)}
+.sbtn:focus-visible{outline:1px dotted #000;outline-offset:-4px}
+.sbtn.del{color:#a00000}
+.lv tbody tr.sel td .sbtn,.lv tbody tr:focus td .sbtn{color:#000}
+.lv tbody tr.sel td .sbtn.del,.lv tbody tr:focus td .sbtn.del{color:#a00000}
+.lv td.izoh-td{white-space:nowrap}
+.izoh-in{padding:4px 7px;width:260px;font-size:13px}
+.izoh-st{display:inline-block;width:18px;margin-left:4px;text-align:center}
+.modal .win.small{width:min(480px,100%)}
+.modal .win.small label{margin-top:10px}
 
 /* taskbar */
 .taskbar{position:fixed;left:0;right:0;bottom:0;z-index:30;height:calc(var(--taskbar) + env(safe-area-inset-bottom,0px));background:var(--face);
@@ -219,6 +233,8 @@ table.lv{border-collapse:collapse;width:100%;min-width:1060px}
             <th scope="col">Belgilar</th>
             <th scope="col">Telefon</th>
             <th scope="col" aria-sort="descending" id="thDate"><button type="button" data-sort="new">Sana ▼</button></th>
+            <th scope="col">Amallar</th>
+            <th scope="col">Izoh</th>
           </tr></thead>
           <tbody id="rows"></tbody>
         </table>
@@ -242,6 +258,53 @@ table.lv{border-collapse:collapse;width:100%;min-width:1060px}
       <button class="tbtn x" type="button" id="mX" aria-label="Yopish">×</button>
     </div>
     <div class="wbody" id="mBody"></div>
+  </section>
+</div>
+
+<!-- tahrirlash oynasi -->
+<div class="modal" id="eModal" hidden>
+  <section class="win small" role="dialog" aria-modal="true" aria-labelledby="eTitle">
+    <div class="title">
+      <svg width="16" height="16" aria-hidden="true"><use href="#i-app"/></svg>
+      <span class="t" id="eTitle">Tahrirlash</span>
+      <button class="tbtn x" type="button" id="eX" aria-label="Yopish">×</button>
+    </div>
+    <div class="wbody">
+      <label for="eIsm" style="margin-top:0">Ism:</label>
+      <input class="field" id="eIsm" type="text" maxlength="80" autocomplete="off">
+      <label for="eTel">Telefon:</label>
+      <input class="field" id="eTel" type="tel" maxlength="30" autocomplete="off">
+      <label for="eHolat">Holat:</label>
+      <select class="field" id="eHolat"></select>
+      <label for="eIzoh">Izoh:</label>
+      <textarea class="field" id="eIzoh" maxlength="2000" placeholder="Qoʻngʻiroq natijasi, uchrashuv vaqti…"></textarea>
+      <p class="err" id="eErr" role="alert"></p>
+      <div class="row right">
+        <button class="btn" type="button" id="eSave">Saqlash</button>
+        <button class="btn" type="button" id="eCancel">Bekor qilish</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- oʻchirish oynasi -->
+<div class="modal" id="dModal" hidden>
+  <section class="win small" role="alertdialog" aria-modal="true" aria-labelledby="dTitle" aria-describedby="dText">
+    <div class="title">
+      <span class="t" id="dTitle">Oʻchirishni tasdiqlang</span>
+      <button class="tbtn x" type="button" id="dX" aria-label="Yopish">×</button>
+    </div>
+    <div class="wbody">
+      <div class="inner" style="display:flex;gap:14px;align-items:flex-start">
+        <svg class="ico" width="32" height="32" aria-hidden="true" style="flex:none"><use href="#i-warn"/></svg>
+        <p id="dText" style="margin:0"></p>
+      </div>
+      <p class="err" id="dErr" role="alert"></p>
+      <div class="row right">
+        <button class="btn" type="button" id="dYes">Ha, oʻchirish</button>
+        <button class="btn" type="button" id="dNo">Yoʻq</button>
+      </div>
+    </div>
   </section>
 </div>
 
@@ -310,7 +373,7 @@ table.lv{border-collapse:collapse;width:100%;min-width:1060px}
     if(r.error){ err.textContent = "Email yoki parol notoʻgʻri."; return; }
     await enter(r.data.session);
   });
-  async function out(){ closeModal(); await sb.auth.signOut(); rows = []; $("rows").innerHTML = ""; show("vLogin"); }
+  async function out(){ closeModal(); closeEdit(); closeDel(); await sb.auth.signOut(); rows = []; $("rows").innerHTML = ""; show("vLogin"); }
   $("logout").addEventListener("click", out);
   $("closeX").addEventListener("click", out);
   $("denyOut").addEventListener("click", out);
@@ -381,7 +444,7 @@ table.lv{border-collapse:collapse;width:100%;min-width:1060px}
     var tb = $("rows"); tb.innerHTML = "";
     if(!view.length){
       var tr = el("tr"); var td = el("td","empty", rows.length ? "Bu boʻlimda nomzod yoʻq." : "Hozircha arizalar yoʻq. Test havolasini nomzodlarga yuboring.");
-      td.colSpan = 9; tr.appendChild(td); tb.appendChild(tr);
+      td.colSpan = 11; tr.appendChild(td); tb.appendChild(tr);
     }
     view.forEach(function(x, i){
       var tr = el("tr"); tr.tabIndex = 0;
@@ -408,6 +471,36 @@ table.lv{border-collapse:collapse;width:100%;min-width:1060px}
       tr.appendChild(tdf);
       tr.appendChild(el("td", null, x.telefon));
       tr.appendChild(el("td", null, fmtDate(x.created_at)));
+
+      var tda = el("td","acts");
+      var eb = el("button","sbtn","Tahrirlash"); eb.type = "button"; eb.setAttribute("aria-label","Tahrirlash: " + x.ism);
+      var db = el("button","sbtn del","Oʻchirish"); db.type = "button"; db.setAttribute("aria-label","Oʻchirish: " + x.ism);
+      eb.addEventListener("click", function(e){ e.stopPropagation(); openEdit(x); });
+      db.addEventListener("click", function(e){ e.stopPropagation(); askDelete(x); });
+      [eb, db].forEach(function(bt){ bt.addEventListener("keydown", function(e){ e.stopPropagation(); }); });
+      tda.appendChild(eb); tda.appendChild(db); tr.appendChild(tda);
+
+      var tdi = el("td","izoh-td");
+      var inp = el("input","field izoh-in"); inp.type = "text"; inp.value = x.izoh || ""; inp.maxLength = 2000;
+      inp.placeholder = "Izoh yozing…"; inp.title = x.izoh || ""; inp.setAttribute("aria-label","Izoh: " + x.ism);
+      var st = el("span","izoh-st"); st.setAttribute("aria-live","polite");
+      inp.addEventListener("click", function(e){ e.stopPropagation(); });
+      inp.addEventListener("keydown", function(e){
+        e.stopPropagation();
+        if(e.key === "Enter"){ e.preventDefault(); inp.blur(); }
+        if(e.key === "Escape"){ inp.value = x.izoh || ""; inp.blur(); }
+      });
+      inp.addEventListener("blur", async function(){
+        var val = inp.value.trim().slice(0,2000);
+        if(val === (x.izoh || "")) return;
+        st.textContent = "…"; st.title = "";
+        var r = await sb.from("nomzodlar").update({izoh: val || null}).eq("id", x.id).select("id");
+        if(r.error || !r.data || !r.data.length){ st.textContent = "✖"; st.style.color = "#a00000"; st.title = r.error ? r.error.message : "Saqlanmadi"; return; }
+        x.izoh = val; inp.title = val; st.style.color = "#007000"; st.textContent = "✔";
+        setTimeout(function(){ st.textContent = ""; }, 1800);
+      });
+      tdi.appendChild(inp); tdi.appendChild(st); tr.appendChild(tdi);
+
       tr.addEventListener("click", function(){ openModal(i); });
       tr.addEventListener("keydown", function(e){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); openModal(i); } });
       tb.appendChild(tr);
@@ -425,7 +518,12 @@ table.lv{border-collapse:collapse;width:100%;min-width:1060px}
   function closeModal(){ $("modal").hidden = true; $("taskwin").textContent = "Nomzodlar"; current = -1; }
   $("mX").addEventListener("click", closeModal);
   $("modal").addEventListener("click", function(e){ if(e.target === this) closeModal(); });
-  document.addEventListener("keydown", function(e){ if(e.key === "Escape" && !$("modal").hidden) closeModal(); });
+  document.addEventListener("keydown", function(e){
+    if(e.key !== "Escape") return;
+    if(!$("dModal").hidden){ closeDel(); return; }
+    if(!$("eModal").hidden){ closeEdit(); return; }
+    if(!$("modal").hidden) closeModal();
+  });
 
   function openModal(i){
     current = i;
@@ -553,6 +651,62 @@ table.lv{border-collapse:collapse;width:100%;min-width:1060px}
     $("modal").scrollTop = 0;
     closeB.focus({preventScroll:true});
   }
+
+  /* ---------- tahrirlash ---------- */
+  var editing = null;
+  function openEdit(x){
+    editing = x;
+    $("eTitle").textContent = "Tahrirlash — " + x.ism;
+    $("eIsm").value = x.ism || "";
+    $("eTel").value = x.telefon || "";
+    var s = $("eHolat"); s.innerHTML = "";
+    ORDER.forEach(function(k){ var o = el("option", null, HOLAT[k]); o.value = k; if(k === x.holat) o.selected = true; s.appendChild(o); });
+    $("eIzoh").value = x.izoh || "";
+    $("eErr").textContent = "";
+    $("eSave").disabled = false;
+    $("eModal").hidden = false;
+    $("eIsm").focus();
+  }
+  function closeEdit(){ $("eModal").hidden = true; editing = null; }
+  $("eX").addEventListener("click", closeEdit);
+  $("eCancel").addEventListener("click", closeEdit);
+  $("eModal").addEventListener("click", function(e){ if(e.target === this) closeEdit(); });
+  $("eSave").addEventListener("click", async function(){
+    var x = editing; if(!x) return;
+    var ism = $("eIsm").value.trim(), tel = $("eTel").value.trim(), hol = $("eHolat").value, iz = $("eIzoh").value.trim().slice(0,2000);
+    if(ism.length < 2 || ism.length > 80){ $("eErr").textContent = "Ism 2–80 belgidan iborat boʻlsin."; return; }
+    if(tel.length < 9 || tel.length > 30){ $("eErr").textContent = "Telefon 9–30 belgidan iborat boʻlsin."; return; }
+    var btn = $("eSave"); btn.disabled = true; $("eErr").textContent = "Saqlanmoqda…";
+    var r = await sb.from("nomzodlar").update({ism: ism, telefon: tel, holat: hol, izoh: iz || null}).eq("id", x.id).select("id");
+    btn.disabled = false;
+    if(r.error || !r.data || !r.data.length){ $("eErr").textContent = "Saqlanmadi: " + (r.error ? r.error.message : "ruxsat yoʻq"); return; }
+    closeEdit();
+    await load();
+  });
+
+  /* ---------- oʻchirish ---------- */
+  var deleting = null;
+  function askDelete(x){
+    deleting = x;
+    $("dText").textContent = "«" + x.ism + "» (" + x.telefon + ") nomzodini oʻchirasizmi? Bu amalni qaytarib boʻlmaydi.";
+    $("dErr").textContent = "";
+    $("dYes").disabled = false;
+    $("dModal").hidden = false;
+    $("dNo").focus();
+  }
+  function closeDel(){ $("dModal").hidden = true; deleting = null; }
+  $("dNo").addEventListener("click", closeDel);
+  $("dX").addEventListener("click", closeDel);
+  $("dModal").addEventListener("click", function(e){ if(e.target === this) closeDel(); });
+  $("dYes").addEventListener("click", async function(){
+    var x = deleting; if(!x) return;
+    var btn = $("dYes"); btn.disabled = true; $("dErr").textContent = "Oʻchirilmoqda…";
+    var r = await sb.from("nomzodlar").delete().eq("id", x.id).select("id");
+    btn.disabled = false;
+    if(r.error || !r.data || !r.data.length){ $("dErr").textContent = "Oʻchirilmadi: " + (r.error ? r.error.message : "ruxsat yoʻq"); return; }
+    closeDel();
+    await load();
+  });
 
   /* ---------- CSV ---------- */
   $("csv").addEventListener("click", function(){
