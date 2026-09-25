@@ -132,6 +132,32 @@ table.lv{border-collapse:collapse;width:100%;min-width:1440px}
 .modal .win.small{width:min(480px,100%)}
 .modal .win.small label{margin-top:10px}
 
+/* rejim tugmalari va kurs lidlari */
+.btn[aria-pressed="true"]{box-shadow:var(--pressed);font-weight:bold;background:repeating-conic-gradient(var(--face) 0 25%,#e3e0d9 0 50%) 0 0/2px 2px}
+.tsep{width:2px;align-self:stretch;box-shadow:inset 1px 0 var(--shadow),inset -1px 0 var(--hi);margin:0 4px}
+#pNomzod,#pKurs{flex:1;display:flex;flex-direction:column;min-height:0}
+#kKontakt,#kKuzatuv{flex:1;display:flex;flex-direction:column;min-height:0}
+.kstats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.kstat{background:#fff;box-shadow:var(--sunken);padding:10px 12px}
+.kstat b{display:block;margin-bottom:6px;font-size:16px}
+.kstat .kv{gap:3px 12px}
+@media (max-width:600px){ .kstats{grid-template-columns:1fr} }
+input.kx{width:110px}
+table.lv.kl{min-width:1150px}
+table.lv.kz{min-width:820px}
+.lv td.wrap{white-space:normal;min-width:180px;max-width:320px}
+.ksel{padding:3px 5px}
+.lv tbody tr.krow{cursor:default}
+
+/* ustozlar */
+#pUstoz{flex:1;display:flex;flex-direction:column;min-height:0}
+table.lv.us{min-width:1500px}
+.ufilters{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-bottom:8px}
+.ufilters select{padding:4px 6px}
+.ans{display:grid;grid-template-columns:minmax(150px,auto) 1fr;gap:6px 14px;margin:0}
+.ans dt{color:var(--muted)}
+.ans dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+
 /* taskbar */
 .taskbar{position:fixed;left:0;right:0;bottom:0;z-index:30;height:calc(var(--taskbar) + env(safe-area-inset-bottom,0px));background:var(--face);
   box-shadow:inset 0 1px var(--lite),inset 0 2px var(--hi);display:flex;align-items:center;gap:8px;
@@ -199,17 +225,22 @@ table.lv{border-collapse:collapse;width:100%;min-width:1440px}
 <section id="vApp" class="win" hidden>
   <div class="title">
     <svg width="16" height="16" aria-hidden="true"><use href="#i-app"/></svg>
-    <span class="t">1924 — Nomzodlar</span>
+    <span class="t" id="appTitle">1924 — Nomzodlar</span>
     <div class="tbtns" aria-hidden="true"><span class="tbtn">_</span><span class="tbtn">□</span></div>
     <button class="tbtn x" type="button" id="closeX" aria-label="Chiqish">×</button>
   </div>
   <div class="wbody">
     <div class="toolbar">
+      <button class="btn" type="button" id="vNomzod" aria-pressed="true">Nomzodlar</button>
+      <button class="btn" type="button" id="vKurs" aria-pressed="false">Kurs lidlari</button>
+      <button class="btn" type="button" id="vUstoz" aria-pressed="false">Ustozlar</button>
+      <span class="tsep" aria-hidden="true"></span>
       <button class="btn" type="button" id="refresh">Yangilash</button>
       <button class="btn" type="button" id="csv">CSV yuklab olish</button>
       <button class="btn" type="button" id="logout">Chiqish</button>
     </div>
 
+    <div id="pNomzod">
     <fieldset class="grp">
       <legend>Umumiy</legend>
       <div class="counters" id="counters"></div>
@@ -238,6 +269,90 @@ table.lv{border-collapse:collapse;width:100%;min-width:1440px}
           </tr></thead>
           <tbody id="rows"></tbody>
         </table>
+      </div>
+    </div>
+    </div>
+
+    <div id="pUstoz" hidden>
+      <div class="tabs" role="tablist" id="uTabs" aria-label="Holat boʻyicha"></div>
+      <div class="panel" role="tabpanel">
+        <div class="ufilters">
+          <label for="uSearch" style="margin:0">Qidirish:</label>
+          <input class="field" id="uSearch" type="search" placeholder="Ism yoki telefon" style="flex:1 1 220px;min-width:180px;width:auto">
+          <label for="uTaj" style="margin:0">Tajriba:</label>
+          <select class="field" id="uTaj"><option value="">Barchasi</option><option value="1plus">1 yildan ortiq</option><option value="3plus">3+ yil</option><option value="1gacha">1 yilgacha</option><option value="yoq">Tajribasiz</option></select>
+          <label for="uVaqt" style="margin:0">Boʻsh vaqt:</label>
+          <select class="field" id="uVaqt"><option value="">Barchasi</option><option value="toliq">Toʻliq kun</option><option value="yarim">Yarim kun</option><option value="damolish">Dam olish kunlari</option><option value="soat">Bir necha soat</option></select>
+          <label for="uDar" style="margin:0">Daromad:</label>
+          <select class="field" id="uDar"><option value="">Barchasi</option><option value="3gacha">≤3 mln</option><option value="3-5">3–5 mln</option><option value="5-8">5–8 mln</option><option value="8plus">8+ mln</option></select>
+          <label for="uQiz" style="margin:0">Qiziqish:</label>
+          <select class="field" id="uQiz"><option value="">Barchasi</option><option value="kamera">Kamera</option><option value="ssenariy">Ssenariy</option><option value="montaj">Montaj</option><option value="orgatish">Oʻrgatish</option><option value="obraz">Obraz</option><option value="brendlar">Brendlar</option></select>
+        </div>
+        <div class="lv-wrap">
+          <table class="lv us">
+            <thead><tr>
+              <th scope="col">Sana</th><th scope="col">Ism</th><th scope="col">Tajriba</th><th scope="col">Oʻrgatish</th>
+              <th scope="col">Qiziqish</th><th scope="col">Boʻsh vaqt</th><th scope="col">Daromad</th><th scope="col">Video</th>
+              <th scope="col">Belgilar</th><th scope="col">Holat</th><th scope="col">Telefon</th><th scope="col">Amallar</th><th scope="col">Izoh</th>
+            </tr></thead>
+            <tbody id="uRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="pKurs" hidden>
+      <fieldset class="grp">
+        <legend>Test: forma yoki Direct</legend>
+        <p class="muted" style="margin:0 0 10px">Limit — jami $42. Reklama tugagach oxirgi kontaktdan 14 kun kutiladi. Toʻlov birinchi kontaktdan 14 kun ichida boʻlsa hisoblanadi. Aniq farq boʻlmasa — «gʻolib aniqlanmadi».</p>
+        <div class="kstats" id="kStats"></div>
+        <div class="row" style="margin-top:12px">
+          <label for="kxForma" style="margin:0">Forma xarajati, $:</label>
+          <input class="field kx" id="kxForma" type="number" min="0" step="0.01" inputmode="decimal">
+          <label for="kxDirect" style="margin:0">Direct xarajati, $:</label>
+          <input class="field kx" id="kxDirect" type="number" min="0" step="0.01" inputmode="decimal">
+          <button class="btn" type="button" id="kxSave">Saqlash</button>
+          <span id="kxMsg" class="muted" role="status"></span>
+        </div>
+      </fieldset>
+      <div class="tabs" role="tablist" id="kTabs" aria-label="Kurs lidlari boʻlimlari"></div>
+      <div class="panel" role="tabpanel">
+        <div id="kKontakt">
+          <div class="row" style="margin-bottom:8px">
+            <button class="btn" type="button" id="kAdd">+ Yangi kontakt</button>
+            <label for="kSearch" style="margin:0">Qidirish:</label>
+            <input class="field" id="kSearch" type="search" placeholder="Ism yoki telefon" style="flex:1;min-width:180px">
+          </div>
+          <div class="lv-wrap">
+            <table class="lv kl">
+              <thead><tr>
+                <th scope="col">Sana</th><th scope="col">Variant</th><th scope="col">Ism</th><th scope="col">Telefon</th>
+                <th scope="col">Birinchi savoli</th><th scope="col">Holat</th><th scope="col">Toʻlov sanasi</th>
+                <th scope="col">Rad sababi</th><th scope="col">Amallar</th>
+              </tr></thead>
+              <tbody id="kRows"></tbody>
+            </table>
+          </div>
+        </div>
+        <div id="kKuzatuv" hidden>
+          <fieldset class="grp">
+            <legend>Yangi kuzatuv</legend>
+            <label for="kzSoz">Odamning soʻzi (soʻzma-soʻz):</label>
+            <input class="field" id="kzSoz" type="text" maxlength="500" placeholder="«Men buni vakansiya deb oʻylabman»">
+            <label for="kzGip" style="margin-top:8px">Gipoteza (bizning taxminimiz):</label>
+            <input class="field" id="kzGip" type="text" maxlength="500" placeholder="Eʼlon ish taklifi degan taassurot beradi">
+            <label for="kzTek" style="margin-top:8px">Keyingi testda nimani tekshirish:</label>
+            <input class="field" id="kzTek" type="text" maxlength="500" placeholder="Pullik ishtirok va uning foydasini aniqroq yozish">
+            <p class="err" id="kzErr" role="alert"></p>
+            <div class="row right"><button class="btn" type="button" id="kzAdd">Qoʻshish</button></div>
+          </fieldset>
+          <div class="lv-wrap">
+            <table class="lv kz">
+              <thead><tr><th scope="col">Sana</th><th scope="col">Odamning soʻzi</th><th scope="col">Gipoteza</th><th scope="col">Tekshirish</th><th scope="col">Amallar</th></tr></thead>
+              <tbody id="kzRows"></tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -282,6 +397,54 @@ table.lv{border-collapse:collapse;width:100%;min-width:1440px}
       <div class="row right">
         <button class="btn" type="button" id="eSave">Saqlash</button>
         <button class="btn" type="button" id="eCancel">Bekor qilish</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ustoz nomzodi oynasi -->
+<div class="modal" id="uModal" hidden>
+  <section class="win" role="dialog" aria-modal="true" aria-labelledby="uTitle">
+    <div class="title">
+      <svg width="16" height="16" aria-hidden="true"><use href="#i-app"/></svg>
+      <span class="t" id="uTitle">Nomzod</span>
+      <button class="tbtn x" type="button" id="uX" aria-label="Yopish">×</button>
+    </div>
+    <div class="wbody" id="uBody"></div>
+  </section>
+</div>
+
+<!-- kurs kontakti oynasi -->
+<div class="modal" id="kModal" hidden>
+  <section class="win small" role="dialog" aria-modal="true" aria-labelledby="kTitle">
+    <div class="title">
+      <svg width="16" height="16" aria-hidden="true"><use href="#i-app"/></svg>
+      <span class="t" id="kTitle">Kontakt</span>
+      <button class="tbtn x" type="button" id="kX" aria-label="Yopish">×</button>
+    </div>
+    <div class="wbody">
+      <div class="row" style="gap:12px;align-items:flex-start">
+        <div style="flex:1;min-width:150px"><label for="kSana" style="margin-top:0">Birinchi kontakt sanasi:</label><input class="field" id="kSana" type="date"></div>
+        <div style="flex:1;min-width:150px"><label for="kVar" style="margin-top:0">Variant:</label><select class="field" id="kVar" style="width:100%"><option value="forma">Forma</option><option value="direct">Direct</option></select></div>
+      </div>
+      <label for="kIsm">Ism:</label>
+      <input class="field" id="kIsm" type="text" maxlength="80" autocomplete="off">
+      <label for="kTel">Telefon:</label>
+      <input class="field" id="kTel" type="tel" maxlength="30" autocomplete="off">
+      <label for="kSavol">Birinchi savoli (soʻzma-soʻz):</label>
+      <textarea class="field" id="kSavol" maxlength="500" placeholder="Masalan: «Narxi qancha?»"></textarea>
+      <div class="row" style="gap:12px;align-items:flex-start">
+        <div style="flex:1;min-width:150px"><label for="kHolat">Holat:</label><select class="field" id="kHolat" style="width:100%"></select></div>
+        <div style="flex:1;min-width:150px"><label for="kTolov">Toʻlov sanasi:</label><input class="field" id="kTolov" type="date"></div>
+      </div>
+      <label for="kRad">Rad sababi — faqat odamning oʻz soʻzi:</label>
+      <textarea class="field" id="kRad" maxlength="500" placeholder="Aytmagan boʻlsa — boʻsh qoldiring (sabab nomaʼlum)"></textarea>
+      <label for="kIzoh">Izoh:</label>
+      <input class="field" id="kIzoh" type="text" maxlength="1000" autocomplete="off">
+      <p class="err" id="kErr" role="alert"></p>
+      <div class="row right">
+        <button class="btn" type="button" id="kSave">Saqlash</button>
+        <button class="btn" type="button" id="kCancel">Bekor qilish</button>
       </div>
     </div>
   </section>
@@ -373,7 +536,7 @@ table.lv{border-collapse:collapse;width:100%;min-width:1440px}
     if(r.error){ err.textContent = "Email yoki parol notoʻgʻri."; return; }
     await enter(r.data.session);
   });
-  async function out(){ closeModal(); closeEdit(); closeDel(); await sb.auth.signOut(); rows = []; $("rows").innerHTML = ""; show("vLogin"); }
+  async function out(){ closeModal(); closeEdit(); closeDel(); closeK(); closeU(); kLoaded = false; kl = []; kz = []; uLoaded = false; ul = []; setMode("nomzod"); await sb.auth.signOut(); rows = []; $("rows").innerHTML = ""; show("vLogin"); }
   $("logout").addEventListener("click", out);
   $("closeX").addEventListener("click", out);
   $("denyOut").addEventListener("click", out);
@@ -512,7 +675,7 @@ table.lv{border-collapse:collapse;width:100%;min-width:1440px}
   Array.prototype.forEach.call(document.querySelectorAll(".lv th button"), function(b){
     b.addEventListener("click", function(){ sortBy = b.getAttribute("data-sort"); render(); });
   });
-  $("refresh").addEventListener("click", load);
+  $("refresh").addEventListener("click", function(){ if(mode === "kurs") loadKurs(); else if(mode === "ustoz") loadUstoz(); else load(); });
 
   /* ---------- nomzod oynasi ---------- */
   function closeModal(){ $("modal").hidden = true; $("taskwin").textContent = "Nomzodlar"; current = -1; }
@@ -521,6 +684,8 @@ table.lv{border-collapse:collapse;width:100%;min-width:1440px}
   document.addEventListener("keydown", function(e){
     if(e.key !== "Escape") return;
     if(!$("dModal").hidden){ closeDel(); return; }
+    if(!$("kModal").hidden){ closeK(); return; }
+    if(!$("uModal").hidden){ closeU(); return; }
     if(!$("eModal").hidden){ closeEdit(); return; }
     if(!$("modal").hidden) closeModal();
   });
@@ -685,9 +850,9 @@ table.lv{border-collapse:collapse;width:100%;min-width:1440px}
   });
 
   /* ---------- oʻchirish ---------- */
-  var deleting = null;
+  var deleting = null, delTable = "nomzodlar";
   function askDelete(x){
-    deleting = x;
+    deleting = x; delTable = "nomzodlar";
     $("dText").textContent = "«" + x.ism + "» (" + x.telefon + ") nomzodini oʻchirasizmi? Bu amalni qaytarib boʻlmaydi.";
     $("dErr").textContent = "";
     $("dYes").disabled = false;
@@ -701,15 +866,459 @@ table.lv{border-collapse:collapse;width:100%;min-width:1440px}
   $("dYes").addEventListener("click", async function(){
     var x = deleting; if(!x) return;
     var btn = $("dYes"); btn.disabled = true; $("dErr").textContent = "Oʻchirilmoqda…";
-    var r = await sb.from("nomzodlar").delete().eq("id", x.id).select("id");
+    var r = await sb.from(delTable).delete().eq("id", x.id).select("id");
     btn.disabled = false;
     if(r.error || !r.data || !r.data.length){ $("dErr").textContent = "Oʻchirilmadi: " + (r.error ? r.error.message : "ruxsat yoʻq"); return; }
     closeDel();
-    await load();
+    if(delTable === "kurs_lidlar"){ kl = kl.filter(function(y){ return y.id !== x.id; }); renderKurs(); }
+    else if(delTable === "ustoz_nomzodlar"){ ul = ul.filter(function(y){ return y.id !== x.id; }); renderUstoz(); }
+    else { await load(); }
   });
+
+  /* ---------- kurs lidlari (forma / Direct testi) ---------- */
+  var KHOLAT = {yangi:"Yangi", gaplashildi:"Gaplashildi", keldi:"Keldi", toladi:"Toʻladi", rad:"Rad etdi", javobsiz:"Javob bermadi"};
+  var KORDER = ["yangi","gaplashildi","keldi","toladi","rad","javobsiz"];
+  var KVAR = {forma:"Forma", direct:"Direct"};
+  var kl = [], kz = [], kx = {forma:{summa:0,sana:null}, direct:{summa:0,sana:null}};
+  var kSub = "kontakt", kQuery = "", kLoaded = false, mode = "nomzod", kEditing = null;
+
+  function isoD(d){ return d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate()); }
+  function today(){ return isoD(new Date()); }
+  function fmtD(v){ if(!v) return "—"; var p = String(v).slice(0,10).split("-"); return p[2] + "." + p[1] + "." + p[0]; }
+  function days(a, b){ return Math.round((Date.parse(b + "T00:00:00Z") - Date.parse(a + "T00:00:00Z")) / 86400000); }
+  function in14(x){ if(x.holat !== "toladi" || !x.tolov_sana) return false; var d = days(x.sana, x.tolov_sana); return d >= 0 && d <= 14; }
+  function money(v){ return "$" + (Math.round(v * 100) / 100).toFixed(2); }
+  function kmsg(t){ $("stShown").textContent = t; }
+
+  function setMode(m){
+    mode = m;
+    $("pNomzod").hidden = m !== "nomzod";
+    $("pKurs").hidden = m !== "kurs";
+    $("pUstoz").hidden = m !== "ustoz";
+    $("vNomzod").setAttribute("aria-pressed", m === "nomzod" ? "true" : "false");
+    $("vKurs").setAttribute("aria-pressed", m === "kurs" ? "true" : "false");
+    $("vUstoz").setAttribute("aria-pressed", m === "ustoz" ? "true" : "false");
+    var TT = {nomzod:"Nomzodlar", kurs:"Kurs lidlari", ustoz:"Ustozlar"};
+    $("taskwin").textContent = TT[m];
+    $("appTitle").textContent = "1924 — " + TT[m];
+    if(m === "kurs"){ if(!kLoaded) loadKurs(); else renderKurs(); }
+    else if(m === "ustoz"){ if(!uLoaded) loadUstoz(); else renderUstoz(); }
+    else if(rows.length){ render(); }
+  }
+  $("vNomzod").addEventListener("click", function(){ setMode("nomzod"); });
+  $("vKurs").addEventListener("click", function(){ setMode("kurs"); });
+  $("vUstoz").addEventListener("click", function(){ setMode("ustoz"); });
+
+  async function loadKurs(){
+    kmsg("Yuklanmoqda…");
+    var r1 = await sb.from("kurs_lidlar").select("*").order("sana", {ascending:false}).order("id", {ascending:false}).limit(3000);
+    var r2 = await sb.from("kurs_kuzatuvlar").select("*").order("created_at", {ascending:false}).limit(1000);
+    var r3 = await sb.from("kurs_xarajat").select("*");
+    var e = r1.error || r2.error || r3.error;
+    if(e){ kmsg("Xato: " + e.message); return; }
+    kl = r1.data || []; kz = r2.data || [];
+    kx = {forma:{summa:0,sana:null}, direct:{summa:0,sana:null}};
+    (r3.data || []).forEach(function(x){ if(kx[x.variant]) kx[x.variant] = {summa: Number(x.summa) || 0, sana: x.sana}; });
+    $("kxForma").value = kx.forma.summa ? kx.forma.summa : "";
+    $("kxDirect").value = kx.direct.summa ? kx.direct.summa : "";
+    kLoaded = true;
+    renderKurs();
+  }
+
+  function renderKurs(){
+    /* statistika */
+    var st = $("kStats"); st.innerHTML = ""; var total = 0;
+    ["forma","direct"].forEach(function(v){
+      var xs = kl.filter(function(x){ return x.variant === v; });
+      var c = {k:xs.length, g:0, kel:0, t:0, tOut:0, rad:0, jav:0};
+      xs.forEach(function(x){
+        if(["gaplashildi","keldi","toladi"].indexOf(x.holat) !== -1) c.g++;
+        if(["keldi","toladi"].indexOf(x.holat) !== -1) c.kel++;
+        if(in14(x)) c.t++; else if(x.holat === "toladi") c.tOut++;
+        if(x.holat === "rad") c.rad++;
+        if(x.holat === "javobsiz") c.jav++;
+      });
+      var sp = kx[v].summa || 0; total += sp;
+      var box = el("div","kstat"); box.appendChild(el("b", null, KVAR[v]));
+      var kv = el("div","kv");
+      function p(k, val){ kv.appendChild(el("span","muted",k)); kv.appendChild(el("span",null,val)); }
+      p("Kontaktlar:", String(c.k));
+      p("Gaplashildi:", String(c.g));
+      p("Keldi:", String(c.kel));
+      p("Toʻladi (14 kun):", String(c.t) + (c.tOut ? "  (+" + c.tOut + " oynadan tashqari)" : ""));
+      p("Javob bermadi:", String(c.jav));
+      p("Rad etdi:", String(c.rad));
+      p("Xarajat:", money(sp) + (kx[v].sana ? " · " + fmtD(kx[v].sana) + " holatiga" : ""));
+      p("1 kontakt narxi:", c.k ? money(sp / c.k) : "aniqlanmagan");
+      p("1 toʻlovchi narxi:", c.t ? money(sp / c.t) : "aniqlanmagan");
+      box.appendChild(kv); st.appendChild(box);
+    });
+    var tot = el("p", total > 42 ? "err" : "muted", "Jami xarajat: " + money(total) + " / $42.00" + (total > 42 ? " — limitdan oshdi" : ""));
+    tot.style.gridColumn = "1 / -1"; tot.style.margin = "2px 0 0";
+    st.appendChild(tot);
+
+    /* ichki tablar */
+    var tabs = $("kTabs"); tabs.innerHTML = "";
+    [["kontakt","Kontaktlar (" + kl.length + ")"],["kuzatuv","Kuzatuvlar (" + kz.length + ")"]].forEach(function(t){
+      var b = el("button","tab",t[1]); b.type = "button"; b.setAttribute("role","tab"); b.setAttribute("aria-selected", kSub === t[0] ? "true" : "false");
+      b.addEventListener("click", function(){ kSub = t[0]; renderKurs(); });
+      tabs.appendChild(b);
+    });
+    $("kKontakt").hidden = kSub !== "kontakt";
+    $("kKuzatuv").hidden = kSub !== "kuzatuv";
+
+    /* kontaktlar */
+    var tb = $("kRows"); tb.innerHTML = "";
+    var list = kl.filter(function(x){
+      if(!kQuery) return true;
+      var q = kQuery.toLowerCase(), qd = kQuery.replace(/\D/g,"");
+      return (x.ism || "").toLowerCase().indexOf(q) !== -1 || (qd && (x.telefon || "").replace(/\D/g,"").indexOf(qd) !== -1);
+    });
+    if(!list.length){
+      var tr0 = el("tr"); var td0 = el("td","empty", kl.length ? "Topilmadi." : "Hozircha kontakt yoʻq. «+ Yangi kontakt» tugmasini bosing.");
+      td0.colSpan = 9; tr0.appendChild(td0); tb.appendChild(tr0);
+    }
+    list.forEach(function(x){
+      var tr = el("tr","krow");
+      tr.appendChild(el("td", null, fmtD(x.sana)));
+      tr.appendChild(el("td", null, KVAR[x.variant] || x.variant));
+      tr.appendChild(el("td", null, x.ism));
+      var tdt = el("td"); var a = el("a", null, x.telefon); a.href = telHref(x.telefon); tdt.appendChild(a); tr.appendChild(tdt);
+      tr.appendChild(el("td","wrap", x.birinchi_savol ? "«" + x.birinchi_savol + "»" : "—"));
+      var tdh = el("td"); var sel = el("select","field ksel"); sel.setAttribute("aria-label","Holat: " + x.ism);
+      KORDER.forEach(function(k){ var o = el("option", null, KHOLAT[k]); o.value = k; if(k === x.holat) o.selected = true; sel.appendChild(o); });
+      sel.addEventListener("change", async function(){
+        var prev = x.holat, patch = {holat: sel.value};
+        if(sel.value === "toladi" && !x.tolov_sana) patch.tolov_sana = today();
+        var r = await sb.from("kurs_lidlar").update(patch).eq("id", x.id).select("id");
+        if(r.error || !r.data || !r.data.length){ sel.value = prev; kmsg("Saqlanmadi: " + (r.error ? r.error.message : "ruxsat yoʻq")); return; }
+        Object.assign(x, patch); renderKurs();
+      });
+      tdh.appendChild(sel); tr.appendChild(tdh);
+      var tp = x.tolov_sana ? fmtD(x.tolov_sana) + (x.holat === "toladi" && !in14(x) ? " ⚠ 14 kundan keyin" : "") : "—";
+      tr.appendChild(el("td", null, tp));
+      tr.appendChild(el("td","wrap", x.rad_sababi ? "«" + x.rad_sababi + "»" : (x.holat === "rad" ? "Sabab nomaʼlum" : "—")));
+      var tda = el("td","acts");
+      var eb = el("button","sbtn","Tahrirlash"); eb.type = "button"; eb.setAttribute("aria-label","Tahrirlash: " + x.ism);
+      var db = el("button","sbtn del","Oʻchirish"); db.type = "button"; db.setAttribute("aria-label","Oʻchirish: " + x.ism);
+      eb.addEventListener("click", function(){ openK(x); });
+      db.addEventListener("click", function(){ askDelK(x); });
+      tda.appendChild(eb); tda.appendChild(db); tr.appendChild(tda);
+      tb.appendChild(tr);
+    });
+
+    /* kuzatuvlar */
+    var zb = $("kzRows"); zb.innerHTML = "";
+    if(!kz.length){ var zr = el("tr"); var zd = el("td","empty","Hozircha kuzatuv yoʻq."); zd.colSpan = 5; zr.appendChild(zd); zb.appendChild(zr); }
+    kz.forEach(function(z){
+      var tr = el("tr","krow");
+      tr.appendChild(el("td", null, fmtD(z.created_at)));
+      tr.appendChild(el("td","wrap", "«" + z.soz + "»"));
+      tr.appendChild(el("td","wrap", z.gipoteza || "—"));
+      tr.appendChild(el("td","wrap", z.tekshirish || "—"));
+      var tda = el("td","acts"); var db = el("button","sbtn del","Oʻchirish"); db.type = "button";
+      db.addEventListener("click", async function(){
+        if(!window.confirm("Bu kuzatuvni oʻchirasizmi?")) return;
+        var r = await sb.from("kurs_kuzatuvlar").delete().eq("id", z.id).select("id");
+        if(r.error || !r.data || !r.data.length){ kmsg("Oʻchirilmadi: " + (r.error ? r.error.message : "ruxsat yoʻq")); return; }
+        kz = kz.filter(function(y){ return y.id !== z.id; }); renderKurs();
+      });
+      tda.appendChild(db); tr.appendChild(tda); zb.appendChild(tr);
+    });
+    kmsg("Kontaktlar: " + kl.length + " · Kuzatuvlar: " + kz.length);
+  }
+
+  $("kSearch").addEventListener("input", function(){ kQuery = this.value.trim(); renderKurs(); });
+
+  /* xarajat */
+  $("kxSave").addEventListener("click", async function(){
+    var f = parseFloat($("kxForma").value), d = parseFloat($("kxDirect").value);
+    f = isNaN(f) ? 0 : f; d = isNaN(d) ? 0 : d;
+    if(f < 0 || d < 0){ $("kxMsg").textContent = "Manfiy boʻlmasin."; return; }
+    var btn = $("kxSave"); btn.disabled = true; $("kxMsg").textContent = "Saqlanmoqda…";
+    var t = today();
+    var r = await sb.from("kurs_xarajat").upsert([{variant:"forma", summa:f, sana:t}, {variant:"direct", summa:d, sana:t}]).select("variant");
+    btn.disabled = false;
+    if(r.error || !r.data || r.data.length < 2){ $("kxMsg").textContent = "Saqlanmadi: " + (r.error ? r.error.message : "ruxsat yoʻq"); return; }
+    kx.forma = {summa:f, sana:t}; kx.direct = {summa:d, sana:t};
+    $("kxMsg").textContent = "Saqlandi."; renderKurs();
+  });
+
+  /* kuzatuv qo'shish */
+  $("kzAdd").addEventListener("click", async function(){
+    var soz = $("kzSoz").value.trim(), gip = $("kzGip").value.trim(), tek = $("kzTek").value.trim();
+    if(!soz){ $("kzErr").textContent = "Odamning soʻzini yozing."; return; }
+    var btn = $("kzAdd"); btn.disabled = true; $("kzErr").textContent = "Saqlanmoqda…";
+    var r = await sb.from("kurs_kuzatuvlar").insert({soz: soz.slice(0,500), gipoteza: gip.slice(0,500) || null, tekshirish: tek.slice(0,500) || null}).select("*");
+    btn.disabled = false;
+    if(r.error || !r.data || !r.data.length){ $("kzErr").textContent = "Saqlanmadi: " + (r.error ? r.error.message : "ruxsat yoʻq"); return; }
+    kz.unshift(r.data[0]);
+    $("kzSoz").value = ""; $("kzGip").value = ""; $("kzTek").value = ""; $("kzErr").textContent = "";
+    renderKurs();
+  });
+
+  /* kontakt oynasi */
+  function openK(x){
+    kEditing = x || null;
+    $("kTitle").textContent = x ? "Kontakt — " + x.ism : "Yangi kontakt";
+    $("kSana").value = x ? String(x.sana).slice(0,10) : today();
+    $("kVar").value = x ? x.variant : "forma";
+    $("kIsm").value = x ? x.ism : "";
+    $("kTel").value = x ? x.telefon : "";
+    $("kSavol").value = x ? (x.birinchi_savol || "") : "";
+    var s = $("kHolat"); s.innerHTML = "";
+    KORDER.forEach(function(k){ var o = el("option", null, KHOLAT[k]); o.value = k; if(x ? k === x.holat : k === "yangi") o.selected = true; s.appendChild(o); });
+    $("kTolov").value = x && x.tolov_sana ? String(x.tolov_sana).slice(0,10) : "";
+    $("kRad").value = x ? (x.rad_sababi || "") : "";
+    $("kIzoh").value = x ? (x.izoh || "") : "";
+    $("kErr").textContent = ""; $("kSave").disabled = false;
+    $("kModal").hidden = false; $("kIsm").focus();
+  }
+  function closeK(){ $("kModal").hidden = true; kEditing = null; }
+  $("kAdd").addEventListener("click", function(){ openK(null); });
+  $("kX").addEventListener("click", closeK);
+  $("kCancel").addEventListener("click", closeK);
+  $("kModal").addEventListener("click", function(e){ if(e.target === this) closeK(); });
+  $("kSave").addEventListener("click", async function(){
+    var d = {
+      sana: $("kSana").value || today(),
+      variant: $("kVar").value,
+      ism: $("kIsm").value.trim(),
+      telefon: $("kTel").value.trim(),
+      birinchi_savol: $("kSavol").value.trim().slice(0,500) || null,
+      holat: $("kHolat").value,
+      tolov_sana: $("kTolov").value || null,
+      rad_sababi: $("kRad").value.trim().slice(0,500) || null,
+      izoh: $("kIzoh").value.trim().slice(0,1000) || null
+    };
+    if(!d.ism){ $("kErr").textContent = "Ismni yozing."; return; }
+    var dg = d.telefon.replace(/\D/g,"");
+    if(dg.length < 9){ $("kErr").textContent = "Telefonda kamida 9 ta raqam boʻlsin."; return; }
+    if(d.holat === "toladi" && !d.tolov_sana) d.tolov_sana = today();
+    if(d.tolov_sana && days(d.sana, d.tolov_sana) < 0){ $("kErr").textContent = "Toʻlov sanasi birinchi kontaktdan oldin boʻlishi mumkin emas."; return; }
+    var key = dg.slice(-9);
+    var dup = kl.filter(function(y){ return (!kEditing || y.id !== kEditing.id) && (y.telefon || "").replace(/\D/g,"").slice(-9) === key; })[0];
+    if(dup){ $("kErr").textContent = "Bu raqam allaqachon bor: " + dup.ism + ", " + fmtD(dup.sana) + ", " + (KVAR[dup.variant] || dup.variant) + ". Birinchi kontakt hisobga olinadi."; return; }
+    var btn = $("kSave"); btn.disabled = true; $("kErr").textContent = "Saqlanmoqda…";
+    var r = kEditing
+      ? await sb.from("kurs_lidlar").update(d).eq("id", kEditing.id).select("*")
+      : await sb.from("kurs_lidlar").insert(d).select("*");
+    btn.disabled = false;
+    if(r.error){ $("kErr").textContent = r.error.code === "23505" ? "Bu raqam allaqachon bor — birinchi kontakt hisobga olinadi." : "Saqlanmadi: " + r.error.message; return; }
+    if(!r.data || !r.data.length){ $("kErr").textContent = "Saqlanmadi: ruxsat yoʻq"; return; }
+    if(kEditing){ Object.assign(kEditing, r.data[0]); } else { kl.unshift(r.data[0]); }
+    closeK(); renderKurs();
+  });
+  function askDelK(x){
+    deleting = x; delTable = "kurs_lidlar";
+    $("dText").textContent = "«" + x.ism + "» (" + x.telefon + ") kontaktini oʻchirasizmi? Bu amalni qaytarib boʻlmaydi.";
+    $("dErr").textContent = ""; $("dYes").disabled = false;
+    $("dModal").hidden = false; $("dNo").focus();
+  }
+
+  function exportKurs(){
+    var head = ["Sana","Variant","Ism","Telefon","Birinchi savoli","Holat","Toʻlov sanasi","14 kun ichida","Rad sababi","Izoh"];
+    function q(v){ v = (v == null ? "" : String(v)); return '"' + v.replace(/"/g,'""') + '"'; }
+    var lines = [head.map(q).join(",")];
+    kl.forEach(function(x){
+      lines.push([fmtD(x.sana), KVAR[x.variant] || x.variant, x.ism, x.telefon, x.birinchi_savol || "", KHOLAT[x.holat] || x.holat,
+        x.tolov_sana ? fmtD(x.tolov_sana) : "", in14(x) ? "ha" : "", x.rad_sababi || (x.holat === "rad" ? "Sabab nomaʼlum" : ""), x.izoh || ""].map(q).join(","));
+    });
+    lines.push("");
+    lines.push([q("Forma xarajati"), q(kx.forma.summa), q("Direct xarajati"), q(kx.direct.summa)].join(","));
+    var blob = new Blob(["\ufeff" + lines.join("\r\n")], {type:"text/csv;charset=utf-8"});
+    var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "kurs_lidlari.csv";
+    document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+
+  /* ---------- ustozlar (brend-feys ustozi vakansiyasi) ---------- */
+  var U = {
+    tajriba:{"1gacha":"1 yilgacha","1-3":"1–3 yil","3plus":"3+ yil","yoq":"Tajribasiz"},
+    orgatish:{kurs:"Kurs oʻtkazgan", individual:"Alohida oʻrgatgan", xohlayman:"Oʻrgatishni xohlaydi", yoqmaydi:"Oʻrgatish yoqmaydi"},
+    qiziqish:{kamera:"Kamera", ssenariy:"Ssenariy", montaj:"Montaj", orgatish:"Oʻrgatish", obraz:"Obraz", brendlar:"Brendlar", boshqa:"Boshqa"},
+    ishlar:{reklama:"Reklama roliklari", bloger:"Blog", model:"Model", tv:"TV/sahna", kontent:"Doʻkon kontenti", boshqa:"Boshqa"},
+    vaqt:{toliq:"Toʻliq kun", yarim:"Yarim kun", damolish:"Dam olish kunlari", soat:"Bir necha soat"},
+    daromad:{"3gacha":"≤3 mln","3-5":"3–5 mln","5-8":"5–8 mln","8plus":"8+ mln"},
+    format:{fiks:"Fiks", fiks_foiz:"Fiks + foiz", foiz:"Foiz", farqi:"Farqi yoʻq"},
+    video:{yubordim:"Yubordi", hozir:"Hozir yuboradi", keyin:"Keyinroq"},
+    yosh:{"18-22":"18–22","23-27":"23–27","28-35":"28–35","36+":"36+"},
+    band:{brendfeys:"Brend-feys / model", boshqa_ish:"Boshqa ishda", oqiyman:"Oʻqiydi", qidiryapman:"Ish qidiryapti", boshqa:"Boshqa"},
+    motiv:{daromad:"Barqaror daromad", rivojlanish:"Rivojlanish", orgatish:"Oʻrgatish zavqi", brend:"Oʻz brendi"},
+    til:{uz:"Oʻzbek", ru:"Rus", ikkala:"Ikkalasi"},
+    boshlash:{darhol:"Darhol","1-2hafta":"1–2 hafta ichida","1oy":"1 oydan keyin"},
+    qiziqdi:{ha:"Qiziq", savol:"Qiziq, savoli bor", bilmayman:"Hali bilmaydi"},
+    kurs_navbati:{ha:"Ha", yoq:"Yoʻq"}
+  };
+  var ul = [], uLoaded = false, uFilter = "all", uQuery = "", uIdx = [];
+  function uv(map, v){ return v == null || v === "" ? "—" : (U[map] && U[map][v]) || String(v); }
+  function ulist(map, arr, extra){ if(!arr || !arr.length) return "—"; var t = arr.filter(function(k){ return k !== "boshqa"; }).map(function(k){ return uv(map, k); }); if(arr.indexOf("boshqa") !== -1) t.push("Boshqa" + (extra ? ": " + extra : "")); return t.join(", "); }
+  function uflags(x){
+    var j = x.javoblar || {}, f = [];
+    if(j.tajriba === "yoq") f.push("Tajribasiz — kurs navbati");
+    if(j.vaqt && j.vaqt !== "toliq") f.push("Toʻliq kun emas");
+    if(j.orgatish === "yoqmaydi") f.push("Oʻrgatishni yoqtirmaydi");
+    if(j.tajriba && j.tajriba !== "yoq" && j.video !== "yubordim") f.push(j.video === "keyin" ? "Video hali yoʻq" : "Videoni tekshiring");
+    if(x._dup) f.push("Shu raqamdan " + x._dup + " ta ariza");
+    return f;
+  }
+
+  async function loadUstoz(){
+    kmsg("Yuklanmoqda…");
+    var r = await sb.from("ustoz_nomzodlar").select("*").order("created_at", {ascending:false}).limit(3000);
+    if(r.error){ kmsg("Xato: " + r.error.message); return; }
+    ul = r.data || [];
+    var seen = {};
+    ul.forEach(function(x){ x._key = (x.telefon || "").replace(/\D/g,"").slice(-9); seen[x._key] = (seen[x._key] || 0) + 1; });
+    ul.forEach(function(x){ x._dup = seen[x._key] > 1 ? seen[x._key] : 0; });
+    uLoaded = true; renderUstoz();
+  }
+
+  function renderUstoz(){
+    var tabs = $("uTabs"); tabs.innerHTML = "";
+    var counts = {all: ul.length}; ORDER.forEach(function(k){ counts[k] = 0; }); ul.forEach(function(x){ counts[x.holat] = (counts[x.holat] || 0) + 1; });
+    [["all","Hammasi"]].concat(ORDER.map(function(k){ return [k, HOLAT[k]]; })).forEach(function(t){
+      var b = el("button","tab", t[1] + " (" + (counts[t[0]] || 0) + ")"); b.type = "button"; b.setAttribute("role","tab"); b.setAttribute("aria-selected", uFilter === t[0] ? "true" : "false");
+      b.addEventListener("click", function(){ uFilter = t[0]; renderUstoz(); });
+      tabs.appendChild(b);
+    });
+    var fT = $("uTaj").value, fV = $("uVaqt").value, fD = $("uDar").value, fQ = $("uQiz").value;
+    var view = ul.filter(function(x){
+      var j = x.javoblar || {};
+      if(uFilter !== "all" && x.holat !== uFilter) return false;
+      if(fT === "1plus" && ["1-3","3plus"].indexOf(j.tajriba) === -1) return false;
+      if(fT && fT !== "1plus" && j.tajriba !== fT) return false;
+      if(fV && j.vaqt !== fV) return false;
+      if(fD && j.daromad !== fD) return false;
+      if(fQ && (!j.qiziqish || j.qiziqish.indexOf(fQ) === -1)) return false;
+      if(uQuery){
+        var q = uQuery.toLowerCase(), qd = uQuery.replace(/\D/g,"");
+        if((x.ism || "").toLowerCase().indexOf(q) === -1 && !(qd && (x.telefon || "").replace(/\D/g,"").indexOf(qd) !== -1)) return false;
+      }
+      return true;
+    });
+    uIdx = view;
+    var tb = $("uRows"); tb.innerHTML = "";
+    if(!view.length){ var tr0 = el("tr"); var td0 = el("td","empty", ul.length ? "Filtr boʻyicha nomzod yoʻq." : "Hozircha ariza yoʻq. Havola: ustoz.html"); td0.colSpan = 13; tr0.appendChild(td0); tb.appendChild(tr0); }
+    view.forEach(function(x){
+      var j = x.javoblar || {};
+      var tr = el("tr","krow"); tr.style.cursor = "pointer";
+      tr.appendChild(el("td", null, fmtDate(x.created_at)));
+      tr.appendChild(el("td", null, x.ism));
+      tr.appendChild(el("td", null, uv("tajriba", j.tajriba)));
+      tr.appendChild(el("td", null, uv("orgatish", j.orgatish)));
+      tr.appendChild(el("td","wrap", ulist("qiziqish", j.qiziqish, j.qiziqish_izoh)));
+      tr.appendChild(el("td", null, uv("vaqt", j.vaqt)));
+      tr.appendChild(el("td", null, uv("daromad", j.daromad) + (j.format ? " · " + uv("format", j.format) : "")));
+      tr.appendChild(el("td", null, uv("video", j.video)));
+      var fl = uflags(x); var tdf = el("td"); if(fl.length){ tdf.appendChild(warnIcon()); tdf.appendChild(document.createTextNode(" " + fl.length + " ta")); tdf.title = fl.join("\n"); } else { tdf.textContent = "—"; } tr.appendChild(tdf);
+      var tdh = el("td"); var sel = el("select","field ksel"); sel.setAttribute("aria-label","Holat: " + x.ism);
+      ORDER.forEach(function(k){ var o = el("option", null, HOLAT[k]); o.value = k; if(k === x.holat) o.selected = true; sel.appendChild(o); });
+      sel.addEventListener("click", function(e){ e.stopPropagation(); });
+      sel.addEventListener("change", async function(){
+        var prev = x.holat;
+        var r = await sb.from("ustoz_nomzodlar").update({holat: sel.value}).eq("id", x.id).select("id");
+        if(r.error || !r.data || !r.data.length){ sel.value = prev; kmsg("Saqlanmadi: " + (r.error ? r.error.message : "ruxsat yoʻq")); return; }
+        x.holat = sel.value; renderUstoz();
+      });
+      tdh.appendChild(sel); tr.appendChild(tdh);
+      var tdt = el("td"); var a = el("a", null, x.telefon); a.href = telHref(x.telefon); a.addEventListener("click", function(e){ e.stopPropagation(); }); tdt.appendChild(a); tr.appendChild(tdt);
+      var tda = el("td","acts");
+      var ob = el("button","sbtn","Batafsil"); ob.type = "button";
+      var db = el("button","sbtn del","Oʻchirish"); db.type = "button"; db.setAttribute("aria-label","Oʻchirish: " + x.ism);
+      ob.addEventListener("click", function(e){ e.stopPropagation(); openU(x); });
+      db.addEventListener("click", function(e){ e.stopPropagation(); deleting = x; delTable = "ustoz_nomzodlar"; $("dText").textContent = "«" + x.ism + "» (" + x.telefon + ") nomzodini oʻchirasizmi? Bu amalni qaytarib boʻlmaydi."; $("dErr").textContent = ""; $("dYes").disabled = false; $("dModal").hidden = false; $("dNo").focus(); });
+      tda.appendChild(ob); tda.appendChild(db); tr.appendChild(tda);
+      var tdi = el("td","izoh-td");
+      var inp = el("input","field izoh-in"); inp.type = "text"; inp.value = x.izoh || ""; inp.maxLength = 2000; inp.placeholder = "Izoh yozing…"; inp.setAttribute("aria-label","Izoh: " + x.ism);
+      var st = el("span","izoh-st");
+      inp.addEventListener("click", function(e){ e.stopPropagation(); });
+      inp.addEventListener("keydown", function(e){ e.stopPropagation(); if(e.key === "Enter"){ e.preventDefault(); inp.blur(); } if(e.key === "Escape"){ inp.value = x.izoh || ""; inp.blur(); } });
+      inp.addEventListener("blur", async function(){
+        var val = inp.value.trim().slice(0,2000); if(val === (x.izoh || "")) return;
+        st.textContent = "…";
+        var r = await sb.from("ustoz_nomzodlar").update({izoh: val || null}).eq("id", x.id).select("id");
+        if(r.error || !r.data || !r.data.length){ st.textContent = "✖"; st.style.color = "#a00000"; st.title = r.error ? r.error.message : "Saqlanmadi"; return; }
+        x.izoh = val; st.style.color = "#007000"; st.textContent = "✔"; setTimeout(function(){ st.textContent = ""; }, 1800);
+      });
+      tdi.appendChild(inp); tdi.appendChild(st); tr.appendChild(tdi);
+      tr.addEventListener("click", function(){ openU(x); });
+      tb.appendChild(tr);
+    });
+    kmsg("Koʻrsatilgan: " + view.length + " ta · Jami: " + ul.length);
+  }
+  ["uTaj","uVaqt","uDar","uQiz"].forEach(function(id){ $(id).addEventListener("change", renderUstoz); });
+  $("uSearch").addEventListener("input", function(){ uQuery = this.value.trim(); renderUstoz(); });
+
+  function openU(x){
+    var j = x.javoblar || {};
+    $("uTitle").textContent = x.ism + " — brend-feys ustozi";
+    var body = $("uBody"); body.innerHTML = "";
+    var g1 = el("fieldset","grp"); g1.appendChild(el("legend",null,"Aloqa"));
+    var d1 = el("dl","ans");
+    function row(dl, k, v){ dl.appendChild(el("dt",null,k)); var dd = el("dd"); if(v instanceof Node) dd.appendChild(v); else dd.textContent = v; dl.appendChild(dd); }
+    var tel = el("a", null, x.telefon); tel.href = telHref(x.telefon);
+    row(d1, "Telefon:", tel);
+    if(x.telegram){ var tg = el("a", null, x.telegram); tg.href = "https://t.me/" + x.telegram.replace(/^@/,""); tg.target = "_blank"; tg.rel = "noopener"; row(d1, "Telegram:", tg); }
+    row(d1, "Sana:", fmtDate(x.created_at));
+    row(d1, "Suhbat vaqti:", x.sek ? Math.round(x.sek / 60) + " daqiqa" : "—");
+    g1.appendChild(d1); body.appendChild(g1);
+
+    var g2 = el("fieldset","grp"); g2.appendChild(el("legend",null,"Javoblari"));
+    var d2 = el("dl","ans");
+    row(d2, "Yoʻnalishga qiziqishi:", uv("qiziqdi", j.qiziqdi) + (j.qiziqdi_izoh ? "\n«" + j.qiziqdi_izoh + "»" : ""));
+    row(d2, "Yoshi:", uv("yosh", j.yosh));
+    row(d2, "Hozirgi bandligi:", uv("band", j.band) + (j.band_izoh ? ": " + j.band_izoh : ""));
+    row(d2, "Tajriba:", uv("tajriba", j.tajriba));
+    if(j.tajriba === "yoq"){ row(d2, "Kurs navbati:", uv("kurs_navbati", j.kurs_navbati)); }
+    else {
+      row(d2, "Qilgan ishlari:", ulist("ishlar", j.ishlar, j.ishlar_izoh));
+      row(d2, "Brendlar va portfolio:", j.brendlar || "—");
+      row(d2, "Oʻrgatish tajribasi:", uv("orgatish", j.orgatish));
+      row(d2, "Kamerada tili:", uv("til", j.til));
+      row(d2, "Qiziqishlari:", ulist("qiziqish", j.qiziqish, j.qiziqish_izoh));
+      row(d2, "Eng muhimi:", uv("motiv", j.motiv));
+      row(d2, "Boʻsh vaqti:", uv("vaqt", j.vaqt));
+      row(d2, "Qachondan boshlaydi:", uv("boshlash", j.boshlash));
+      row(d2, "Kutgan daromadi:", uv("daromad", j.daromad));
+      row(d2, "Toʻlov shakli:", uv("format", j.format));
+      row(d2, "Video-vizitka:", uv("video", j.video));
+      if(j.savol) row(d2, "Savol yoki taklifi:", "«" + j.savol + "»");
+    }
+    g2.appendChild(d2); body.appendChild(g2);
+
+    var fl = uflags(x);
+    if(fl.length){
+      var g3 = el("fieldset","grp"); g3.appendChild(el("legend",null,"Belgilar"));
+      var ulst = el("ul"); ulst.style.margin = "0"; ulst.style.paddingLeft = "18px";
+      fl.forEach(function(t){ ulst.appendChild(el("li", null, t)); });
+      g3.appendChild(ulst); body.appendChild(g3);
+    }
+    var row2 = el("div","row right"); var cb = el("button","btn","Yopish"); cb.type = "button"; cb.addEventListener("click", closeU); row2.appendChild(cb); body.appendChild(row2);
+    $("uModal").hidden = false; cb.focus();
+  }
+  function closeU(){ $("uModal").hidden = true; }
+  $("uX").addEventListener("click", closeU);
+  $("uModal").addEventListener("click", function(e){ if(e.target === this) closeU(); });
+
+  function exportUstoz(){
+    var head = ["Sana","Ism","Telefon","Telegram","Holat","Tajriba","Qilgan ishlari","Brendlar va portfolio","Oʻrgatish","Til","Qiziqishlar","Eng muhimi","Boʻsh vaqt","Boshlash","Daromad","Toʻlov shakli","Video","Yoshi","Bandligi","Savol","Belgilar","Izoh"];
+    function q(v){ v = (v == null ? "" : String(v)); return '"' + v.replace(/"/g,'""') + '"'; }
+    var lines = [head.map(q).join(",")];
+    ul.forEach(function(x){
+      var j = x.javoblar || {};
+      lines.push([fmtDate(x.created_at), x.ism, x.telefon, x.telegram || "", HOLAT[x.holat] || x.holat, uv("tajriba", j.tajriba), ulist("ishlar", j.ishlar, j.ishlar_izoh), j.brendlar || "",
+        uv("orgatish", j.orgatish), uv("til", j.til), ulist("qiziqish", j.qiziqish, j.qiziqish_izoh), uv("motiv", j.motiv), uv("vaqt", j.vaqt), uv("boshlash", j.boshlash),
+        uv("daromad", j.daromad), uv("format", j.format), uv("video", j.video), uv("yosh", j.yosh), uv("band", j.band), j.savol || "", uflags(x).join("; "), x.izoh || ""].map(q).join(","));
+    });
+    var blob = new Blob(["\ufeff" + lines.join("\r\n")], {type:"text/csv;charset=utf-8"});
+    var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "ustoz_nomzodlar.csv";
+    document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
 
   /* ---------- CSV ---------- */
   $("csv").addEventListener("click", function(){
+    if(mode === "kurs"){ exportKurs(); return; }
+    if(mode === "ustoz"){ exportUstoz(); return; }
     var head = ["Sana","Ism","Telefon","Foiz","Stressga chidamlilik","Intizom","Muloqot va sotuv","Oʻsish salohiyati","Xulosa","Tushungan %","Sinovga chiqish","Hozir","Tajriba","Rus tili","Vazifalar","Qoidalar","Ish tartibi","Maosh","Kamera","Tushunarsiz qolgan","Holat","Izoh","Belgilar","Suhbat soniya","Test soniya"];
     function bl(x, k){ var v = x.suhbat && x.suhbat.bloklar && x.suhbat.bloklar[k]; return v ? (JNOM[v.j] || v.j) + (v.izoh ? ": " + v.izoh : "") : ""; }
     function q(v){ v = (v==null?"":String(v)); return '"' + v.replace(/"/g,'""') + '"'; }
