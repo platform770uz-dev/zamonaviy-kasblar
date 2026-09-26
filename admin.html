@@ -151,7 +151,7 @@ table.lv.kz{min-width:820px}
 
 /* ustozlar */
 #pUstoz{flex:1;display:flex;flex-direction:column;min-height:0}
-table.lv.us{min-width:1500px}
+table.lv.us{min-width:1600px}
 .ufilters{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-bottom:8px}
 .ufilters select{padding:4px 6px}
 .ans{display:grid;grid-template-columns:minmax(150px,auto) 1fr;gap:6px 14px;margin:0}
@@ -279,20 +279,22 @@ table.lv.us{min-width:1500px}
         <div class="ufilters">
           <label for="uSearch" style="margin:0">Qidirish:</label>
           <input class="field" id="uSearch" type="search" placeholder="Ism yoki telefon" style="flex:1 1 220px;min-width:180px;width:auto">
+          <label for="uYon" style="margin:0">Yoʻnalish:</label>
+          <select class="field" id="uYon"><option value="">Barchasi</option><option value="brendfeys">Brend-feys</option><option value="mobilograf">Mobilograf</option></select>
           <label for="uTaj" style="margin:0">Tajriba:</label>
           <select class="field" id="uTaj"><option value="">Barchasi</option><option value="1plus">1 yildan ortiq</option><option value="3plus">3+ yil</option><option value="1gacha">1 yilgacha</option><option value="yoq">Tajribasiz</option></select>
-          <label for="uVaqt" style="margin:0">Boʻsh vaqt:</label>
-          <select class="field" id="uVaqt"><option value="">Barchasi</option><option value="toliq">Toʻliq kun</option><option value="yarim">Yarim kun</option><option value="damolish">Dam olish kunlari</option><option value="soat">Bir necha soat</option></select>
+          <label for="uVaqt" id="uVaqtL" style="margin:0" hidden>Boʻsh vaqt:</label>
+          <select class="field" id="uVaqt" hidden><option value="">Barchasi</option></select>
           <label for="uDar" style="margin:0">Daromad:</label>
           <select class="field" id="uDar"><option value="">Barchasi</option><option value="3gacha">≤3 mln</option><option value="3-5">3–5 mln</option><option value="5-8">5–8 mln</option><option value="8plus">8+ mln</option></select>
-          <label for="uQiz" style="margin:0">Qiziqish:</label>
-          <select class="field" id="uQiz"><option value="">Barchasi</option><option value="kamera">Kamera</option><option value="ssenariy">Ssenariy</option><option value="montaj">Montaj</option><option value="orgatish">Oʻrgatish</option><option value="obraz">Obraz</option><option value="brendlar">Brendlar</option></select>
+          <label for="uQiz" id="uQizL" style="margin:0" hidden>Qiziqish:</label>
+          <select class="field" id="uQiz" hidden><option value="">Barchasi</option><option value="kamera">Kamera</option><option value="ssenariy">Ssenariy</option><option value="montaj">Montaj</option><option value="orgatish">Oʻrgatish</option><option value="obraz">Obraz</option><option value="brendlar">Brendlar</option></select>
         </div>
         <div class="lv-wrap">
           <table class="lv us">
             <thead><tr>
-              <th scope="col">Sana</th><th scope="col">Ism</th><th scope="col">Tajriba</th><th scope="col">Oʻrgatish</th>
-              <th scope="col">Qiziqish</th><th scope="col">Boʻsh vaqt</th><th scope="col">Daromad</th><th scope="col">Video</th>
+              <th scope="col">Sana</th><th scope="col">Ism</th><th scope="col">Yoʻnalish</th><th scope="col">Tajriba</th><th scope="col">Oʻrgatish</th>
+              <th scope="col">Qiziqish · vaziyat</th><th scope="col">Boʻsh vaqt</th><th scope="col">Daromad</th><th scope="col">Video</th>
               <th scope="col">Belgilar</th><th scope="col">Holat</th><th scope="col">Telefon</th><th scope="col">Amallar</th><th scope="col">Izoh</th>
             </tr></thead>
             <tbody id="uRows"></tbody>
@@ -1131,7 +1133,7 @@ table.lv.us{min-width:1500px}
     document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
   }
 
-  /* ---------- ustozlar (brend-feys ustozi vakansiyasi) ---------- */
+  /* ---------- ustozlar (brend-feys va mobilografiya ustozi vakansiyalari) ---------- */
   var U = {
     tajriba:{"1gacha":"1 yilgacha","1-3":"1–3 yil","3plus":"3+ yil","yoq":"Tajribasiz"},
     orgatish:{kurs:"Kurs oʻtkazgan", individual:"Alohida oʻrgatgan", xohlayman:"Oʻrgatishni xohlaydi", yoqmaydi:"Oʻrgatish yoqmaydi"},
@@ -1149,15 +1151,78 @@ table.lv.us{min-width:1500px}
     qiziqdi:{ha:"Qiziq", savol:"Qiziq, savoli bor", bilmayman:"Hali bilmaydi"},
     kurs_navbati:{ha:"Ha", yoq:"Yoʻq"}
   };
+  /* mobilografiya ustozi (mobilograf-ustoz.html): javoblar.yonalish = "mobilograf" */
+  var MU = {
+    band:{frilans:"Frilans mobilograf", studiya:"Agentlik / studiya", boshqa_ish:"Boshqa ishda", oqiyman:"Oʻqiydi", boshqa:"Boshqa"},
+    ishlar:{biznes:"Biznes reels", brendfeys:"Brend-feys / bloger", toy:"Toʻy va tadbirlar", mahsulot:"Mahsulot videolari", podkast:"Podkast / intervyu", boshqa:"Boshqa"},
+    texnika:{telefon:"Flagman telefon", gimbal:"Gimbal", mikrofon:"Mikrofon", yoruglik:"Yorugʻlik", capcut:"CapCut", pc:"Premiere / FCP / DaVinci", boshqa:"Boshqa"},
+    kamera:{ha:"Muammo yoʻq", koniksam:"Koʻnikadi, tayyor", yoq:"Kadrga tushmoqchi emas"},
+    vaqt:{"3kun":"3+ kun", "2kun":"2 kun", damolish:"Dam olish kunlari", aniqemas:"Aniq emas"},
+    soat:{ertalab:"Ertalab", kunduzi:"Kunduzi", kechqurun:"Kechqurun", farqi:"Farqi yoʻq"},
+    format:{mos:"50% mos", fiks_foiz:"Fiks + foiz", fiks:"Faqat fiks", kelishamiz:"Kelishamiz"},
+    v1:{ozim:"Oʻzi suratga olib beradi", birga:"Birga dubl oladi, oʻquvchi oʻzi xulosa qiladi", uyga:"Uyga videodars beradi", keyin:"Darsdan keyinga qoldiradi"},
+    v2:{hammasi:"Guruh oldida barcha xatolarni aytadi", maqtov:"«Yaxshi chiqibdi» deydi", bitta:"1 yutuq + 1 asosiy xato va yechim, qolgani alohida", alohida:"Guruh oldida jim, keyin alohida"},
+    v3:{vada:"Daromad vaʼda qiladi", buyurtma:"Buyurtma vaʼda qiladi", halol:"Kafolatsiz, halol javob", bilmayman:"Rahbarga yuboradi"}
+  };
+  var VZ = [["v1","Qorongʻi kadr"],["v2","Joyida tahlil"],["v3","Daromad savoli"]];
+  var VZ_BEST = {v1:"birga", v2:"bitta", v3:"halol"};
+  var VZ_BAD = {v1:["ozim"], v2:["hammasi","maqtov"], v3:["vada","buyurtma"]};
+  var YON = {brendfeys:"Brend-feys", mobilograf:"Mobilograf"};
+  var UVAQT = {
+    brendfeys:[["","Barchasi"],["toliq","Toʻliq kun"],["yarim","Yarim kun"],["damolish","Dam olish kunlari"],["soat","Bir necha soat"]],
+    mobilograf:[["","Barchasi"],["3kun","3+ kun"],["2kun","2 kun"],["damolish","Dam olish kunlari"],["aniqemas","Aniq emas"]]
+  };
   var ul = [], uLoaded = false, uFilter = "all", uQuery = "", uIdx = [];
   function uv(map, v){ return v == null || v === "" ? "—" : (U[map] && U[map][v]) || String(v); }
   function ulist(map, arr, extra){ if(!arr || !arr.length) return "—"; var t = arr.filter(function(k){ return k !== "boshqa"; }).map(function(k){ return uv(map, k); }); if(arr.indexOf("boshqa") !== -1) t.push("Boshqa" + (extra ? ": " + extra : "")); return t.join(", "); }
+  function isMob(x){ return !!(x && x.javoblar && x.javoblar.yonalish === "mobilograf"); }
+  function yon(x){ return isMob(x) ? "mobilograf" : "brendfeys"; }
+  /* yoʻnalishga qarab yorliq: mobilograf uchun MU, qolganlari uchun U */
+  function fv(x, map, v){ if(isMob(x) && MU[map]) return v == null || v === "" ? "—" : (MU[map][v] || String(v)); return uv(map, v); }
+  function flist(x, map, arr, extra){
+    if(!isMob(x) || !MU[map]) return ulist(map, arr, extra);
+    if(!arr || !arr.length) return "—";
+    var t = arr.filter(function(k){ return k !== "boshqa"; }).map(function(k){ return MU[map][k] || String(k); });
+    if(arr.indexOf("boshqa") !== -1) t.push("Boshqa" + (extra ? ": " + extra : ""));
+    return t.join(", ");
+  }
+  function vzKuchli(j){ var n = 0; VZ.forEach(function(v){ if(j[v[0]] === VZ_BEST[v[0]]) n++; }); return n; }
+  function vzBelgi(k, val){ if(!val) return ""; if(val === VZ_BEST[k]) return "✔ "; if(VZ_BAD[k].indexOf(val) !== -1) return "✖ "; return "· "; }
+  function linkify(t){
+    if(!t) return "—";
+    var span = el("span");
+    String(t).split(/(\s+)/).forEach(function(p){
+      var m = p.match(/^(.*?)([.,;)]*)$/), core = m[1], tail = m[2], href = null;
+      if(/^https?:\/\/\S+$/i.test(core)) href = core;
+      else if(/^(www\.)?(instagram\.com|t\.me|telegram\.me|drive\.google\.com|youtu\.be|youtube\.com|tiktok\.com|vm\.tiktok\.com)\/\S*$/i.test(core)) href = "https://" + core;
+      if(href){ try{ var u = new URL(href); if(u.protocol !== "https:" && u.protocol !== "http:") href = null; }catch(e){ href = null; } }
+      if(href){ var a = el("a", null, core); a.href = href; a.target = "_blank"; a.rel = "noopener"; span.appendChild(a); if(tail) span.appendChild(document.createTextNode(tail)); }
+      else span.appendChild(document.createTextNode(p));
+    });
+    return span;
+  }
   function uflags(x){
     var j = x.javoblar || {}, f = [];
-    if(j.tajriba === "yoq") f.push("Tajribasiz — kurs navbati");
-    if(j.vaqt && j.vaqt !== "toliq") f.push("Toʻliq kun emas");
-    if(j.orgatish === "yoqmaydi") f.push("Oʻrgatishni yoqtirmaydi");
-    if(j.tajriba && j.tajriba !== "yoq" && j.video !== "yubordim") f.push(j.video === "keyin" ? "Video hali yoʻq" : "Videoni tekshiring");
+    if(isMob(x)){
+      if(j.tajriba === "yoq") f.push("Tajribasiz — kurs navbati");
+      else if(j.tajriba){
+        if(j.vaqt && j.vaqt !== "3kun") f.push("Haftasiga 3 kun emas");
+        if(j.orgatish === "yoqmaydi") f.push("Oʻrgatishni yoqtirmaydi");
+        if(j.kamera === "yoq") f.push("Kadrga tushishni istamaydi");
+        if(j.v1 === "ozim") f.push("Oʻquvchi oʻrniga oʻzi suratga oladi");
+        if(j.v2 === "hammasi") f.push("Guruh oldida qattiq tanqid qiladi");
+        if(j.v2 === "maqtov") f.push("Halol fikr bermaydi");
+        if(j.v3 === "vada") f.push("Oʻquvchiga daromad vaʼda qiladi");
+        if(j.v3 === "buyurtma") f.push("Oʻquvchiga buyurtma vaʼda qiladi");
+        if(j.format === "fiks") f.push("Faqat fiks oylik xohlaydi");
+        if(j.video !== "yubordim") f.push(j.video === "keyin" ? "Video-dars hali yoʻq" : "Video-darsni tekshiring");
+      }
+    } else {
+      if(j.tajriba === "yoq") f.push("Tajribasiz — kurs navbati");
+      if(j.vaqt && j.vaqt !== "toliq") f.push("Toʻliq kun emas");
+      if(j.orgatish === "yoqmaydi") f.push("Oʻrgatishni yoqtirmaydi");
+      if(j.tajriba && j.tajriba !== "yoq" && j.video !== "yubordim") f.push(j.video === "keyin" ? "Video hali yoʻq" : "Videoni tekshiring");
+    }
     if(x._dup) f.push("Shu raqamdan " + x._dup + " ta ariza");
     return f;
   }
@@ -1174,22 +1239,26 @@ table.lv.us{min-width:1500px}
   }
 
   function renderUstoz(){
+    var fY = $("uYon").value;
+    var base = fY ? ul.filter(function(x){ return yon(x) === fY; }) : ul;
+    var yc = {"": ul.length, brendfeys: 0, mobilograf: 0}; ul.forEach(function(x){ yc[yon(x)]++; });
+    Array.prototype.forEach.call($("uYon").options, function(o){ o.textContent = (o.value ? YON[o.value] : "Barchasi") + " (" + (yc[o.value] || 0) + ")"; });
     var tabs = $("uTabs"); tabs.innerHTML = "";
-    var counts = {all: ul.length}; ORDER.forEach(function(k){ counts[k] = 0; }); ul.forEach(function(x){ counts[x.holat] = (counts[x.holat] || 0) + 1; });
+    var counts = {all: base.length}; ORDER.forEach(function(k){ counts[k] = 0; }); base.forEach(function(x){ counts[x.holat] = (counts[x.holat] || 0) + 1; });
     [["all","Hammasi"]].concat(ORDER.map(function(k){ return [k, HOLAT[k]]; })).forEach(function(t){
       var b = el("button","tab", t[1] + " (" + (counts[t[0]] || 0) + ")"); b.type = "button"; b.setAttribute("role","tab"); b.setAttribute("aria-selected", uFilter === t[0] ? "true" : "false");
       b.addEventListener("click", function(){ uFilter = t[0]; renderUstoz(); });
       tabs.appendChild(b);
     });
     var fT = $("uTaj").value, fV = $("uVaqt").value, fD = $("uDar").value, fQ = $("uQiz").value;
-    var view = ul.filter(function(x){
+    var view = base.filter(function(x){
       var j = x.javoblar || {};
       if(uFilter !== "all" && x.holat !== uFilter) return false;
       if(fT === "1plus" && ["1-3","3plus"].indexOf(j.tajriba) === -1) return false;
       if(fT && fT !== "1plus" && j.tajriba !== fT) return false;
       if(fV && j.vaqt !== fV) return false;
       if(fD && j.daromad !== fD) return false;
-      if(fQ && (!j.qiziqish || j.qiziqish.indexOf(fQ) === -1)) return false;
+      if(fQ && (isMob(x) || !j.qiziqish || j.qiziqish.indexOf(fQ) === -1)) return false;
       if(uQuery){
         var q = uQuery.toLowerCase(), qd = uQuery.replace(/\D/g,"");
         if((x.ism || "").toLowerCase().indexOf(q) === -1 && !(qd && (x.telefon || "").replace(/\D/g,"").indexOf(qd) !== -1)) return false;
@@ -1198,17 +1267,18 @@ table.lv.us{min-width:1500px}
     });
     uIdx = view;
     var tb = $("uRows"); tb.innerHTML = "";
-    if(!view.length){ var tr0 = el("tr"); var td0 = el("td","empty", ul.length ? "Filtr boʻyicha nomzod yoʻq." : "Hozircha ariza yoʻq. Havola: ustoz.html"); td0.colSpan = 13; tr0.appendChild(td0); tb.appendChild(tr0); }
+    if(!view.length){ var tr0 = el("tr"); var td0 = el("td","empty", ul.length ? "Filtr boʻyicha nomzod yoʻq." : "Hozircha ariza yoʻq. Havolalar: ustoz.html · mobilograf-ustoz.html"); td0.colSpan = 14; tr0.appendChild(td0); tb.appendChild(tr0); }
     view.forEach(function(x){
-      var j = x.javoblar || {};
+      var j = x.javoblar || {}, m = isMob(x);
       var tr = el("tr","krow"); tr.style.cursor = "pointer";
       tr.appendChild(el("td", null, fmtDate(x.created_at)));
       tr.appendChild(el("td", null, x.ism));
+      tr.appendChild(el("td", null, YON[yon(x)]));
       tr.appendChild(el("td", null, uv("tajriba", j.tajriba)));
       tr.appendChild(el("td", null, uv("orgatish", j.orgatish)));
-      tr.appendChild(el("td","wrap", ulist("qiziqish", j.qiziqish, j.qiziqish_izoh)));
-      tr.appendChild(el("td", null, uv("vaqt", j.vaqt)));
-      tr.appendChild(el("td", null, uv("daromad", j.daromad) + (j.format ? " · " + uv("format", j.format) : "")));
+      tr.appendChild(el("td","wrap", m ? (j.v1 ? "Vaziyatlar: " + vzKuchli(j) + " / " + VZ.length + " kuchli" : "—") : ulist("qiziqish", j.qiziqish, j.qiziqish_izoh)));
+      tr.appendChild(el("td", null, fv(x, "vaqt", j.vaqt) + (m && j.soat ? " · " + fv(x, "soat", j.soat) : "")));
+      tr.appendChild(el("td", null, uv("daromad", j.daromad) + (j.format ? " · " + fv(x, "format", j.format) : "")));
       tr.appendChild(el("td", null, uv("video", j.video)));
       var fl = uflags(x); var tdf = el("td"); if(fl.length){ tdf.appendChild(warnIcon()); tdf.appendChild(document.createTextNode(" " + fl.length + " ta")); tdf.title = fl.join("\n"); } else { tdf.textContent = "—"; } tr.appendChild(tdf);
       var tdh = el("td"); var sel = el("select","field ksel"); sel.setAttribute("aria-label","Holat: " + x.ism);
@@ -1247,11 +1317,22 @@ table.lv.us{min-width:1500px}
     kmsg("Koʻrsatilgan: " + view.length + " ta · Jami: " + ul.length);
   }
   ["uTaj","uVaqt","uDar","uQiz"].forEach(function(id){ $(id).addEventListener("change", renderUstoz); });
+  /* yoʻnalish tanlanganda — shu yoʻnalishning filtrlari */
+  $("uYon").addEventListener("change", function(){
+    var y = this.value, sel = $("uVaqt");
+    $("uVaqtL").hidden = sel.hidden = !y;
+    $("uQizL").hidden = $("uQiz").hidden = y !== "brendfeys";
+    sel.innerHTML = "";
+    (UVAQT[y] || [["","Barchasi"]]).forEach(function(o){ var op = el("option", null, o[1]); op.value = o[0]; sel.appendChild(op); });
+    sel.value = "";
+    if(y !== "brendfeys") $("uQiz").value = "";
+    renderUstoz();
+  });
   $("uSearch").addEventListener("input", function(){ uQuery = this.value.trim(); renderUstoz(); });
 
   function openU(x){
-    var j = x.javoblar || {};
-    $("uTitle").textContent = x.ism + " — brend-feys ustozi";
+    var j = x.javoblar || {}, m = isMob(x);
+    $("uTitle").textContent = x.ism + " — " + (m ? "mobilografiya ustozi" : "brend-feys ustozi");
     var body = $("uBody"); body.innerHTML = "";
     var g1 = el("fieldset","grp"); g1.appendChild(el("legend",null,"Aloqa"));
     var d1 = el("dl","ans");
@@ -1267,9 +1348,24 @@ table.lv.us{min-width:1500px}
     var d2 = el("dl","ans");
     row(d2, "Yoʻnalishga qiziqishi:", uv("qiziqdi", j.qiziqdi) + (j.qiziqdi_izoh ? "\n«" + j.qiziqdi_izoh + "»" : ""));
     row(d2, "Yoshi:", uv("yosh", j.yosh));
-    row(d2, "Hozirgi bandligi:", uv("band", j.band) + (j.band_izoh ? ": " + j.band_izoh : ""));
-    row(d2, "Tajriba:", uv("tajriba", j.tajriba));
+    row(d2, "Hozirgi bandligi:", fv(x, "band", j.band) + (j.band_izoh ? ": " + j.band_izoh : ""));
+    row(d2, m ? "Pullik tajriba:" : "Tajriba:", uv("tajriba", j.tajriba));
     if(j.tajriba === "yoq"){ row(d2, "Kurs navbati:", uv("kurs_navbati", j.kurs_navbati)); }
+    else if(m){
+      row(d2, "Suratga olgan roliklari:", flist(x, "ishlar", j.ishlar, j.ishlar_izoh));
+      row(d2, "Portfolio:", linkify(j.portfolio));
+      row(d2, "Texnika va dasturlar:", flist(x, "texnika", j.texnika, j.texnika_izoh));
+      row(d2, "Oʻrgatish tajribasi:", uv("orgatish", j.orgatish));
+      VZ.forEach(function(v, i){ row(d2, "Vaziyat " + (i + 1) + " · " + v[1] + ":", j[v[0]] ? vzBelgi(v[0], j[v[0]]) + fv(x, v[0], j[v[0]]) : "—"); });
+      row(d2, "Kamerada dars:", fv(x, "kamera", j.kamera));
+      row(d2, "Haftalik vaqti:", fv(x, "vaqt", j.vaqt));
+      row(d2, "Qulay vaqt:", fv(x, "soat", j.soat));
+      row(d2, "Qachondan boshlaydi:", uv("boshlash", j.boshlash));
+      row(d2, "Kutgan daromadi:", uv("daromad", j.daromad));
+      row(d2, "50% sharti:", fv(x, "format", j.format));
+      row(d2, "Video-dars:", uv("video", j.video));
+      if(j.savol) row(d2, "Savol yoki taklifi:", "«" + j.savol + "»");
+    }
     else {
       row(d2, "Qilgan ishlari:", ulist("ishlar", j.ishlar, j.ishlar_izoh));
       row(d2, "Brendlar va portfolio:", j.brendlar || "—");
@@ -1301,14 +1397,16 @@ table.lv.us{min-width:1500px}
   $("uModal").addEventListener("click", function(e){ if(e.target === this) closeU(); });
 
   function exportUstoz(){
-    var head = ["Sana","Ism","Telefon","Telegram","Holat","Tajriba","Qilgan ishlari","Brendlar va portfolio","Oʻrgatish","Til","Qiziqishlar","Eng muhimi","Boʻsh vaqt","Boshlash","Daromad","Toʻlov shakli","Video","Yoshi","Bandligi","Savol","Belgilar","Izoh"];
+    var head = ["Sana","Ism","Yoʻnalish","Telefon","Telegram","Holat","Tajriba","Qilgan ishlari","Brendlar va portfolio","Texnika","Oʻrgatish","Vaziyatlar (kuchli)","Vaziyat 1","Vaziyat 2","Vaziyat 3","Kamera","Til","Qiziqishlar","Eng muhimi","Boʻsh vaqt","Qulay vaqt","Boshlash","Daromad","Toʻlov shakli","Video","Yoshi","Bandligi","Savol","Belgilar","Izoh"];
     function q(v){ v = (v == null ? "" : String(v)); return '"' + v.replace(/"/g,'""') + '"'; }
     var lines = [head.map(q).join(",")];
     ul.forEach(function(x){
-      var j = x.javoblar || {};
-      lines.push([fmtDate(x.created_at), x.ism, x.telefon, x.telegram || "", HOLAT[x.holat] || x.holat, uv("tajriba", j.tajriba), ulist("ishlar", j.ishlar, j.ishlar_izoh), j.brendlar || "",
-        uv("orgatish", j.orgatish), uv("til", j.til), ulist("qiziqish", j.qiziqish, j.qiziqish_izoh), uv("motiv", j.motiv), uv("vaqt", j.vaqt), uv("boshlash", j.boshlash),
-        uv("daromad", j.daromad), uv("format", j.format), uv("video", j.video), uv("yosh", j.yosh), uv("band", j.band), j.savol || "", uflags(x).join("; "), x.izoh || ""].map(q).join(","));
+      var j = x.javoblar || {}, m = isMob(x), vz = m && j.v1;
+      lines.push([fmtDate(x.created_at), x.ism, YON[yon(x)], x.telefon, x.telegram || "", HOLAT[x.holat] || x.holat, uv("tajriba", j.tajriba), flist(x, "ishlar", j.ishlar, j.ishlar_izoh), m ? (j.portfolio || "") : (j.brendlar || ""),
+        m ? flist(x, "texnika", j.texnika, j.texnika_izoh) : "", uv("orgatish", j.orgatish), vz ? vzKuchli(j) + "/" + VZ.length : "",
+        vz ? fv(x, "v1", j.v1) : "", vz ? fv(x, "v2", j.v2) : "", vz ? fv(x, "v3", j.v3) : "", m ? fv(x, "kamera", j.kamera) : "",
+        m ? "" : uv("til", j.til), m ? "" : ulist("qiziqish", j.qiziqish, j.qiziqish_izoh), m ? "" : uv("motiv", j.motiv), fv(x, "vaqt", j.vaqt), m ? fv(x, "soat", j.soat) : "", uv("boshlash", j.boshlash),
+        uv("daromad", j.daromad), fv(x, "format", j.format), uv("video", j.video), uv("yosh", j.yosh), fv(x, "band", j.band), j.savol || "", uflags(x).join("; "), x.izoh || ""].map(q).join(","));
     });
     var blob = new Blob(["\ufeff" + lines.join("\r\n")], {type:"text/csv;charset=utf-8"});
     var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "ustoz_nomzodlar.csv";
