@@ -17,6 +17,7 @@
   --accent:#2A47D6; --accent-hover:#2039B8; --accent-ink:#FFFFFF; --accent-soft:#E8EDFF;
   --ok:#19774D; --ok-soft:#E1F2E9; --warn:#975A06; --warn-soft:#FBEFD9;
   --stop:#B3362C; --stop-soft:#FAE6E3; --tally:#E0362C;
+  --ig:#A8236A; --ig-soft:#FBE6F1;
   --shadow:0 1px 2px rgba(19,25,38,.05),0 6px 20px rgba(19,25,38,.05);
   --shadow-lg:0 18px 50px rgba(19,25,38,.16),0 2px 6px rgba(19,25,38,.06);
   --overlay:rgba(19,25,38,.38);
@@ -38,6 +39,7 @@
     --accent:#8499FF; --accent-hover:#9DAEFF; --accent-ink:#0E1219; --accent-soft:#1F2849;
     --ok:#4DC690; --ok-soft:#132E20; --warn:#E8AC4A; --warn-soft:#33260F;
     --stop:#F27D71; --stop-soft:#3A1915; --tally:#FF6A5C;
+    --ig:#F49AC6; --ig-soft:#3A1729;
     --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
     --shadow-lg:0 18px 50px rgba(0,0,0,.5),0 2px 6px rgba(0,0,0,.3);
     --overlay:rgba(0,0,0,.55);
@@ -54,6 +56,7 @@
   --accent:#8499FF; --accent-hover:#9DAEFF; --accent-ink:#0E1219; --accent-soft:#1F2849;
   --ok:#4DC690; --ok-soft:#132E20; --warn:#E8AC4A; --warn-soft:#33260F;
   --stop:#F27D71; --stop-soft:#3A1915; --tally:#FF6A5C;
+  --ig:#F49AC6; --ig-soft:#3A1729;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
   --shadow-lg:0 18px 50px rgba(0,0,0,.5),0 2px 6px rgba(0,0,0,.3);
   --overlay:rgba(0,0,0,.55);
@@ -503,15 +506,18 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
 .tgroup h3{display:flex;align-items:center;gap:8px}
 .tg-late h3{color:var(--stop)}
 .tg-today h3{color:var(--warn)}
-.tcard{display:grid;grid-template-columns:auto 58px minmax(0,1fr) auto;gap:4px 14px;align-items:start;margin-bottom:8px;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:12px;transition:border-color .15s,box-shadow .15s}
+.tcard{display:grid;grid-template-columns:auto 36px minmax(0,1fr) auto;gap:4px 14px;align-items:start;margin-bottom:8px;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:12px;transition:border-color .15s,box-shadow .15s}
 .tcard:hover{border-color:var(--line-2);box-shadow:var(--shadow)}
 .tcard > input{flex:none;width:18px;height:18px;margin:3px 0 0}
-.tt{display:grid;gap:1px;font-family:var(--f-mono);line-height:1.2;font-variant-numeric:tabular-nums}
-.tt .td{font-size:12px;color:var(--muted)}
-.tt .th{font-size:15px;font-weight:500;color:var(--ink)}
+.tno{display:grid;place-items:center;min-width:32px;height:28px;padding:0 6px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);color:var(--ink-2);font:600 13.5px/1 var(--f-mono);font-variant-numeric:tabular-nums}
 .tk-late{border-color:color-mix(in srgb,var(--stop) 40%,var(--line))}
-.tk-late .tt .td,.tk-late .tt .th{color:var(--stop)}
-.tk-today .tt .th{color:var(--warn)}
+.tk-late .tno{border-color:transparent;background:var(--stop-soft);color:var(--stop)}
+.tk-today .tno{border-color:transparent;background:var(--warn-soft);color:var(--warn)}
+.tcard.done .tno{opacity:.6}
+.tdue{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tk-late .tdue{color:var(--stop);font-weight:600}
+.skig{display:inline-flex;align-items:center;padding:6px 12px;border-radius:999px;background:var(--ig-soft);color:var(--ig);font-size:13px;font-weight:600;white-space:nowrap}
+.skig:hover{text-decoration:none;filter:brightness(.97)}
 .tmain{min-width:0}
 .ttx{font-weight:600;line-height:1.35;overflow-wrap:anywhere}
 .tcard.done{opacity:.72}
@@ -553,10 +559,9 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
   .kb-h{display:none}
   .tpage .tlist{margin:12px 12px 0}
   .tlist .wbody{padding:12px}
-  .tcard{grid-template-columns:auto minmax(0,1fr);gap:6px 10px;padding:11px 12px}
-  .tcard .tt{grid-column:2;display:flex;gap:8px;align-items:baseline}
-  .tcard .tmain,.tcard .tact{grid-column:2}
-  .tcard .tact{justify-self:start}
+  .tcard{grid-template-columns:auto 32px minmax(0,1fr);gap:6px 10px;padding:11px 12px}
+  .tcard .tno{min-width:30px;height:26px;font-size:12.5px}
+  .tcard .tact{grid-column:3;justify-self:start}
   .tidea{white-space:normal}
 }
 </style>
@@ -679,9 +684,21 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
     if(navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(t).then(function(){ return true; }, function(){ return legacy(); });
     return Promise.resolve(legacy());
   }
-  function fillScript(B, text, k){
+  function igOf(d, k){
+    var m = /^ig:([A-Za-z0-9_.]{1,30})$/i.exec(String(d && d.tashqi_id || ""));
+    if(m) return m[1];
+    m = /instagram[^@\n]{0,20}@([A-Za-z0-9_.]{1,30})/i.exec(String(k && k.izoh || ""));
+    return m ? m[1].replace(/\.+$/, "") : "";
+  }
+  function igLink(h, label){
+    var a = el("a","skig", label || "📷 Instagram · @" + h);
+    a.href = "https://instagram.com/" + encodeURIComponent(h); a.target = "_blank"; a.rel = "noopener"; a.title = "@" + h + " — Instagram profilini ochish";
+    return a;
+  }
+  function fillScript(B, text, k, ig){
     var acts = B.tools;
     if(k && k.telefon){ var a = el("a","skcall","Qoʻngʻiroq · " + k.telefon); a.href = telHref(k.telefon); acts.appendChild(a); }
+    if(ig) acts.appendChild(igLink(ig));
     var cp = el("button","btn sm","Nusxa olish"); cp.type = "button";
     var body = String(text || "").replace(/^[^\n]*\n+/, "");
     cp.addEventListener("click", function(){
@@ -1985,7 +2002,7 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
     var k = d ? contactOf(d) : null;
     var vid = d ? d.voronka_id : S.vid;
     var skd = d ? S.SK[d.id] : null, dosBox = null, DB_ = {};
-    if(skd){ DB_.skript = dblk("skript"); fillScript(DB_.skript, skd.matn, k); DB_.dosye = dblk("dosye"); DB_.dosye.el.hidden = true; dosBox = DB_.dosye.body; }
+    if(skd){ DB_.skript = dblk("skript"); fillScript(DB_.skript, skd.matn, k, igOf(d, k)); DB_.dosye = dblk("dosye"); DB_.dosye.el.hidden = true; dosBox = DB_.dosye.body; }
 
     var B1 = dblk("bitim"), g1 = B1.body; DB_.bitim = B1;
     var grid = el("div","grid2"); g1.appendChild(grid);
@@ -2025,6 +2042,8 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
     var links = el("div","row"); links.style.alignSelf = "end";
     if(k && k.telefon){ var a1 = el("a", null, "📞 Qoʻngʻiroq"); a1.href = telHref(k.telefon); links.appendChild(a1); }
     if(k && k.telegram){ var a2 = el("a", null, "✈ Telegram"); a2.href = "https://t.me/" + k.telegram.replace(/^@/, ""); a2.target = "_blank"; a2.rel = "noopener"; links.appendChild(a2); }
+    var igh = igOf(d, k);
+    if(igh){ var a3 = el("a", null, "📷 Instagram"); a3.href = "https://instagram.com/" + encodeURIComponent(igh); a3.target = "_blank"; a3.rel = "noopener"; a3.title = "@" + igh; links.appendChild(a3); }
     grid2.appendChild(links);
 
     var er = el("p","err"); er.setAttribute("role","alert");
@@ -2346,12 +2365,12 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
     var groups = showDone
       ? [["Bajarilgan (30 kun)", list.slice().sort(function(a, b){ return new Date(b.bajarilgan_at) - new Date(a.bajarilgan_at); }), "done"]]
       : TPER.map(function(x){ return [x[1], list.filter(function(t){ return per(t) === x[0]; }).sort(function(a, b){ return new Date(a.muddat) - new Date(b.muddat); }), x[0]]; });
-    var total = 0;
+    var total = 0, no = 0;
     groups.forEach(function(g){
       if(!g[1].length) return;
       total += g[1].length;
       var box = el("div","tgroup tg-" + g[2]); box.appendChild(el("h3", null, g[0] + " · " + g[1].length));
-      g[1].forEach(function(t){ box.appendChild(taskRow(t, g[2])); });
+      g[1].forEach(function(t){ box.appendChild(taskRow(t, g[2], ++no)); });
       wb.appendChild(box);
     });
     if(!total){
@@ -2364,17 +2383,16 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
     }
     status(openT.length + " ta ochiq vazifa");
   }
-  function taskRow(t, kind){
+  function taskRow(t, kind, no){
     var r = el("article","tcard tk-" + kind + (t.bajarildi ? " done" : ""));
     var cb = el("input"); cb.type = "checkbox"; cb.checked = t.bajarildi; cb.setAttribute("aria-label","Bajarildi: " + t.matn);
     cb.addEventListener("change", function(){ toggleTask(t, cb.checked).then(render); });
     r.appendChild(cb);
-    var dt = new Date(t.muddat), tt = el("div","tt");
-    tt.appendChild(el("span","td", pad(dt.getDate()) + "." + pad(dt.getMonth()+1)));
-    tt.appendChild(el("span","th", pad(dt.getHours()) + ":" + pad(dt.getMinutes())));
-    r.appendChild(tt);
+    var nb = el("span","tno", String(no || "")); nb.title = "Muddat: " + fmtDT(t.muddat);
+    r.appendChild(nb);
     var main = el("div","tmain");
     main.appendChild(el("div","ttx", t.matn));
+    var dt = new Date(t.muddat), due = (kind === "late" || kind === "later") ? "📅 " + pad(dt.getDate()) + "." + pad(dt.getMonth()+1) : "";
     var d = t.bitim_id ? byId(S.D, t.bitim_id) : null;
     if(d){
       var v = byId(S.V, d.voronka_id), s = byId(S.B, d.bosqich_id), k = contactOf(d);
@@ -2384,11 +2402,13 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
       if(s){ var sc = el("span","chip tst", s.nom); sc.style.setProperty("--st", s.rang); meta.appendChild(sc); }
       var pr = probOf(d); if(pr) meta.appendChild(el("span","chip" + tagCls(pr), "#" + pr));
       if(v && S.V.length > 1) meta.appendChild(el("span","tvor", v.nom));
+      if(due) meta.appendChild(el("span","tdue", due));
       main.appendChild(meta);
-      var sk = S.SK[d.id], idea = sk ? ideaOf(sk.matn) : "";
+      var sk = S.SK[d.id], idea = sk ? ideaOf(sk.matn) : "", ig = igOf(d, k);
       var line = el("div","tline");
       if(k && k.telefon){ var cl = el("a","skcall","📞 " + k.telefon); cl.href = telHref(k.telefon); line.appendChild(cl); }
-      else if(sk) line.appendChild(el("span","tnoph","Telefon yoʻq — Direct / Telegram"));
+      else if(sk && !ig) line.appendChild(el("span","tnoph","Telefon yoʻq — Direct / Telegram"));
+      if(ig) line.appendChild(igLink(ig, k && k.telefon ? "📷 Instagram" : "📷 Instagram · @" + ig));
       if(idea) line.appendChild(el("span","tidea","💡 " + idea));
       if(line.childNodes.length) main.appendChild(line);
       r.appendChild(main);
@@ -2396,7 +2416,8 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
       act.addEventListener("click", function(){ openDeal(d.id); });
       r.appendChild(act);
     } else {
-      main.appendChild(el("div","tmeta tgen","Umumiy vazifa"));
+      var gm = el("div","tmeta tgen","Umumiy vazifa"); if(due) gm.appendChild(el("span","tdue", due));
+      main.appendChild(gm);
       r.appendChild(main);
     }
     return r;
