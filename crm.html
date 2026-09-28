@@ -175,6 +175,49 @@ label{display:block;margin:0 0 5px;font-size:13px;font-weight:500;color:var(--in
 .empty{padding:16px 8px;color:var(--muted);text-align:center;font-size:13px}
 .colb .empty{padding:22px 8px}
 
+/* doska ustunlari: nom, joy, rang, yangi ustun */
+.colh-r{display:flex;align-items:center;gap:6px;min-width:0}
+.colh .n{flex:0 1 auto;min-width:0;margin:-3px -6px;padding:3px 6px;border-radius:7px;cursor:pointer;transition:background-color .15s,color .15s}
+.colh .n:hover{background:color-mix(in srgb,var(--surface) 80%,transparent);color:var(--ink)}
+.colh .n:focus-visible{outline-offset:0}
+.colh .pen{flex:none;margin-left:4px;color:var(--muted);font-size:12px;line-height:1;opacity:0;transition:opacity .15s}
+.colh:hover .pen,.colh .n:focus-visible + .pen{opacity:1}
+.colh-r .coled{margin-left:auto}
+.colh[draggable="true"]{cursor:grab}
+.colh[draggable="true"]:active{cursor:grabbing}
+.col-rn{height:30px;padding:4px 8px;font-size:13px;font-weight:600;border-radius:8px}
+.col.cdrag{opacity:.4}
+.col.cdrop-l{box-shadow:inset 3px 0 0 var(--accent),0 0 0 1px color-mix(in srgb,var(--accent) 45%,transparent)}
+.col.cdrop-r{box-shadow:inset -3px 0 0 var(--accent),0 0 0 1px color-mix(in srgb,var(--accent) 45%,transparent)}
+.col.cnew{animation:cnew 1.8s ease-out}
+@keyframes cnew{from{box-shadow:0 0 0 3px var(--accent)}to{box-shadow:0 0 0 3px transparent}}
+.coled{display:none;flex:none;gap:3px;align-items:center}
+.kmode .coled{display:inline-flex}
+.coled button{display:grid;place-items:center;width:24px;height:24px;padding:0;border:1px solid var(--line-2);border-radius:7px;background:var(--surface);color:var(--ink-2);font:600 14px/1 var(--f-body);cursor:pointer}
+.coled button:hover{border-color:var(--accent);color:var(--accent)}
+.coled button:disabled{opacity:.35;cursor:default;border-color:var(--line-2);color:var(--ink-2)}
+.coled button.cdel:hover{border-color:var(--stop);color:var(--stop)}
+.coled .cdot{width:12px;height:12px;border-radius:50%;background:var(--st-strong)}
+.cpal{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.cpal button{width:22px;height:22px;padding:0;border:1px solid var(--line-2);border-radius:50%;cursor:pointer}
+.cpal button[aria-pressed="true"]{box-shadow:0 0 0 2px var(--col),0 0 0 4px var(--accent)}
+.lhint{display:none;margin-top:6px;font-size:11.5px;font-weight:600;color:var(--accent)}
+.kmode .lhint{display:block}
+.kmode .colh{background:color-mix(in srgb,var(--accent) 7%,transparent)}
+.coladd{flex:none;width:58px;display:flex;flex-direction:column;border:1.5px dashed var(--line-2);border-radius:var(--r-lg);background:transparent;transition:border-color .15s,background-color .15s}
+.coladd:hover{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 5%,transparent)}
+.coladd-b{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:8px;padding:16px 0;border:none;border-radius:var(--r-lg);background:transparent;color:var(--muted);font:600 12px/1.2 var(--f-body);cursor:pointer}
+.coladd-b .pl{display:grid;place-items:center;width:32px;height:32px;border:1px solid var(--line-2);border-radius:50%;background:var(--surface);font-size:20px;font-weight:500;line-height:1}
+.coladd:hover .coladd-b{color:var(--accent)}
+.coladd:hover .coladd-b .pl{border-color:var(--accent)}
+.coladd.open{width:284px;border-style:solid;border-color:var(--line);background:var(--col)}
+.coladd-f{display:grid;gap:8px;padding:15px 12px}
+.coladd-h{font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2)}
+.coladd-f .err{margin:0;min-height:0}
+.coladd-f .err:empty{display:none}
+.toast{position:fixed;left:50%;bottom:18px;z-index:60;transform:translateX(-50%);max-width:min(520px,calc(100vw - 32px));padding:10px 16px;border-radius:12px;background:var(--ink);color:var(--bg);font-size:13.5px;font-weight:500;line-height:1.4;box-shadow:var(--shadow-lg)}
+.toast.bad{background:var(--stop);color:var(--surface)}
+
 /* bitim paneli */
 .panel{position:fixed;top:0;right:0;bottom:0;z-index:20;width:min(680px,100%);display:flex;flex-direction:column;border:none;border-left:1px solid var(--line);border-radius:0;box-shadow:-18px 0 50px rgba(19,25,38,.14)}
 .panel .title{background:var(--surface)}
@@ -441,7 +484,7 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
   .top .search{order:4;flex:1 1 100%;max-width:none}
   .top .sum{display:none}
   .board{padding:12px;gap:10px}
-  .col{width:262px}
+  .col,.coladd.open{width:262px}
   .page{padding:12px}
   .panel .title{padding-left:14px}
   .panel .body{padding:12px 12px 4px}
@@ -532,11 +575,13 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
 
 <div class="kbar" id="kbar" hidden>
   <span class="kb-t"><svg aria-hidden="true"><use href="#i-edit"/></svg>Konstruktor</span>
-  <span class="kb-h">✎ — nom · ↑↓ yoki sichqoncha — joyi · ▾ — ochish/yopish · koʻz — menyuda koʻrsatish. Hamma uchun saqlanadi.</span>
+  <span class="kb-h">✎ — nom · ↑↓ ‹ › yoki sichqoncha — joyi · ▾ — ochish/yopish · koʻz — menyuda koʻrsatish · doskada: ustun nomini bosing, sudrang, «+» — yangi ustun. Hamma uchun saqlanadi.</span>
   <span class="kb-m" id="kbMsg" role="status"></span>
   <button class="btn sm" type="button" id="kbReset">Standart holat</button>
   <button class="btn sm main" type="button" id="kbDone">Tayyor</button>
 </div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
@@ -993,7 +1038,7 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
   $("refresh").addEventListener("click", async function(){ if(await loadAll()) render(); });
   window.addEventListener("focus", async function(){
     if($("app").hidden || !$("panel").hidden || !$("modal").hidden) return;
-    if(Date.now() - S.loadedAt > 60000 && !document.querySelector(".qform")){ if(await loadAll()) render(); }
+    if(Date.now() - S.loadedAt > 60000 && !document.querySelector(".qform, .col-rn, .coladd.open, .cpal")){ if(await loadAll()) render(); }
   });
   function badge(){
     var n = S.T.filter(isLate).length;
@@ -1043,15 +1088,13 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
     var board = el("div","board"); wrap.appendChild(board);
     var deals = sortDeals(all.filter(function(d){ return matchDeal(d, S.q) && passF(d, null); }));
     var openSum = 0, openCnt = 0;
-    stagesOf(S.vid).forEach(function(s){
+    var stAll = stagesOf(S.vid), regs = stAll.filter(function(x){ return x.turi === "oddiy"; }), lastReg = regs[regs.length - 1];
+    stAll.forEach(function(s){
       var ds = deals.filter(function(d){ return d.bosqich_id === s.id; });
       var sum = ds.reduce(function(a, d){ return a + d.byudjet; }, 0);
       if(s.turi === "oddiy"){ openSum += sum; openCnt += ds.length; }
       var col = el("section","col"); col.setAttribute("aria-label", s.nom); col.style.setProperty("--st", s.rang); col.setAttribute("data-sid", s.id);
-      var h = el("div","colh");
-      h.appendChild(el("div","n", s.nom + (s.turi === "yutuq" ? " ✓" : s.turi === "yoqotish" ? " ✕" : "")));
-      h.appendChild(el("div","m", ds.length + " ta bitim · " + money(sum)));
-      col.appendChild(h);
+      col.appendChild(colHead(s, col, ds.length, sum, regs));
       col.appendChild(el("div","strip"));
       if(s.turi === "oddiy"){
         var qa = el("div","qadd"); var qb = el("button","btn sm","+ Tez qoʻshish"); qb.type = "button";
@@ -1061,12 +1104,15 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
       var body = el("div","colb");
       if(!ds.length) body.appendChild(el("div","empty", S.q ? "Topilmadi" : "Bitim yoʻq"));
       ds.forEach(function(d){ body.appendChild(card(d, s)); });
-      body.addEventListener("dragover", function(e){ e.preventDefault(); e.dataTransfer.dropEffect = "move"; body.classList.add("over"); });
+      body.addEventListener("dragover", function(e){ if(COLDRAG) return; e.preventDefault(); e.dataTransfer.dropEffect = "move"; body.classList.add("over"); });
       body.addEventListener("dragleave", function(e){ if(!body.contains(e.relatedTarget)) body.classList.remove("over"); });
-      body.addEventListener("drop", function(e){ e.preventDefault(); body.classList.remove("over"); var id = Number(e.dataTransfer.getData("text/plain")); if(id) moveDeal(id, s.id); });
+      body.addEventListener("drop", function(e){ if(COLDRAG) return; e.preventDefault(); body.classList.remove("over"); var id = Number(e.dataTransfer.getData("text/plain")); if(id) moveDeal(id, s.id); });
       col.appendChild(body);
+      colDropTarget(col, s);
       board.appendChild(col);
+      if(s === lastReg) board.appendChild(colAddTile(S.vid));
     });
+    if(!lastReg) board.appendChild(colAddTile(S.vid));
     board.scrollLeft = S.bx || 0;
     board.addEventListener("scroll", function(){ S.bx = board.scrollLeft; }, {passive:true});
     status(openCnt + " ta ochiq bitim · " + money(openSum));
@@ -1097,6 +1143,212 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
     c.addEventListener("dragstart", function(e){ e.dataTransfer.setData("text/plain", String(d.id)); e.dataTransfer.effectAllowed = "move"; c.classList.add("dragging"); });
     c.addEventListener("dragend", function(){ c.classList.remove("dragging"); });
     return c;
+  }
+
+  /* ---------- doska ustunlari: nom, joy, rang, yangi ustun ---------- */
+  var toastT = null;
+  function toast(t, bad){
+    var x = $("toast"), kb = $("kbar"); x.textContent = t; x.className = "toast" + (bad ? " bad" : "");
+    x.style.bottom = (kb && !kb.hidden ? Math.max(18, Math.round(window.innerHeight - kb.getBoundingClientRect().top + 10)) : 18) + "px";
+    x.hidden = false;
+    clearTimeout(toastT); toastT = setTimeout(function(){ x.hidden = true; }, bad ? 6000 : 2400);
+  }
+  function errText(r){ return r && r.error ? r.error.message : "ruxsat yoʻq"; }
+  var colQ = Promise.resolve();
+  function colQueue(fn){ var p = colQ.then(fn, fn); colQ = p.catch(function(){}); return p; }
+  function regsOf(vid){ return stagesOf(vid).filter(function(x){ return x.turi === "oddiy"; }); }
+
+  function colHead(s, col, cnt, sum, regs){
+    var h = el("div","colh"), reg = s.turi === "oddiy", ri = regs.indexOf(s);
+    var r = el("div","colh-r");
+    var n = el("span","n", s.nom + (s.turi === "yutuq" ? " ✓" : s.turi === "yoqotish" ? " ✕" : ""));
+    n.tabIndex = 0; n.setAttribute("role","button"); n.title = "Nomini oʻzgartirish uchun bosing";
+    n.addEventListener("click", function(e){ e.stopPropagation(); colRename(s, h, r); });
+    n.addEventListener("keydown", function(e){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); colRename(s, h, r); } });
+    r.appendChild(n); r.appendChild(el("span","pen","✎"));
+    var ed = el("span","coled");
+    function tb(content, title, fn, dis, cls){
+      var b = el("button", cls || null); b.type = "button"; b.title = title; b.setAttribute("aria-label", title + ": " + s.nom);
+      if(typeof content === "string") b.textContent = content; else b.appendChild(content);
+      b.disabled = !!dis; b.draggable = false;
+      b.addEventListener("click", function(e){ e.stopPropagation(); fn(); });
+      ed.appendChild(b);
+    }
+    if(reg){
+      tb("‹", "Chapga surish", function(){ colShift(s, -1); }, ri <= 0);
+      tb("›", "Oʻngga surish", function(){ colShift(s, 1); }, ri >= regs.length - 1);
+    }
+    tb(el("span","cdot"), "Rangni tanlash", function(){ colPalette(s, h); });
+    if(reg) tb("×", "Ustunni oʻchirish", function(){ colDelete(s); }, false, "cdel");
+    r.appendChild(ed);
+    h.appendChild(r);
+    h.appendChild(el("div","m", cnt + " ta bitim · " + money(sum)));
+    if(reg && ri === 0) h.appendChild(el("div","lhint","⤵ Yangi lidlar shu ustunga tushadi"));
+    if(reg){ h.draggable = true; h.title = "Ustunni sudrab, joyini oʻzgartiring"; colDragSource(h, col, s); }
+    return h;
+  }
+
+  function colRename(s, h, r){
+    if(h.querySelector(".col-rn")) return;
+    var inp = el("input","field col-rn"); inp.maxLength = 40; inp.value = s.nom; inp.setAttribute("aria-label","Ustun nomi");
+    h.draggable = false; h.removeAttribute("title");
+    r.replaceWith(inp); inp.focus(); inp.select();
+    var done = false;
+    async function finish(save){
+      if(done) return; done = true;
+      var v = inp.value.trim().slice(0, 40);
+      if(!save || !v || v === s.nom){ render(); return; }
+      var old = s.nom; s.nom = v; render();
+      var res = await sb.from("crm_bosqichlar").update({nom: v}).eq("id", s.id).select("*");
+      if(res.error || !res.data || !res.data.length){ s.nom = old; render(); toast("Nom saqlanmadi: " + errText(res), true); return; }
+      Object.assign(s, res.data[0]); toast("Ustun nomi saqlandi ✓");
+    }
+    inp.addEventListener("keydown", function(e){
+      if(e.key === "Enter"){ e.preventDefault(); finish(true); }
+      else if(e.key === "Escape"){ e.preventDefault(); e.stopPropagation(); finish(false); }
+    });
+    inp.addEventListener("blur", function(){ finish(true); });
+    ["mousedown","click","dragstart"].forEach(function(t){ inp.addEventListener(t, function(e){ e.stopPropagation(); }); });
+  }
+
+  function colOrder(vid, ids){
+    var regs = ids.map(function(id){ return byId(S.B, id); }).filter(Boolean);
+    var rest = stagesOf(vid).filter(function(x){ return regs.indexOf(x) === -1; });
+    var ch = [];
+    regs.concat(rest).forEach(function(x, i){ if(x.tartib !== i + 1){ x.tartib = i + 1; ch.push({id:x.id, tartib:i + 1}); } });
+    if(!ch.length) return;
+    render();
+    colQueue(async function(){
+      var rs = await Promise.all(ch.map(function(c){ return sb.from("crm_bosqichlar").update({tartib: c.tartib}).eq("id", c.id).select("id"); }));
+      var bad = rs.filter(function(x){ return x.error || !x.data || !x.data.length; })[0];
+      if(bad){ toast("Tartib saqlanmadi: " + errText(bad), true); if(await loadAll()) render(); }
+      else toast("Ustunlar tartibi saqlandi ✓");
+    });
+  }
+  function colShift(s, dir){
+    var ids = regsOf(s.voronka_id).map(function(x){ return x.id; }), i = ids.indexOf(s.id), j = i + dir;
+    if(i < 0 || j < 0 || j >= ids.length) return;
+    ids.splice(i, 1); ids.splice(j, 0, s.id);
+    colOrder(s.voronka_id, ids);
+  }
+  function colDropTo(fromId, toId, after){
+    var from = byId(S.B, fromId), to = byId(S.B, toId);
+    if(!from || !to || from === to || from.voronka_id !== to.voronka_id || from.turi !== "oddiy" || to.turi !== "oddiy") return;
+    var ids = regsOf(from.voronka_id).map(function(x){ return x.id; });
+    ids.splice(ids.indexOf(fromId), 1);
+    var k = ids.indexOf(toId); if(k < 0) return;
+    ids.splice(after ? k + 1 : k, 0, fromId);
+    colOrder(from.voronka_id, ids);
+  }
+
+  var COLDRAG = null;
+  function colMarksClear(){ Array.prototype.forEach.call(document.querySelectorAll(".cdrop-l,.cdrop-r"), function(x){ x.classList.remove("cdrop-l","cdrop-r"); }); }
+  function colDragSource(h, col, s){
+    h.addEventListener("dragstart", function(e){
+      COLDRAG = {sid: s.id};
+      try{
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/x-crm-col", String(s.id));
+        var b = col.getBoundingClientRect();
+        e.dataTransfer.setDragImage(col, Math.max(0, Math.min(b.width, e.clientX - b.left)), Math.max(0, Math.min(60, e.clientY - b.top)));
+      }catch(x){}
+      setTimeout(function(){ if(COLDRAG && COLDRAG.sid === s.id) col.classList.add("cdrag"); }, 0);
+    });
+    h.addEventListener("dragend", function(){ col.classList.remove("cdrag"); COLDRAG = null; colMarksClear(); });
+  }
+  function colDropTarget(col, s){
+    function after(e){ var b = col.getBoundingClientRect(); return e.clientX >= b.left + b.width / 2; }
+    col.addEventListener("dragover", function(e){
+      if(!COLDRAG || s.turi !== "oddiy" || COLDRAG.sid === s.id) return;
+      e.preventDefault(); e.dataTransfer.dropEffect = "move";
+      var cls = after(e) ? "cdrop-r" : "cdrop-l";
+      if(!col.classList.contains(cls)){ colMarksClear(); col.classList.add(cls); }
+    });
+    col.addEventListener("dragleave", function(e){ if(COLDRAG && !col.contains(e.relatedTarget)) col.classList.remove("cdrop-l","cdrop-r"); });
+    col.addEventListener("drop", function(e){
+      if(!COLDRAG) return;
+      e.preventDefault();
+      var from = COLDRAG.sid, a = after(e);
+      COLDRAG = null; colMarksClear();
+      colDropTo(from, s.id, a);
+    });
+  }
+
+  function colAddTile(vid){
+    var t = el("div","coladd");
+    var b = el("button","coladd-b"); b.type = "button"; b.title = "Yangi ustun qoʻshish"; b.setAttribute("aria-label","Yangi ustun qoʻshish");
+    b.appendChild(el("span","pl","+")); b.appendChild(el("span","tx","Ustun"));
+    t.appendChild(b);
+    b.addEventListener("click", function(){
+      t.classList.add("open"); t.innerHTML = "";
+      var f = el("form","coladd-f");
+      f.appendChild(el("div","coladd-h","Yangi ustun"));
+      var inp = el("input","field"); inp.maxLength = 40; inp.placeholder = "Masalan: Shartnoma"; inp.setAttribute("aria-label","Yangi ustun nomi");
+      var er = el("p","err"); er.setAttribute("role","alert");
+      var row = el("div","row"); var ok = el("button","btn sm main","Qoʻshish"); ok.type = "submit"; var no = el("button","btn sm","Bekor"); no.type = "button";
+      row.appendChild(ok); row.appendChild(no);
+      [inp, er, row].forEach(function(x){ f.appendChild(x); });
+      t.appendChild(f); inp.focus();
+      no.addEventListener("click", function(){ render(); });
+      inp.addEventListener("keydown", function(e){ if(e.key === "Escape"){ e.preventDefault(); e.stopPropagation(); render(); } });
+      f.addEventListener("submit", async function(e){
+        e.preventDefault();
+        var nm = inp.value.trim();
+        if(!nm){ er.textContent = "Ustun nomini yozing."; inp.focus(); return; }
+        ok.disabled = true; er.textContent = "";
+        var res = await colQueue(function(){ return colCreate(vid, nm); });
+        if(res.error){ ok.disabled = false; er.textContent = "Saqlanmadi: " + res.error; return; }
+        render(); toast("«" + res.stage.nom + "» ustuni qoʻshildi ✓");
+        var c = document.querySelector('.col[data-sid="' + res.stage.id + '"]');
+        if(c){ c.classList.add("cnew"); c.scrollIntoView({behavior:"smooth", inline:"nearest", block:"nearest"}); }
+      });
+    });
+    return t;
+  }
+  async function colCreate(vid, nm){
+    var st = stagesOf(vid), regs = st.filter(function(x){ return x.turi === "oddiy"; });
+    var pos = regs.length ? regs[regs.length - 1].tartib + 1 : 1;
+    var shift = st.filter(function(x){ return x.tartib >= pos; });
+    var rs = await Promise.all(shift.map(function(x){ return sb.from("crm_bosqichlar").update({tartib: x.tartib + 1}).eq("id", x.id).select("*"); }));
+    for(var i = 0; i < rs.length; i++){
+      if(rs[i].error || !rs[i].data || !rs[i].data.length){ if(await loadAll()) render(); return {error: errText(rs[i])}; }
+      Object.assign(shift[i], rs[i].data[0]);
+    }
+    var used = st.map(function(x){ return String(x.rang).toLowerCase(); }), pal = COLORS.slice(0, 6);
+    var rang = pal.filter(function(c){ return used.indexOf(c) === -1; })[0] || pal[regs.length % pal.length];
+    var r = await sb.from("crm_bosqichlar").insert({voronka_id: vid, nom: nm.slice(0, 40), rang: rang, turi: "oddiy", tartib: pos}).select("*");
+    if(r.error || !r.data || !r.data.length) return {error: errText(r)};
+    S.B.push(r.data[0]);
+    return {stage: r.data[0]};
+  }
+
+  function colPalette(s, h){
+    var old = h.querySelector(".cpal"); if(old){ old.remove(); return; }
+    var p = el("div","cpal"), cur = String(s.rang).toLowerCase();
+    COLORS.forEach(function(c){
+      var b = el("button"); b.type = "button"; b.draggable = false; b.style.background = c; b.title = c;
+      b.setAttribute("aria-label","Rang " + c); b.setAttribute("aria-pressed", c === cur ? "true" : "false");
+      b.addEventListener("click", async function(e){
+        e.stopPropagation();
+        if(c === cur){ p.remove(); return; }
+        var was = s.rang; s.rang = c; render();
+        var r = await sb.from("crm_bosqichlar").update({rang: c}).eq("id", s.id).select("*");
+        if(r.error || !r.data || !r.data.length){ s.rang = was; render(); toast("Rang saqlanmadi: " + errText(r), true); return; }
+        Object.assign(s, r.data[0]); toast("Rang saqlandi ✓");
+      });
+      p.appendChild(b);
+    });
+    h.appendChild(p);
+  }
+
+  async function colDelete(s){
+    var n = S.D.filter(function(d){ return d.bosqich_id === s.id; }).length;
+    if(n){ toast("«" + s.nom + "» ustunida " + n + " ta bitim bor — avval ularni boshqa ustunga oʻtkazing.", true); return; }
+    if(regsOf(s.voronka_id).length <= 1){ toast("Kamida bitta ustun qolishi kerak — yangi lidlar shunga tushadi.", true); return; }
+    if(!(await confirmBox("Ustunni oʻchirish", "«" + s.nom + "» ustuni oʻchiriladi. Bitimlar bunga tegmaydi — ustun boʻsh.", "Ha, oʻchirish"))) return;
+    var r = await sb.from("crm_bosqichlar").delete().eq("id", s.id).select("id");
+    if(r.error || !r.data || !r.data.length){ toast("Oʻchirilmadi: " + errText(r), true); return; }
+    S.B = S.B.filter(function(x){ return x.id !== s.id; }); render(); toast("Ustun oʻchirildi");
   }
 
   async function findOrCreateContact(ism, tel, tg){
