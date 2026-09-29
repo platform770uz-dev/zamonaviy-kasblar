@@ -146,3 +146,30 @@ revoke execute on function public.crm_qongiroq_yoz(bigint, text, text, timestamp
 grant execute on function public.crm_qongiroq_yoz(bigint, text, text, timestamptz) to authenticated;
 revoke execute on function public.crm_savat_qosh() from public, anon, authenticated;
 revoke execute on function public.crm_vazifa_savatdan() from public, anon, authenticated;
+
+-- Tashqaridan kelgan har bir yangi lid (Meta forma, ustoz.html) darhol «Qoʻngʻiroq qilish» vazifasini oladi —
+-- shunda u Vazifalar va Savatda koʻrinadi. Admin CRM'da oʻzi qoʻshgan/import qilgan bitimlarga tegmaydi.
+create or replace function public.crm_yangi_lid_vazifa()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if coalesce(auth.role(), '') = 'authenticated' then return null; end if;
+  insert into crm_vazifalar (bitim_id, matn, muddat)
+  select n.id, 'Qoʻngʻiroq qilish — yangi lid', now()
+    from new_rows n join crm_bosqichlar b on b.id = n.bosqich_id
+   where b.turi = 'oddiy';
+  return null;
+exception when others then
+  return null; -- vazifa yaratilmasa ham lid saqlanishi shart
+end $$;
+
+drop trigger if exists crm_bitimlar_vazifa on public.crm_bitimlar;
+create trigger crm_bitimlar_vazifa
+  after insert on public.crm_bitimlar
+  referencing new table as new_rows
+  for each statement execute function public.crm_yangi_lid_vazifa();
+
+revoke execute on function public.crm_yangi_lid_vazifa() from public, anon, authenticated;

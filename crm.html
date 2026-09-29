@@ -2629,8 +2629,10 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
   function savHolders(tid){ return S.SV.filter(function(x){ return x.vazifa_id === tid; }).map(function(x){ return x.egasi; }); }
   function callsOf(tid){ return S.Q.filter(function(q){ return q.vazifa_id === tid; }); }
   function failRun(tid){ var n = 0, qs = callsOf(tid); for(var i = 0; i < qs.length; i++){ if(FAIL[qs[i].natija]) n++; else break; } return n; }
+  // Kiruvchi lid — oʻzi murojaat qilgan (forma, ustoz.html, Direct…), sovuq B2B roʻyxatidan emas
+  function isInbound(d){ return !!d.manba && d.manba !== "Boshqa" && SOURCES.indexOf(d.manba) !== -1; }
   // Savatga olish mumkin boʻlgan ochiq vazifalar. dueOnly: bugungilar va qayta qoʻngʻiroq vaqti kelganlar.
-  // Tartib: qayta qoʻngʻiroq vaqti kelganlar → hech kimning savatida yoʻqlar → «yuqori» ehtimol → eng eskilari.
+  // Tartib: qayta qoʻngʻiroq vaqti kelganlar → hali qoʻngʻiroq qilinmagan kiruvchi lidlar → hech kimning savatida yoʻqlar → «yuqori» ehtimol → eng eskilari.
   function savCands(owner, dueOnly){
     var now = new Date(), end = dayEnd(now), mine = {}, out = [];
     S.SV.forEach(function(x){ if(x.egasi === owner) mine[x.vazifa_id] = true; });
@@ -2640,9 +2642,9 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
       var s = byId(S.B, d.bosqich_id); if(!s || s.turi !== "oddiy") return;
       var m = new Date(t.muddat), called = callsOf(t.id).length > 0;
       if(dueOnly && (called ? m > now : m >= end)) return;
-      out.push({t:t, d:d, retry: called && m <= now, other: savHolders(t.id).length > 0});
+      out.push({t:t, d:d, retry: called && m <= now, hot: !called && isInbound(d), other: savHolders(t.id).length > 0});
     });
-    return out.sort(function(a, b){ return (b.retry - a.retry) || (a.other - b.other) || (prk(a.d) - prk(b.d)) || (new Date(a.t.muddat) - new Date(b.t.muddat)); });
+    return out.sort(function(a, b){ return (b.retry - a.retry) || (b.hot - a.hot) || (a.other - b.other) || (prk(a.d) - prk(b.d)) || (new Date(a.t.muddat) - new Date(b.t.muddat)); });
   }
   async function savAdd(owner, tids){
     tids = tids.filter(function(id){ return !S.SV.some(function(x){ return x.egasi === owner && x.vazifa_id === id; }); });
@@ -2709,7 +2711,7 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
     top.appendChild(el("span","sv-sp"));
     var free = SAV_MAX - rows.length, cands = savCands(owner, true), nTake = Math.min(free, cands.length);
     var take = el("button","btn main", "Keyingilarni olish" + (nTake ? " (" + nTake + ")" : "")); take.type = "button";
-    take.title = free <= 0 ? "Savat toʻla — avval mijozlarni yakunlang" : !cands.length ? "Hozir qoʻngʻiroq qilinadigan vazifa yoʻq" : "Avval qayta qoʻngʻiroq vaqti kelganlar, keyin «yuqori» ehtimol, keyin eng eskilari";
+    take.title = free <= 0 ? "Savat toʻla — avval mijozlarni yakunlang" : !cands.length ? "Hozir qoʻngʻiroq qilinadigan vazifa yoʻq" : "Avval qayta qoʻngʻiroq vaqti kelganlar, keyin yangi kiruvchi lidlar (forma, ustoz.html), keyin «yuqori» ehtimol, keyin eng eskilari";
     take.disabled = !nTake;
     take.addEventListener("click", async function(){ take.disabled = true; if(await savAdd(owner, cands.slice(0, free).map(function(x){ return x.t.id; }))) render(); else take.disabled = false; });
     var pick = el("button","btn","+ Qoʻlda tanlash"); pick.type = "button";
@@ -2774,6 +2776,7 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
     b.appendChild(h);
     var m = el("span","svi-m");
     if(d){
+      if(isInbound(d)) m.appendChild(el("span","chip src", d.manba));
       var pr = probOf(d); if(pr) m.appendChild(el("span","chip" + tagCls(pr), pr));
       var s = byId(S.B, d.bosqich_id); if(s){ var sc = el("span","chip tst", s.nom); sc.style.setProperty("--st", s.rang); m.appendChild(sc); }
     }

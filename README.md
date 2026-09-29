@@ -44,7 +44,8 @@ insert into public.adminlar (email) values ('email@example.com');
 
 ## Savat — корзинка на сегодня (CRM)
 
-- У каждого своя корзинка на 10 клиентов. «Keyingilarni olish» — CRM берёт сама: сначала тех, кому пора перезвонить, потом «yuqori», потом самых старых. Вручную — «Qoʻlda tanlash» или «🧺 Savatga» в Vazifalar.
+- У каждого своя корзинка на 10 клиентов. «Keyingilarni olish» — CRM берёт сама: сначала тех, кому пора перезвонить, потом новых входящих лидов (форма Meta, ustoz.html), потом «yuqori», потом самых старых. Вручную — «Qoʻlda tanlash» или «🧺 Savatga» в Vazifalar.
+- Каждый новый входящий лид (форма Meta, ustoz.html) сразу получает задачу «Qoʻngʻiroq qilish — yangi lid» и поэтому виден в Vazifalar и Savat. Сделки, добавленные вручную в CRM, задачу автоматически не получают.
 - Итоги звонка: Gaplashdik, Koʻtarmadi, Qayta qoʻngʻiroq, Uchrashuv, Rad etdi, Notoʻgʻri raqam, Band. Комментарий обязателен. «Koʻtarmadi» и «Band» — снова через 1 час, после 5-й попытки задача закрывается.
 - Итог пишется одной транзакцией (функция `crm_qongiroq_yoz`): звонок, задача, удаление из всех корзинок, запись в историю сделки. Если клиента уже закрыл другой человек — будет сообщение, двойной записи не будет.
 - Доска внизу — клиенты по последнему итогу. Цель на день — «+ Kunlik maqsad qoʻyish».
