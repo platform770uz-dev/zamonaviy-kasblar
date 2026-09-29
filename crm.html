@@ -1108,6 +1108,7 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
     $("login").hidden = true; $("app").hidden = false;
     $("logout").title = S.me;
     await loadAll();
+    if(S.vid != null) S.tf.vor = String(S.vid);
     renderNav(); setView(firstView());
   }
   $("lForm").addEventListener("submit", async function(e){
@@ -1159,6 +1160,7 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
       b.addEventListener("click", function(){
         if(v.id === S.vid) return;
         S.vid = v.id;
+        S.tf = {per:"", vor:String(v.id), prob:"", cc:"", nf:""};
         localStorage.setItem("crm_vid", S.vid);
         S.f = {prob:"", tag:"", task:"", sort:S.f.sort}; S.bx = 0;
         fillVSel(); render();
@@ -1186,7 +1188,7 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
       if(b.getAttribute("data-view") === v) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current");
     });
     $("pTitle").textContent = uiName("nav", v);
-    $("funnelSwitch").hidden = S.V.length < 2 || !(v === "bitimlar" || v === "hisobot" || v === "sozlama");
+    $("funnelSwitch").hidden = S.V.length < 2 || !(v === "bitimlar" || v === "vazifalar" || v === "hisobot" || v === "sozlama");
     $("q").hidden = !(v === "bitimlar" || v === "kontaktlar" || v === "vazifalar");
     $("newDeal").hidden = v !== "bitimlar";
     $("impBtn").hidden = v !== "bitimlar";
@@ -2247,7 +2249,7 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
     function dealOf(t){ return t.bitim_id ? byId(S.D, t.bitim_id) : null; }
     function vorOf(t){ var d = dealOf(t); return d ? String(d.voronka_id) : "none"; }
     function probT(t){ var d = dealOf(t); return d ? probOf(d) : ""; }
-    var recent = recentTasks(now), X = vkCtx(now);
+    var recent = recentTasks(now).filter(function(t){ return !t.bitim_id || vorOf(t) === String(S.vid); }), X = vkCtx(now);
     var base = recent.filter(function(t){ return matchTask(t, S.q); });
     var CC = f.cc ? (S.UI.vk.filter(function(x){ return x.id === f.cc && x.q; })[0] || null) : null;
     if(f.cc && !CC) f.cc = "";
