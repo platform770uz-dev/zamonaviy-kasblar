@@ -1090,6 +1090,19 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
     return r.error ? null : r.data[0];
   }
 
+  async function notifyTelegramLeads(deals){
+    if(!deals || !deals.length || !sb.functions || !sb.functions.invoke) return;
+    var leads = deals.slice(0, 50).map(function(d){
+      var k = contactOf(d), v = byId(S.V, d.voronka_id);
+      return {id:d.id, name:d.nom || "", phone:k ? k.telefon || "" : "", funnel:v ? v.nom : "", source:d.manba || ""};
+    });
+    try{
+      var r = await sb.functions.invoke("telegram-new-lead", {body:{leads:leads}});
+      if(r.error) console.warn("Telegram xabari yuborilmadi:", r.error.message || r.error);
+      else if(r.data && r.data.error) console.warn("Telegram xabari yuborilmadi:", r.data.error);
+    }catch(err){ console.warn("Telegram xabari yuborilmadi:", err && err.message || err); }
+  }
+
   /* ---------- kirish ---------- */
   async function boot(){
     var s = await sb.auth.getSession();
@@ -1765,6 +1778,7 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
       else x.err = "bitim: " + dr[j].err;
     });
     var made = rows.filter(function(x){ return x.d; });
+    if(made.length) notifyTelegramLeads(made.map(function(x){ return x.d; }));
     say("Skript va dosyelar…");
     var notes = [];
     made.forEach(function(x){
@@ -1926,6 +1940,7 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
         var d = ins.data[0]; d.byudjet = Number(d.byudjet) || 0; if(!d.teglar) d.teglar = [];
         S.D.unshift(d);
         await log(d.id, "tizim", "Bitim yaratildi" + (kc.existed ? " (mavjud kontakt: " + kc.k.ism + ")" : ""));
+        notifyTelegramLeads([d]);
         render();
       }catch(err){ ok.disabled = false; er.textContent = "Saqlanmadi: " + (err.message || err); }
     });
@@ -2117,7 +2132,7 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
         if(d){
           if(d.bosqich_id !== nd.bosqich_id){ var f0 = byId(S.B, d.bosqich_id); await log(nd.id, "bosqich", "Bosqich: " + (f0 ? f0.nom : "?") + " → " + st.nom); }
           Object.assign(d, nd);
-        } else { S.D.unshift(nd); await log(nd.id, "tizim", "Bitim yaratildi"); }
+        } else { S.D.unshift(nd); await log(nd.id, "tizim", "Bitim yaratildi"); notifyTelegramLeads([nd]); }
         if(note) await log(nd.id, "tizim", note);
         if(nd.voronka_id !== S.vid){ S.vid = nd.voronka_id; localStorage.setItem("crm_vid", S.vid); fillVSel(); }
         render(); openDeal(nd.id);
@@ -2498,7 +2513,7 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
         var ins = await sb.from("crm_bitimlar").insert({voronka_id: S.vid, bosqich_id: st.id, nom: k.ism.slice(0,120), kontakt_id: k.id}).select("*");
         if(ins.error){ er.textContent = "Saqlanmadi: " + ins.error.message; return; }
         var d = ins.data[0]; d.byudjet = Number(d.byudjet) || 0; if(!d.teglar) d.teglar = [];
-        S.D.unshift(d); await log(d.id, "tizim", "Bitim yaratildi");
+        S.D.unshift(d); await log(d.id, "tizim", "Bitim yaratildi"); notifyTelegramLeads([d]);
         modalDone = null; $("modal").hidden = true; render(); openDeal(d.id);
       });
       var sp = el("span"); sp.style.flex = "1"; r.appendChild(sp);
