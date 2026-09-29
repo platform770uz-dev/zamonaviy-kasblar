@@ -140,6 +140,11 @@ label{display:block;margin:0 0 5px;font-size:13px;font-weight:500;color:var(--in
 .top .search{flex:1 1 220px;max-width:420px;padding-left:36px;background-image:var(--loupe);background-repeat:no-repeat;background-position:12px center}
 .top .sum{white-space:nowrap;font-size:13px;font-variant-numeric:tabular-nums}
 .top .sum:empty{display:none}
+.funnel-switch{display:inline-flex;align-items:center;gap:3px;max-width:min(100%,520px);min-width:0;overflow-x:auto;padding:3px;border:1px solid var(--line);border-radius:999px;background:var(--surface-2);scrollbar-width:none}
+.funnel-switch::-webkit-scrollbar{display:none}
+.funnel-switch button{flex:0 0 auto;min-height:34px;padding:7px 13px;border:0;border-radius:999px;background:transparent;color:var(--muted);font:500 13px/1.3 var(--f-body);white-space:nowrap;cursor:pointer;transition:background-color .15s,color .15s}
+.funnel-switch button:hover{background:var(--surface);color:var(--ink)}
+.funnel-switch button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:600}
 .content{flex:1;min-height:0;overflow:auto}
 
 /* voronka doskasi */
@@ -539,7 +544,7 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
   .nav button{font-size:10.5px}
   .top{padding:10px 12px;gap:8px}
   .top h1{display:none}
-  .top #vSel{order:1;flex:1 1 140px;max-width:none !important}
+  .top #funnelSwitch{order:1;flex:1 1 170px;max-width:none}
   .top #refresh{order:2;font-size:0;gap:0;padding:8px 13px}
   .top #refresh::before{content:"\21BB";font-size:16px;line-height:21px}
   .top #impBtn{order:2;font-size:0;gap:0;padding:8px 13px}
@@ -610,8 +615,7 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
   <div class="main">
     <header class="top">
       <h1 id="pTitle">Bitimlar</h1>
-      <label class="sr" for="vSel">Voronka</label>
-      <select class="field" id="vSel" style="width:auto;max-width:260px"></select>
+      <div class="funnel-switch" id="funnelSwitch" role="group" aria-label="CRM voronkasi"></div>
       <label class="sr" for="q">Qidirish</label>
       <input class="field search" id="q" type="search" placeholder="Qidirish: bitim, ism, telefon, teg">
       <span class="sum muted" id="sum" role="status"></span>
@@ -1148,10 +1152,21 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
     return true;
   }
   function fillVSel(){
-    var s = $("vSel"); s.innerHTML = "";
-    S.V.forEach(function(v){ var o = el("option", null, v.nom); o.value = v.id; if(v.id === S.vid) o.selected = true; s.appendChild(o); });
+    var s = $("funnelSwitch"); s.innerHTML = "";
+    S.V.forEach(function(v){
+      var b = el("button", null, v.nom); b.type = "button";
+      b.setAttribute("aria-pressed", v.id === S.vid ? "true" : "false");
+      b.addEventListener("click", function(){
+        if(v.id === S.vid) return;
+        S.vid = v.id;
+        localStorage.setItem("crm_vid", S.vid);
+        S.f = {prob:"", tag:"", task:"", sort:S.f.sort}; S.bx = 0;
+        fillVSel(); render();
+      });
+      s.appendChild(b);
+    });
+    s.hidden = S.V.length < 2;
   }
-  $("vSel").addEventListener("change", function(){ S.vid = Number(this.value); localStorage.setItem("crm_vid", S.vid); S.f = {prob:"", tag:"", task:"", sort:S.f.sort}; S.bx = 0; render(); });
   $("q").addEventListener("input", function(){ S.q = this.value.trim().toLowerCase(); render(); });
   $("refresh").addEventListener("click", async function(){ if(await loadAll()) render(); });
   window.addEventListener("focus", async function(){
@@ -1171,7 +1186,7 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
       if(b.getAttribute("data-view") === v) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current");
     });
     $("pTitle").textContent = uiName("nav", v);
-    $("vSel").hidden = !(v === "bitimlar" || v === "hisobot" || v === "sozlama");
+    $("funnelSwitch").hidden = S.V.length < 2 || !(v === "bitimlar" || v === "hisobot" || v === "sozlama");
     $("q").hidden = !(v === "bitimlar" || v === "kontaktlar" || v === "vazifalar");
     $("newDeal").hidden = v !== "bitimlar";
     $("impBtn").hidden = v !== "bitimlar";
