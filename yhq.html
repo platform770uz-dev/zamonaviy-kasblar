@@ -189,6 +189,33 @@ button{font:inherit;border:none;background:none;color:inherit;cursor:pointer}
 .tb{width:100%;border-collapse:collapse;font-size:14.5px}
 .tb td{padding:9px 2px;border-bottom:1px solid var(--line)}
 .tb td:last-child{text-align:right;font:700 14px/1.3 var(--fd)}
+/* ---- sinov imtihoni ---- */
+#exm{position:fixed;inset:0;z-index:80;background:var(--bg) var(--tile);background-size:56px 56px;display:none;flex-direction:column}
+#exm.on{display:flex}
+.exclk{font:700 15px/1 var(--fd);font-variant-numeric:tabular-nums;color:var(--teal);min-width:52px;text-align:right}
+.exclk.low{color:var(--clay)}
+.exnav{display:flex;gap:6px;overflow-x:auto;padding:10px 14px;background:var(--card);border-bottom:1px solid var(--line);scrollbar-width:none}
+.exnav::-webkit-scrollbar{display:none}
+.exnav button{flex:0 0 auto;width:32px;height:32px;border-radius:9px;border:1.5px solid var(--line);font:700 12.5px/1 var(--fd);color:var(--muted);background:var(--bg)}
+.exnav button.a{background:var(--teal-soft);color:var(--ink)}
+.exnav button.g{background:var(--teal);border-color:var(--teal);color:var(--on-teal)}
+.exnav button.r{background:var(--clay);border-color:var(--clay);color:#fff}
+.exnav button.cur{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.exc{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px 18px 22px;box-shadow:var(--shadow)}
+.exc .q{font-size:17.5px}
+.o.sel{border-color:var(--teal);background:var(--teal-soft);font-weight:600}
+.o.sel.no{border-color:var(--clay);background:var(--clay-soft)}
+.exbar{display:flex;gap:10px;margin-top:14px}.exbar .b{margin-top:0}
+.exres{text-align:center;padding:6px 0 2px}
+.exres .big{font:700 46px/1 var(--fd);color:var(--teal)}.exres .big.bad{color:var(--clay)}
+.exres h2{font-size:24px;margin:10px 0 4px}
+.exmis{border:1px solid var(--line);border-radius:16px;padding:14px;margin-top:12px;background:var(--card)}
+.exmis .xs{margin:10px 0}.exmis .qs{margin:10px 0}
+.exmis .q{font-size:16px;margin:6px 0 8px}
+.exmis .yo{font-size:14.5px;color:var(--clay);margin:4px 0}.exmis .ro{font-size:14.5px;color:var(--teal);font-weight:600;margin:4px 0 8px}
+.exh{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;justify-content:center}
+.exh span{font:700 12.5px/1 var(--fd);padding:7px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card)}
+.exh span.g{color:var(--teal);border-color:color-mix(in srgb,var(--teal) 45%,var(--line))}.exh span.r{color:var(--clay)}
 @media (prefers-reduced-motion:reduce){.swipe{animation:none}#feed{scroll-behavior:auto}.reel .in{transition:none}}
 </style>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -219,6 +246,11 @@ button{font:inherit;border:none;background:none;color:inherit;cursor:pointer}
 <div id="prof">
   <div class="ptop"><button class="pbk" onclick="closeProf()">&#8592;</button><b data-t>Sening yo'ling</b><span></span></div>
   <div class="pbody"><div class="pin" id="profBody"></div></div>
+</div>
+<div id="exm">
+  <div class="ptop"><button class="pbk" onclick="exQuit()" aria-label="Yopish">&#215;</button><b id="exTtl" data-t>Sinov imtihoni</b><span class="exclk" id="exClk"></span></div>
+  <div class="exnav" id="exNav"></div>
+  <div class="pbody" id="exScr"><div class="pin" id="exBody"></div></div>
 </div>
 <script>
 const MODULES = {
@@ -1031,6 +1063,8 @@ const GINT={
  qoshimcha:{n:"G",t:"Qo'shimcha lavhalar",s:"Belgi ostidagi oq to'rtburchak. Belgini aniqlashtiradi: masofa, ta'sir doirasi, yo'nalish."}};
 const CH=[1,2,3,4,5,6,10];
 let FEED=[],SIGNS=[];
+/* sinov imtihoni formati — VM 408-son qarori, 24–31-bandlar (pastdagi SINOV IMTIHONI bo'limi). Shu yerda — lenta chizilishidan oldin kerak */
+const EXF={n:20,min:25,pass:18,sg:3,xq:3};
 function buildFeed(){
   const F=[],usedQ=new Set(),NX0=XQ.filter(x=>!x.v).length;
   F.push({t:"alif"});
@@ -1116,7 +1150,8 @@ function card(r,i){
   if(r.t==="fin")return `<section class="reel chap" data-i="${i}"><div class="in">
     <div class="no" style="color:var(--grn)">&#10003;</div><h2>${T("Kitob tugadi")}</h2>
     <p style="margin-top:10px">${T("Endi lentani boshidan qayta o'ta — ikkinchi marta hammasi tezroq o'rnashadi. Va sinov imtihonlarini yech.")}</p>
-    <button class="b" style="margin-top:22px" onclick="S.pos=0;save();location.reload()">${T("Boshidan")}</button></div></section>`;
+    <button class="b" style="margin-top:22px" onclick="exStart()">${T("Sinov imtihoni")} · ${EXF.n} ${T("savol")}</button>
+    <button class="b b2" onclick="S.pos=0;save();location.reload()">${T("Boshidan")}</button></div></section>`;
   if(r.t==="gintro"){const g=GINT[r.g],n=SIGNS.filter(x=>x.g===r.g).length;
     return `<section class="reel chap" data-i="${i}"><div class="in"><div class="no">${g.n}</div><h2>${T(g.t)}</h2><p>${T(g.s)}</p>
     <p style="color:var(--yel);margin-top:14px;font-weight:600">${n} ${T("ta belgi")}</p></div>${SW()}</section>`}
@@ -1188,7 +1223,7 @@ function endCard(i){return `<section class="reel end" id="endCard" data-i="${i}"
   <div class="big">&#10003;</div><h2 style="font-size:29px;margin-top:12px" id="endTtl">${T("Yaxshi ish")}</h2>
   <p style="color:var(--mu);margin:8px 0 0" id="endSub"></p><div class="stats" id="endStats"></div>
   <p class="teaser" id="teaser"></p>
-  <button class="b" onclick="goOn()">${T("Davom etish")}</button><button class="b b2" onclick="location.reload()">${T("Yopish")}</button>
+  <button class="b" onclick="goOn()">${T("Davom etish")}</button><button class="b b2" onclick="exStart()">${T("Sinov imtihoni")} · ${EXF.n} ${T("savol")}</button><button class="b b2" onclick="location.reload()">${T("Yopish")}</button>
   <div class="credit">${T("Belgi tasvirlari: Wikimedia Commons, CC BY-SA 4.0. Qoidalar: O'zR VM 12.04.2022-y. 172-son qarori.")}</div></div></section>`}
 function nextTitle(pos){for(let i=pos;i<FEED.length;i++){const r=FEED[i];
   if(r.t==="gintro")return GINT[r.g].t;if(r.t==="chap")return CHAP[r.c].t;if(r.t==="partB")return "Qoidalar — B qism";
@@ -1356,6 +1391,10 @@ function drawProf(){
      <div class="st"><b>${S.best}</b><span>${T("kombo")}</span></div>
    </div>
 
+   <h3 class="ph">${T("Sinov imtihoni")}</h3>
+   <button class="b" onclick="exStart()">${T(`Bilet yechish — ${EXF.n} savol, ${EXF.min} daqiqa`)}</button>
+   ${exHist()}
+
    <h3 class="ph">${T("Sozlamalar")}</h3>
    <button class="jm wide" onclick="flip()">${T("Yozuv")}: <b>${S.cyr?"Кирилл":"Lotin"}</b> &#8212; ${T("almashtirish")}</button>
    <h3 class="ph">${T("Imtihon sanasi")}</h3>
@@ -1386,15 +1425,126 @@ function drawProf(){
    <h3 class="ph">${T("Imtihon haqida")}</h3>
    <table class="tb">
      <tr><td>${T("Savollar")}</td><td>20</td></tr>
+     <tr><td>${T("Javob variantlari")}</td><td>2–5</td></tr>
      <tr><td>${T("Vaqt")}</td><td>25 ${T("daq")}</td></tr>
-     <tr><td>${T("O'tish bali")}</td><td>18</td></tr>
-     <tr><td>${T("Ruxsat etilgan xato")}</td><td>2</td></tr>
-     <tr><td>${T("Qayta topshirish")}</td><td>7 ${T("kun")}</td></tr>
+     <tr><td>${T("Topshirish uchun")}</td><td>${T("kamida 18 ta to'g'ri")}</td></tr>
+     <tr><td>${T("Nazariyni qayta topshirish")}</td><td>${T("keyingi ish kuni")}</td></tr>
+     <tr><td>${T("Nazariy natija amal qiladi")}</td><td>2 ${T("oy")}</td></tr>
+     <tr><td>${T("Rasmiy savollar bazasi")}</td><td>${T("kamida 1000 ta")}</td></tr>
    </table>
-   <p class="hint">${T("Imtihondan bir hafta oldin rasmiy bazadan ham bilet ishla: 24pdd.uz, autotestlar.uz. Savol ta'riflari u yerda boshqacha yozilgan bo'lishi mumkin.")}</p>
+   <p class="hint">${T("Manba: VM 408-son qarori (2026-yil 30-mart tahriri) va 393-son qarori, lex.uz. Savollarga istalgan tartibda javob berasan, har birini qayta bosib tasdiqlaysan, natija oxirida chiqadi. Rasmiy baza animatsiyali savollardan iborat — bu yerdagi savollar asosiy mavzularni qamraydi, lekin bazaning hammasini emas.")}</p>
    <button class="b b2" style="margin-top:20px" onclick="resetAll()">${T("Progressni tozalash")}</button>
    <div style="height:30px"></div>`;
 }
+</script>
+<script>
+/* ============ SINOV IMTIHONI ============
+   Rasmiy tartib bo'yicha (VM 408-son qarori, 2-ilova, 24–31-bandlar, 2026-yil 30-mart tahriri):
+   20 savol, 25 daqiqa, savollarga istalgan tartibda javob beriladi, javob klavishni qayta bosib tasdiqlanadi,
+   natija (har bir savol to'g'ri/noto'g'ri va sarflangan vaqt) hamma savolga javob berilganda yoki vaqt tugaganda chiqadi,
+   kamida 18 ta to'g'ri javob — «topshirdi». Bilet: EXF.sg belgi + EXF.xq chorraha rasmi + qolgani barcha mavzulardan
+   (bir mavzudan ko'pi bilan 2 ta). */
+let EX=null;
+function exA(t){const n=+t.k.slice(1);return t.k[0]==="q"?Q[n].a:t.k[0]==="x"?XQ[n].a:t.so.indexOf(n)}
+function exItem(t){const n=+t.k.slice(1);
+  if(t.k[0]==="q"){const q=Q[n];return {tag:MODULES[q.m],pic:"",q:q.q,o:q.o,a:q.a,e:q.e}}
+  if(t.k[0]==="x"){const x=XQ[n];return {tag:"Chorraha",pic:`<div class="xs">${x.v?drawJ(x):drawX(x)}</div>`,q:x.q,o:x.o,a:x.a,e:x.e}}
+  const s=SIGNS[n];return {tag:SG[s.g]||"Yo'l belgisi",pic:`<div class="qs">${s.s}</div>`,q:"Bu qanday belgi?",o:t.so.map(k=>SIGNS[k].n),a:t.so.indexOf(n),e:s.n+" — "+s.d};
+}
+function exPick(){
+  const it=[],per={};
+  for(const s of sh(SIGNS.map((_,i)=>i)).slice(0,EXF.sg)){
+    let pool=SIGNS.map((_,k)=>k).filter(k=>k!==s&&SIGNS[k].g===SIGNS[s].g);
+    if(pool.length<3)pool=pool.concat(SIGNS.map((_,k)=>k).filter(k=>k!==s&&SIGNS[k].g!==SIGNS[s].g));
+    it.push({k:"s"+s,so:sh([s,...sh(pool).slice(0,3)])})}
+  for(const x of sh(XQ.map((_,i)=>i)).slice(0,EXF.xq))it.push({k:"x"+x,ord:sh(XQ[x].o.map((_,k)=>k))});
+  for(const i of sh(Q.map((_,i)=>i))){if(it.length>=EXF.n)break;const m=Q[i].m;
+    if((per[m]||0)>=2)continue;per[m]=(per[m]||0)+1;it.push({k:"q"+i,ord:sh(Q[i].o.map((_,k)=>k))})}
+  return sh(it);
+}
+const exOrd=t=>t.ord||t.so.map((_,k)=>k);
+function exStart(){
+  if(EX&&!EX.done&&!confirm(T("Boshlangan imtihon bekor bo'ladi. Yangisini boshlaymizmi?")))return;
+  if(EX)clearInterval(EX.tm);
+  EX={it:exPick(),i:0,t0:Date.now(),done:false,tm:0};
+  document.getElementById('prof').classList.remove('on');
+  document.getElementById('exm').classList.add('on');document.body.style.overflow='hidden';
+  EX.tm=setInterval(exTick,1000);exTick();exShow(0);
+}
+function exTitle(){document.getElementById('exTtl').textContent=EX.done?T("Natija"):T(`Javob: ${EX.it.filter(t=>t.p!==undefined).length} / ${EX.it.length}`)}
+function exTick(){if(!EX||EX.done)return;
+  const left=Math.max(0,EXF.min*60-Math.floor((Date.now()-EX.t0)/1000)),c=document.getElementById('exClk');
+  c.textContent=String(Math.floor(left/60)).padStart(2,"0")+":"+String(left%60).padStart(2,"0");c.classList.toggle('low',left<=120);
+  if(left<=0)exFinish("vaqt")}
+function exNav(){
+  document.getElementById('exNav').innerHTML=EX.it.map((t,i)=>{
+    const c=t.p===undefined?"":(EX.done?(t.p===exA(t)?"g":"r"):"a");
+    return `<button class="${c}${i===EX.i?" cur":""}" onclick="exShow(${i})">${i+1}</button>`}).join('');
+  const cur=document.querySelector('#exNav .cur');if(cur)cur.scrollIntoView({block:"nearest",inline:"center"})}
+/* imtihon paytida: tanlangan (s) — ajratiladi, tasdiqlangan (p) — qulflanadi; to'g'ri/xato faqat oxirida */
+function exShow(i){
+  EX.i=i;const t=EX.it[i],x=exItem(t),ord=exOrd(t),D=EX.done;
+  document.getElementById('exBody').innerHTML=`<div class="exc"><div class="tagline">${T((i+1)+"/"+EX.it.length+" · "+String(x.tag).toUpperCase())}</div>
+    ${x.pic}<div class="q">${T(x.q)}</div>
+    <div class="opts">${ord.map((k,j)=>{let c="o";
+      if(D)c=k===x.a?"o ok":(t.p===k?"o no":"o dim");else if(t.p!==undefined)c=t.p===k?"o sel":"o dim";else if(t.s===j)c="o sel";
+      return `<button class="${c}" onclick="exAns(${j})">${T(x.o[k])}</button>`}).join('')}</div>
+    ${D?`<div class="ex">${T(x.e)}</div>`:t.p!==undefined?`<p class="hint">${T("Javob tasdiqlangan.")}</p>`
+      :`<p class="hint" id="exHint">${T(t.s===undefined?"Javobni tanlang.":"Tasdiqlash uchun shu javobni yana bir marta bosing.")}</p>`}</div>
+    <div class="exbar">${D?`<button class="b" onclick="exResult()">${T("Natijaga qaytish")}</button>`
+      :`${i<EX.it.length-1?`<button class="b b2" onclick="exShow(${i+1})">${T(t.p===undefined?"Keyinroq":"Keyingisi")} &#8594;</button>`:""}<button class="b b2" onclick="exEnd()">${T("Yakunlash")}</button>`}</div>`;
+  document.getElementById('exScr').scrollTop=0;exTitle();exNav()}
+/* birinchi bosish — tanlash, xuddi shu javobni ikkinchi bosish — tasdiqlash (29-band) */
+function exAns(j){
+  if(!EX||EX.done)return;const t=EX.it[EX.i];if(t.p!==undefined)return;
+  const bs=document.querySelectorAll('#exBody .o');
+  if(t.s!==j){t.s=j;bs.forEach((b,k)=>b.classList.toggle('sel',k===j));vib(10);
+    const h=document.getElementById('exHint');if(h)h.textContent=T("Tasdiqlash uchun shu javobni yana bir marta bosing.");return}
+  t.p=exOrd(t)[j];bs.forEach((b,k)=>{b.onclick=null;if(k!==j)b.classList.add('dim')});vib(25);
+  const h=document.getElementById('exHint');if(h)h.textContent=T("Javob tasdiqlangan.");
+  exTitle();exNav();setTimeout(exNext,350);
+}
+/* keyingi javobsiz savol; hammasiga javob berilgan bo'lsa — natija */
+function exNext(){if(!EX||EX.done)return;
+  const f=EX.it.findIndex((u,k)=>k>EX.i&&u.p===undefined),g=EX.it.findIndex(u=>u.p===undefined);
+  if(g<0)exFinish("");else exShow(f>=0?f:g)}
+function exEnd(){const n=EX.it.filter(t=>t.p===undefined).length;
+  if(n&&!confirm(T(`${n} ta savolga javob berilmagan — ular noto'g'ri hisoblanadi. Yakunlaymizmi?`)))return;exFinish("")}
+function exFinish(why){
+  if(!EX||EX.done)return;EX.done=true;clearInterval(EX.tm);
+  let r=0,w=0;
+  for(const t of EX.it){if(t.p===undefined)continue;const ok=t.p===exA(t);ok?r++:w++;
+    const st=S.stats[t.k]||{w:0,r:0};ok?st.r++:st.w++;S.stats[t.k]=st}
+  const n=EX.it.length,pass=r>=EXF.pass,secs=Math.min(EXF.min*60,Math.round((Date.now()-EX.t0)/1000));
+  EX.res={r,n,secs,pass,why};
+  S.right+=r;S.wrong+=w;if(pass)S.xp+=50;
+  S.ex=(S.ex||[]).concat({d:day(),r,n,t:secs,ok:pass?1:0}).slice(-30);
+  if(!S.days.includes(day()))S.days.push(day());
+  save();paintTop();exResult()}
+function exResult(){
+  const R=EX.res,mm=s=>Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
+  EX.i=-1;exTitle();document.getElementById('exClk').textContent="";
+  const bad=EX.it.map((t,i)=>({t,i})).filter(({t})=>t.p!==exA(t));
+  document.getElementById('exBody').innerHTML=`<div class="exc exres">
+    <div class="big${R.pass?"":" bad"}">${R.r}/${R.n}</div>
+    <h2>${T(R.pass?"Topshirdi":"Topshirmadi")}</h2>
+    <p class="hint">${R.why==="vaqt"?T("Vaqt tugadi — imtihon avtomatik to'xtadi.")+" ":""}${T(`Sarflangan vaqt: ${mm(R.secs)}. Kerak edi — kamida ${EXF.pass} ta to'g'ri javob.`)}</p>
+    ${R.pass?`<div class="xpbig">+50 XP</div>`:""}
+    <button class="b" style="margin-top:18px" onclick="exStart()">${T("Yangi bilet")}</button>
+    <button class="b b2" onclick="exClose()">${T("Lentaga qaytish")}</button></div>
+    ${bad.length?`<h3 class="ph">${T("Xatolar ustida ishlash")}</h3>`+bad.map(({t,i})=>{const x=exItem(t);
+      return `<div class="exmis"><div class="tagline">${T((i+1)+"-SAVOL · "+String(x.tag).toUpperCase())}</div>${x.pic}<div class="q">${T(x.q)}</div>
+        <div class="yo">${t.p!==undefined?"&#10007; "+T(x.o[t.p]):T("Javob berilmadi")}</div><div class="ro">&#10003; ${T(x.o[x.a])}</div>
+        <div class="ex">${T(x.e)}</div></div>`}).join(''):""}`;
+  document.getElementById('exScr').scrollTop=0;exNav()}
+function exClose(){if(EX)clearInterval(EX.tm);EX=null;document.getElementById('exm').classList.remove('on');document.body.style.overflow=''}
+function exQuit(){if(EX&&!EX.done&&!confirm(T("Imtihonni to'xtatamizmi? Natija saqlanmaydi.")))return;exClose()}
+function exHist(){const all=S.ex||[],e=all.slice(-8),l5=all.slice(-5),ok=l5.filter(x=>x.ok).length;
+  if(!e.length)return `<p class="hint">${T(`Haqiqiy imtihondagidek: ${EXF.n} savol, ${EXF.min} daqiqa, kamida ${EXF.pass} ta to'g'ri javob. Javob qayta bosib tasdiqlanadi, natija oxirida chiqadi.`)}</p>`;
+  return `<div class="exh">${e.map(x=>`<span class="${x.ok?"g":"r"}">${x.r}/${x.n}</span>`).join('')}</div>
+    <p class="hint">${T(`So'nggi ${l5.length} ta biletdan ${ok} tasi topshirildi.`)}${ok>=5?" "+T("Imtihonga tayyorsan!"):""}</p>`}
+/* botdan to'g'ridan-to'g'ri: yhq.html#imtihon */
+if(location.hash==="#imtihon")(function w(){FEED.length?exStart():setTimeout(w,150)})();
 </script>
 </body>
 </html>
