@@ -63,6 +63,37 @@ end $$;
 -- Trigger funksiyasini API (rpc) orqali chaqirib boʻlmasin; trigger oʻzi ishlashda davom etadi
 revoke execute on function public.crm_tg_yangi_lid() from public, anon, authenticated;
 
+-- Yangi nomzod (ishga.html testini topshirdi) → tg-bot → faqat owner'ga xabar.
+create or replace function public.crm_tg_yangi_nomzod()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_sec text;
+begin
+  if coalesce(auth.role(), '') = 'authenticated' then return null; end if;
+  select qiymat into v_sec from crm_maxfiy where kalit = 'tg_ichki';
+  if v_sec is null then return null; end if;
+  perform net.http_post(
+    url := 'https://uzivivmrixstxjvzkksz.supabase.co/functions/v1/tg-bot',
+    body := jsonb_build_object('turi', 'yangi_nomzod', 'id', new.id),
+    headers := jsonb_build_object('Content-Type', 'application/json', 'x-crm-secret', v_sec),
+    timeout_milliseconds := 20000
+  );
+  return null;
+exception when others then
+  return null; -- xabar ketmasa ham nomzod saqlanishi shart
+end $$;
+
+revoke execute on function public.crm_tg_yangi_nomzod() from public, anon, authenticated;
+
+drop trigger if exists nomzodlar_tg on public.nomzodlar;
+create trigger nomzodlar_tg
+  after insert on public.nomzodlar
+  for each row execute function public.crm_tg_yangi_nomzod();
+
 drop trigger if exists crm_bitimlar_tg on public.crm_bitimlar;
 create trigger crm_bitimlar_tg
   after insert on public.crm_bitimlar

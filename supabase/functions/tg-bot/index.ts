@@ -181,6 +181,29 @@ async function notify(body: any) {
   return json({ ok: true, kartalar: texts.length, sent });
 }
 
+// ishga.html testini topshirgan nomzod — faqat owner'ga (bu yollash masalasi, adminlarga koʻrsatilmaydi)
+async function notifyNomzod(body: any) {
+  const id = Number(body.id);
+  if (!Number.isSafeInteger(id) || id <= 0) return json({ error: "bad id" }, 400);
+  const { data: n } = await sb.from("nomzodlar").select("ism, telefon, vakansiya, test_sek").eq("id", id).maybeSingle();
+  const { data: owners } = await sb.from("tg_chatlar").select("chat_id").eq("rol", "owner").eq("tasdiqlangan", true);
+  if (!n || !owners?.length) return json({ ok: true, sent: 0 });
+  const sek = Number(n.test_sek);
+  const text = [
+    "🧑‍💼 <b>Новый кандидат — тест пройден</b>",
+    `👤 ${esc(n.ism)}`,
+    `📞 ${esc(n.telefon)}`,
+    `💼 ${esc(n.vakansiya)}`,
+    ...(Number.isFinite(sek) && n.test_sek != null ? [`⏱ Время теста: ${Math.floor(sek / 60)}:${String(sek % 60).padStart(2, "0")}`] : []),
+    "",
+    "Баллы и красные флаги — в разделе «Nomzodlar».",
+  ].join("\n");
+  const btn = { inline_keyboard: [[{ text: "👥 Nomzodlar", url: SITE + "admin.html" }]] };
+  let sent = 0;
+  for (const o of owners) if ((await send(o.chat_id, text, btn)).ok) sent++;
+  return json({ ok: true, sent });
+}
+
 async function setup(body: any, webhookSecret: string | undefined) {
   if (!webhookSecret) return json({ ok: false, qadam: "tg_webhook kaliti yoʻq" }, 500);
   const me = await tg("getMe");
@@ -239,5 +262,6 @@ Deno.serve(async (req: Request) => {
   }
   if (body?.turi === "setup") return await setup(body, sec.tg_webhook);
   if (body?.turi === "yangi_lid") return await notify(body);
+  if (body?.turi === "yangi_nomzod") return await notifyNomzod(body);
   return json({ error: "nomaʼlum turi" }, 400);
 });
