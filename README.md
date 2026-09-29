@@ -10,6 +10,7 @@
 | `config.js` | Адрес Supabase и publishable-ключ — заполнить один раз |
 | `1924_setup.sql` | Таблицы и защита базы — запускается один раз в Supabase |
 | `1924_tg_bot.sql` | Telegram-бот: таблица чатов и триггер «новый лид» — уже применён в Supabase |
+| `1924_savat.sql` | «Savat» в CRM: корзинки, итоги звонков, шаг скрипта — уже применён в Supabase |
 | `supabase/functions/tg-bot/index.ts` | Код бота (Edge Function `tg-bot`): меню ссылок и уведомления о лидах |
 
 ## Запуск
@@ -40,6 +41,13 @@ insert into public.adminlar (email) values ('email@example.com');
 ```
 
 И создай этому email пользователя в **Authentication → Users**.
+
+## Savat — корзинка на сегодня (CRM)
+
+- У каждого своя корзинка на 10 клиентов. «Keyingilarni olish» — CRM берёт сама: сначала тех, кому пора перезвонить, потом «yuqori», потом самых старых. Вручную — «Qoʻlda tanlash» или «🧺 Savatga» в Vazifalar.
+- Итоги звонка: Gaplashdik, Koʻtarmadi, Qayta qoʻngʻiroq, Uchrashuv, Rad etdi, Notoʻgʻri raqam, Band. Комментарий обязателен. «Koʻtarmadi» и «Band» — снова через 1 час, после 5-й попытки задача закрывается.
+- Итог пишется одной транзакцией (функция `crm_qongiroq_yoz`): звонок, задача, удаление из всех корзинок, запись в историю сделки. Если клиента уже закрыл другой человек — будет сообщение, двойной записи не будет.
+- Доска внизу — клиенты по последнему итогу. Цель на день — «+ Kunlik maqsad qoʻyish».
 
 ## Telegram-бот
 
