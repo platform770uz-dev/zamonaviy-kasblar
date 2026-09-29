@@ -14,6 +14,7 @@ const PAGES_OWNER: [string, string][][] = [
   [["📝 Administrator vakansiyasi", "ishga.html"]],
   [["🎓 Brend-feys ustozi", "ustoz.html"], ["🎥 Mobilografiya ustozi", "mobilograf-ustoz.html"]],
   [["🎬 Mobilograf boʻlish", "mobilograf.html"]],
+  [["💪 Intizom · YHQ 10 daqiqa", "yhq.html"]], // shaxsiy: yoʻl harakati qoidalari reels (sayt boʻlib ochiladi)
 ];
 const PAGES_ADMIN: [string, string][][] = [[["📋 CRM", "crm.html"]]];
 const BTN_OWNER = "📋 Menyu";
@@ -25,8 +26,7 @@ const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SE
 const json = (o: Record<string, unknown>, status = 200) => new Response(JSON.stringify(o), { status, headers: HEAD });
 const esc = (s: unknown) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const kb = (pages: [string, string][][]) => ({ inline_keyboard: pages.map((row) => row.map(([text, page]) => ({ text, url: SITE + page }))) });
-// Shaxsiy intizom: YHQ (yoʻl harakati qoidalari) reels — Telegram ichida Mini App boʻlib ochiladi
-const menuOwner = { inline_keyboard: [...kb(PAGES_OWNER).inline_keyboard, [{ text: "💪 Intizom · YHQ 10 daqiqa", web_app: { url: SITE + "yhq.html" } }]] };
+const menuOwner = kb(PAGES_OWNER);
 const menuAdmin = kb(PAGES_ADMIN);
 
 function safeEqual(a: string, b: string) {
