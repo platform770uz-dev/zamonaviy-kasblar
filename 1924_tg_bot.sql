@@ -30,8 +30,7 @@ insert into public.crm_maxfiy (kalit, qiymat) values
   ('tg_ichki', encode(extensions.gen_random_bytes(32), 'hex'))
 on conflict (kalit) do nothing;
 
--- Tashqaridan kelgan yangi bitim (Meta forma, ustoz.html va h.k.) → tg-bot → Telegram.
--- Admin CRM'da oʻzi qoʻshgan yoki import qilgan bitimlar (authenticated) uchun xabar yoʻq.
+-- Har qanday yangi bitim (forma, CRM, import) → tg-bot → Telegram.
 create or replace function public.crm_tg_yangi_lid()
 returns trigger
 language plpgsql
@@ -43,7 +42,6 @@ declare
   v_ids jsonb;
   v_sec text;
 begin
-  if coalesce(auth.role(), '') = 'authenticated' then return null; end if;
   select count(*) into v_n from new_rows;
   if v_n = 0 then return null; end if;
   select jsonb_agg(id) into v_ids from (select id from new_rows order by id limit 20) s;
