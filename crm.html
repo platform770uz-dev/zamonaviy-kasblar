@@ -1946,9 +1946,11 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
       var still = [];
       for(var i = 0; i < items.length; i++){
         var x = items[i], row = x.row;
-        var found = await sb.from(table).select("*").eq("bitim_id", row.bitim_id).eq("matn", row.matn).limit(1);
+        var found = await sb.from(table).select("*").eq("bitim_id", row.bitim_id).order("id", {ascending:false}).limit(500);
         if(found.error){ x.err = errText(found); still.push(x); continue; }
-        var value = !found.error && found.data && found.data[0];
+        var value = (found.data || []).filter(function(y){
+          return y.matn === row.matn && (table !== "crm_vazifalar" || new Date(y.muddat).getTime() === new Date(row.muddat).getTime());
+        })[0];
         if(!value){
           var ins = await sb.from(table).insert(row).select("*");
           if(!ins.error && ins.data && ins.data[0]) value = ins.data[0];
