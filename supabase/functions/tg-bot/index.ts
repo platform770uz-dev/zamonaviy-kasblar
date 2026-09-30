@@ -1,6 +1,6 @@
-import { createClient } from "npm:@supabase/supabase-js@2";
+import { createClient } from "npm:@supabase/supabase-js@2.117.2";
 
-// 1924 admin-bot: Telegram'da havolalar menyusi + CRM'ga tashqaridan yangi lid tushsa xabar.
+// 1924 admin-bot: Telegram'da havolalar menyusi + CRM'da yangi bitim yaratilsa xabar.
 // Bot tokeni faqat Supabase → Edge Functions → Secrets → TELEGRAM_BOT_TOKEN da (kodda ham, bazada ham yoʻq).
 // Telegram soʻrovlari: X-Telegram-Bot-Api-Secret-Token = crm_maxfiy.tg_webhook.
 // Ichki soʻrovlar (baza triggeri, sozlash): x-crm-secret = crm_maxfiy.tg_ichki.
@@ -9,6 +9,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 
 const HEAD = { "Content-Type": "application/json; charset=utf-8" };
 const SITE = "https://platform770uz-dev.github.io/zamonaviy-kasblar/";
+const CRM_APP_URL = SITE + "crm.html?via=telegram";
 const PAGES_OWNER: [string, string][][] = [
   [["📋 CRM", "crm.html"], ["👥 Nomzodlar", "admin.html"]],
   [["📝 Administrator vakansiyasi", "ishga.html"]],
@@ -18,14 +19,14 @@ const PAGES_OWNER: [string, string][][] = [
 ];
 const PAGES_ADMIN: [string, string][][] = [[["📋 CRM", "crm.html"]]];
 const BTN_OWNER = "📋 Menyu";
-const BTN_ADMIN = "📋 CRM";
 const MAX_PENDING = 5; // kutayotgan begonalar chegarasi: spamdan himoya
 
 const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, { auth: { persistSession: false } });
 
 const json = (o: Record<string, unknown>, status = 200) => new Response(JSON.stringify(o), { status, headers: HEAD });
 const esc = (s: unknown) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-const kb = (pages: [string, string][][]) => ({ inline_keyboard: pages.map((row) => row.map(([text, page]) => ({ text, url: SITE + page }))) });
+const kb = (pages: [string, string][][]) => ({ inline_keyboard: pages.map((row) => row.map(([text, page]) =>
+  page === "crm.html" ? { text, web_app: { url: CRM_APP_URL } } : { text, url: SITE + page })) });
 const menuOwner = kb(PAGES_OWNER);
 const menuAdmin = kb(PAGES_ADMIN);
 
@@ -55,6 +56,10 @@ async function tg(method: string, payload: Record<string, unknown> = {}): Promis
 
 const send = (chat_id: number, text: string, reply_markup?: unknown) =>
   tg("sendMessage", { chat_id, text, parse_mode: "HTML", link_preview_options: { is_disabled: true }, ...(reply_markup ? { reply_markup } : {}) });
+
+const setCrmMenu = (chat_id: number, approved: boolean) => tg("setChatMenuButton", {
+  chat_id, menu_button: approved ? { type: "web_app", text: "CRM", web_app: { url: CRM_APP_URL } } : { type: "commands" },
+});
 
 const who = (r: { ism: string | null; username: string | null }, id: number) =>
   `${esc(r.ism || "—")}${r.username ? ` (@${esc(r.username)})` : ""} · <code>${id}</code>`;
@@ -99,21 +104,22 @@ async function onMessage(m: any) {
     return;
   }
   await sb.from("tg_chatlar").update({ ism, username }).eq("chat_id", chatId);
-  if (row.bloklangan) return; // rad etilgan — jim
+  if (row.bloklangan) { await setCrmMenu(chatId, false); return; } // rad etilgan — jim
   if (!row.tasdiqlangan) {
     await send(chatId, "⏳ Soʻrovingiz hali tasdiqlanmagan. Egasi tasdiqlagach, xabar keladi.");
     return;
   }
 
   const owner = row.rol === "owner";
+  await setCrmMenu(chatId, true);
   if (owner && /^\/adminlar(@\w+)?$/.test(text)) return await listPeople(chatId);
   if (/^\/start/.test(text)) {
     await send(
       chatId,
       owner
         ? "👑 Вы владелец бота.\n• Кнопки ниже — все ссылки\n• /adminlar — подтвердить или убрать админов\n• Уведомления о новых лидах приходят сюда"
-        : "✅ Tasdiqlandingiz! Tashqaridan yangi lid tushsa, shu yerga xabar keladi. Pastdagi «📋 CRM» tugmasi CRM'ni ochadi.",
-      { keyboard: [[{ text: owner ? BTN_OWNER : BTN_ADMIN }]], resize_keyboard: true, is_persistent: true },
+        : "✅ Tasdiqlandingiz! «CRM» tugmasi orqali parolsiz kirishingiz mumkin. Yangi lid xabarlari ham shu yerga keladi.",
+      owner ? { keyboard: [[{ text: BTN_OWNER }]], resize_keyboard: true, is_persistent: true } : { remove_keyboard: true },
     );
   }
   await send(chatId, "Kerakli boʻlimni tanlang:", owner ? menuOwner : menuAdmin);
@@ -121,8 +127,8 @@ async function onMessage(m: any) {
 
 async function onCallback(cq: any) {
   const answer = (text: string) => tg("answerCallbackQuery", { callback_query_id: cq.id, text });
-  const { data: me } = await sb.from("tg_chatlar").select("rol, tasdiqlangan").eq("chat_id", Number(cq.from?.id)).maybeSingle();
-  if (me?.rol !== "owner" || !me.tasdiqlangan) { await answer("Нет доступа"); return; }
+  const { data: me } = await sb.from("tg_chatlar").select("rol, tasdiqlangan, bloklangan").eq("chat_id", Number(cq.from?.id)).maybeSingle();
+  if (me?.rol !== "owner" || !me.tasdiqlangan || me.bloklangan) { await answer("Нет доступа"); return; }
   const m = /^(ok|no):(\d{1,15})$/.exec(String(cq.data ?? ""));
   if (!m) { await answer("?"); return; }
   const id = Number(m[2]);
@@ -130,9 +136,11 @@ async function onCallback(cq: any) {
   if (!t || t.rol === "owner") { await answer("Не найдено"); return; }
 
   const yes = m[1] === "ok";
-  await sb.from("tg_chatlar").update({ tasdiqlangan: yes, bloklangan: !yes }).eq("chat_id", id);
+  const updated = await sb.from("tg_chatlar").update({ tasdiqlangan: yes, bloklangan: !yes }).eq("chat_id", id);
+  if (updated.error) { await answer("Не удалось сохранить. Попробуйте ещё раз."); return; }
+  await setCrmMenu(id, yes);
   if (yes) {
-    await send(id, "✅ Tasdiqlandingiz! Tashqaridan yangi lid tushsa, shu yerga xabar keladi. Pastdagi «📋 CRM» tugmasi CRM'ni ochadi.", { keyboard: [[{ text: BTN_ADMIN }]], resize_keyboard: true, is_persistent: true });
+    await send(id, "✅ Tasdiqlandingiz! «CRM» tugmasini bosing — login va parolsiz ochiladi.", { remove_keyboard: true });
     await send(id, "Kerakli boʻlimni tanlang:", menuAdmin);
   }
   if (cq.message?.chat?.id && cq.message?.message_id) {
@@ -176,7 +184,7 @@ async function notify(body: any) {
     ]);
     for (const d of deals ?? []) texts.push(card(d, notes?.find((n) => n.bitim_id === d.id)?.matn, body.test === true));
   }
-  const btn = { inline_keyboard: [[{ text: "📋 CRM'da ochish", url: SITE + "crm.html" }]] };
+  const btn = { inline_keyboard: [[{ text: "📋 CRM'da ochish", web_app: { url: CRM_APP_URL } }]] };
   let sent = 0;
   for (const c of chats) for (const t of texts) if ((await send(c.chat_id, t, btn)).ok) sent++;
   return json({ ok: true, kartalar: texts.length, sent });
@@ -232,6 +240,8 @@ async function setup(body: any, webhookSecret: string | undefined) {
     });
   }
   const mb = await tg("setChatMenuButton", { menu_button: { type: "commands" } });
+  const { data: approved } = await sb.from("tg_chatlar").select("chat_id").eq("tasdiqlangan", true).eq("bloklangan", false);
+  for (const person of approved ?? []) await setCrmMenu(person.chat_id, true);
   const desc = await tg("getMyDescription");
   const sdesc = await tg("getMyShortDescription");
   return json({
