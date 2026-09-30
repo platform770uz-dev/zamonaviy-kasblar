@@ -1890,7 +1890,7 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
     return out;
   }
   async function impRun(rows, vid, sid, due, say){
-    var res = {deals:0, skript:0, dosye:0, vazifa:0, dup:0, errs:[]};
+    var res = {deals:0, skript:0, dosye:0, vazifa:0, dup:0, errs:[], pending:{notes:[], tasks:[]}};
     say("Kontaktlar…");
     var needK = rows.filter(function(it){ return !it.kEx; });
     var kr = await impInsert("crm_kontaktlar", needK.map(function(it){ return {ism: it.ism, telefon: it.telefon || null, telegram: it.telegram || null, izoh: it.instagram ? "Instagram: " + it.instagram : null}; }),
@@ -1924,17 +1924,49 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
     });
     var nr = await impInsert("crm_tarix", notes, function(x){ return x.bitim_id + "|" + x.matn.slice(0, 60); });
     nr.forEach(function(n, j){
-      if(!n.row){ res.errs.push("Izoh saqlanmadi: " + n.err); return; }
+      if(!n.row){ res.pending.notes.push({row:notes[j], err:n.err}); return; }
       var m = String(n.row.matn);
       if(m.indexOf("📞 SKRIPT") === 0){ S.SK[n.row.bitim_id] = n.row; res.skript++; }
       else if(m.indexOf("📋 DOSYE") === 0) res.dosye++;
     });
     say("Vazifalar…");
-    var tr = await impInsert("crm_vazifalar", made.map(function(x){ return {bitim_id: x.d.id, matn: x.task, muddat: (x.muddat || due).toISOString()}; }),
+    var taskRows = made.map(function(x){ return {bitim_id: x.d.id, matn: x.task, muddat: (x.muddat || due).toISOString()}; });
+    var tr = await impInsert("crm_vazifalar", taskRows,
       function(x){ return x.bitim_id + "|" + x.matn; });
-    tr.forEach(function(t){ if(t.row){ S.T.push(t.row); res.vazifa++; } else res.errs.push("Vazifa saqlanmadi: " + t.err); });
+    tr.forEach(function(t, j){ if(t.row){ S.T.push(t.row); res.vazifa++; } else res.pending.tasks.push({row:taskRows[j], err:t.err}); });
     rows.forEach(function(x){ if(x.err && x.err.indexOf("takror") !== 0) res.errs.unshift("«" + x.nom + "»: " + x.err); });
     return res;
+  }
+  function impPendingErrors(res){
+    return res.pending.notes.map(function(x){ return "Izoh saqlanmadi: " + x.err; })
+      .concat(res.pending.tasks.map(function(x){ return "Vazifa saqlanmadi: " + x.err; }));
+  }
+  async function impRetryMissing(res){
+    async function recover(table, items, saved){
+      var still = [];
+      for(var i = 0; i < items.length; i++){
+        var x = items[i], row = x.row;
+        var found = await sb.from(table).select("*").eq("bitim_id", row.bitim_id).eq("matn", row.matn).limit(1);
+        if(found.error){ x.err = errText(found); still.push(x); continue; }
+        var value = !found.error && found.data && found.data[0];
+        if(!value){
+          var ins = await sb.from(table).insert(row).select("*");
+          if(!ins.error && ins.data && ins.data[0]) value = ins.data[0];
+          else { x.err = errText(ins); still.push(x); continue; }
+        }
+        saved(value);
+      }
+      return still;
+    }
+    res.pending.notes = await recover("crm_tarix", res.pending.notes, function(n){
+      var m = String(n.matn || "");
+      if(m.indexOf("📞 SKRIPT") === 0){ S.SK[n.bitim_id] = n; res.skript++; }
+      else if(m.indexOf("📋 DOSYE") === 0) res.dosye++;
+    });
+    res.pending.tasks = await recover("crm_vazifalar", res.pending.tasks, function(t){
+      if(!byId(S.T, t.id)) S.T.push(t);
+      res.vazifa++;
+    });
   }
   function openImport(){
     var b = openModal("Autopilotdan yuklash — yangi raqamlar va skriptlar", true);
@@ -2019,16 +2051,34 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
         busy = true; go.disabled = true; no.disabled = true; ck.disabled = true; ta.disabled = true;
         var res;
         try{ res = await impRun(sel, Number(vs.value), sid, due, function(t){ go.textContent = t; }); }
-        catch(e){ res = {deals:0, skript:0, dosye:0, vazifa:0, dup:0, errs:[String(e && e.message || e)]}; }
+        catch(e){ res = {deals:0, skript:0, dosye:0, vazifa:0, dup:0, errs:[String(e && e.message || e)], pending:{notes:[], tasks:[]}}; }
         busy = false;
         r.remove();
-        var box = el("div","imp-res" + (res.deals ? "" : " bad"));
-        box.appendChild(document.createTextNode(res.deals ? "✓ " + res.deals + " ta bitim qoʻshildi: skript " + res.skript + ", dosye " + res.dosye + ", vazifa " + res.vazifa + "." + (res.dup ? " " + res.dup + " ta takror oʻtkazib yuborildi." : "") : "Hech narsa qoʻshilmadi."));
-        if(res.errs.length){ var ul = el("ul"); res.errs.slice(0, 8).forEach(function(x){ ul.appendChild(el("li", null, x)); }); box.appendChild(ul); }
+        var box = el("div","imp-res");
         pv.appendChild(box);
         var r2 = el("div","row"); r2.style.justifyContent = "flex-end"; r2.style.marginTop = "12px";
         var cl = el("button","btn main","Yopish"); cl.type = "button"; r2.appendChild(cl); pv.appendChild(r2);
         cl.addEventListener("click", closeModal); cl.focus();
+        function showResult(){
+          box.innerHTML = "";
+          var problems = res.errs.concat(impPendingErrors(res));
+          box.className = "imp-res" + (problems.length || !res.deals ? " bad" : "");
+          box.appendChild(document.createTextNode(res.deals ? "✓ " + res.deals + " ta bitim qoʻshildi: skript " + res.skript + ", dosye " + res.dosye + ", vazifa " + res.vazifa + "." + (res.dup ? " " + res.dup + " ta takror oʻtkazib yuborildi." : "") : "Hech narsa qoʻshilmadi."));
+          if(problems.length){
+            box.appendChild(el("p", null, "Baʼzi maʼlumotlar saqlanmadi. Xatolarni tekshiring; yoʻqolgan izoh va vazifalarni shu yerda qayta saqlash mumkin."));
+            var ul = el("ul"); problems.slice(0, 8).forEach(function(x){ ul.appendChild(el("li", null, x)); }); box.appendChild(ul);
+          }
+          if(res.pending.notes.length || res.pending.tasks.length){
+            var retry = el("button","btn","Saqlanmaganlarni qayta urinish"); retry.type = "button"; box.appendChild(retry);
+            retry.addEventListener("click", async function(){
+              retry.disabled = true; cl.disabled = true; retry.textContent = "Qayta saqlanmoqda…";
+              try{ await impRetryMissing(res); }
+              catch(e){ res.errs.push("Qayta urinish: " + String(e && e.message || e)); }
+              cl.disabled = false; showResult(); render();
+            });
+          }
+        }
+        showResult();
         if(Number(vs.value) !== S.vid){ S.vid = Number(vs.value); try{ localStorage.setItem("crm_vid", S.vid); }catch(e){} fillVSel(); }
         render();
         var tc = document.querySelector('.col[data-sid="' + sid + '"]'); if(tc) tc.scrollIntoView({inline:"start", block:"nearest"});
@@ -3239,41 +3289,46 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
     pr.appendChild(pl); pr.appendChild(ps); wb.appendChild(pr);
     if(!v){ wb.appendChild(el("p","empty","Voronka yoʻq.")); return; }
     var since = period === "all" ? 0 : Date.now() - Number(period) * 86400000;
-    var ds = S.D.filter(function(d){ return d.voronka_id === v.id && new Date(d.created_at).getTime() >= since; });
+    var all = S.D.filter(function(d){ return d.voronka_id === v.id; });
+    var ds = all.filter(function(d){ return new Date(d.created_at).getTime() >= since; });
     var st = stagesOf(v.id);
-    var won = ds.filter(function(d){ var s = byId(S.B, d.bosqich_id); return s && s.turi === "yutuq"; });
-    var lost = ds.filter(function(d){ var s = byId(S.B, d.bosqich_id); return s && s.turi === "yoqotish"; });
-    var open = ds.length - won.length - lost.length;
+    var closed = all.filter(function(d){
+      var s = byId(S.B, d.bosqich_id);
+      return s && (s.turi === "yutuq" || s.turi === "yoqotish") && d.yopilgan_at && new Date(d.yopilgan_at).getTime() >= since;
+    });
+    var won = closed.filter(function(d){ return byId(S.B, d.bosqich_id).turi === "yutuq"; });
+    var lost = closed.filter(function(d){ return byId(S.B, d.bosqich_id).turi === "yoqotish"; });
+    var open = all.filter(function(d){ var s = byId(S.B, d.bosqich_id); return s && s.turi === "oddiy"; });
     var stats = el("div","stats");
     function stat(lbl, val, sub){ var b = el("div","stat"); b.appendChild(el("span","muted", lbl)); b.appendChild(el("b", null, val)); if(sub) b.appendChild(el("span","muted", sub)); stats.appendChild(b); }
-    stat("Jami bitim", String(ds.length));
-    stat("Ochiq", String(open));
-    stat("Muvaffaqiyatli", String(won.length), money(won.reduce(function(a, d){ return a + d.byudjet; }, 0)));
-    stat("Yoʻqotilgan", String(lost.length));
-    stat("Yopilganlardan yutuq", won.length + lost.length ? Math.round(won.length * 100 / (won.length + lost.length)) + "%" : "—", "yutuq / (yutuq + yoʻqotish)");
+    stat("Yangi bitim", String(ds.length), "tanlangan davrda yaratildi");
+    stat("Hozir ochiq", String(open.length), "barcha sanalar");
+    stat("Yopildi: muvaffaqiyatli", String(won.length), "byudjet: " + money(won.reduce(function(a, d){ return a + d.byudjet; }, 0)));
+    stat("Yopildi: yoʻqotilgan", String(lost.length));
+    stat("Yopilganlardan yutuq", closed.length ? Math.round(won.length * 100 / closed.length) + "%" : "—", "tanlangan davrda yopilganlar");
     wb.appendChild(stats);
 
-    var g1 = el("fieldset","grp"); g1.appendChild(el("legend", null, "Bosqichlar boʻyicha (hozirgi holat)"));
-    var fun = el("div","fun"); var max = Math.max(1, ...st.map(function(s){ return ds.filter(function(d){ return d.bosqich_id === s.id; }).length; }));
+    var g1 = el("fieldset","grp"); g1.appendChild(el("legend", null, "Bosqichlar boʻyicha (hozirgi holat, barcha sanalar)"));
+    var fun = el("div","fun"); var max = Math.max(1, ...st.map(function(s){ return all.filter(function(d){ return d.bosqich_id === s.id; }).length; }));
     st.forEach(function(s){
-      var xs = ds.filter(function(d){ return d.bosqich_id === s.id; });
+      var xs = all.filter(function(d){ return d.bosqich_id === s.id; });
       fun.appendChild(el("span", null, s.nom));
       var bar = el("div","fbar"); var i = el("i"); i.style.width = Math.round(xs.length * 100 / max) + "%"; bar.appendChild(i); fun.appendChild(bar);
       fun.appendChild(el("span", null, xs.length + " · " + money(xs.reduce(function(a, d){ return a + d.byudjet; }, 0))));
     });
     g1.appendChild(fun); wb.appendChild(g1);
 
-    var g2 = el("fieldset","grp"); g2.appendChild(el("legend", null, "Manbalar"));
+    var g2 = el("fieldset","grp"); g2.appendChild(el("legend", null, "Yangi bitimlar manbalari (tanlangan davr)"));
     var src = {}; ds.forEach(function(d){ var k = d.manba || "Koʻrsatilmagan"; src[k] = src[k] || {n:0, w:0}; src[k].n++; var s = byId(S.B, d.bosqich_id); if(s && s.turi === "yutuq") src[k].w++; });
     var t2 = el("table","lv"); t2.style.minWidth = "0";
-    t2.innerHTML = "<thead><tr><th scope=\"col\">Manba</th><th scope=\"col\">Bitimlar</th><th scope=\"col\">Muvaffaqiyatli</th></tr></thead>";
+    t2.innerHTML = "<thead><tr><th scope=\"col\">Manba</th><th scope=\"col\">Yangi bitimlar</th><th scope=\"col\">Hozir muvaffaqiyatli</th></tr></thead>";
     var b2 = el("tbody"); t2.appendChild(b2);
     Object.keys(src).sort(function(a, b){ return src[b].n - src[a].n; }).forEach(function(k){ var tr = el("tr"); tr.style.cursor = "default"; tr.appendChild(el("td", null, k)); tr.appendChild(el("td", null, String(src[k].n))); tr.appendChild(el("td", null, String(src[k].w))); b2.appendChild(tr); });
     if(!ds.length){ var tr0 = el("tr"); var td0 = el("td","empty","Bu davrda bitim yoʻq."); td0.colSpan = 3; tr0.appendChild(td0); b2.appendChild(tr0); }
     var w2 = el("div","lv-wrap"); w2.appendChild(t2); g2.appendChild(w2); wb.appendChild(g2);
 
     var reasons = lost.filter(function(d){ return d.yoqotish_sababi; });
-    var g3 = el("fieldset","grp"); g3.appendChild(el("legend", null, "Yoʻqotish sabablari (odamlarning soʻzi)"));
+    var g3 = el("fieldset","grp"); g3.appendChild(el("legend", null, "Davrda yoʻqotilgan bitimlar sabablari"));
     if(!lost.length) g3.appendChild(el("p","muted","Yoʻqotilgan bitim yoʻq."));
     else {
       var ul = el("ul"); ul.style.margin = "0"; ul.style.paddingLeft = "18px";
@@ -3282,7 +3337,7 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
       if(lost.length - reasons.length) g3.appendChild(el("p","muted", "Sababi nomaʼlum: " + (lost.length - reasons.length) + " ta"));
     }
     wb.appendChild(g3);
-    status(ds.length + " ta bitim tanlangan davrda");
+    status(ds.length + " ta yangi, " + closed.length + " ta yopilgan bitim tanlangan davrda");
   }
 
   /* ---------- sozlamalar ---------- */
