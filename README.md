@@ -61,5 +61,10 @@ insert into public.adminlar (email) values ('email@example.com');
 
 - **Как добавить админа:** он открывает бота и жмёт Start → владельцу приходит заявка с кнопками «Подтвердить» / «Отклонить». До подтверждения бот админу ничего не показывает. Отклонённому бот не отвечает.
 - **Убрать доступ или вернуть:** владелец пишет боту `/adminlar` — список людей с кнопками.
+- **Вход в CRM без пароля:** после подтверждения кнопка «CRM» открывает сайт внутри Telegram и автоматически входит от имени админа. Для включения выполните [инструкцию обновления](TELEGRAM_CRM_LOGIN.md); одного обновления HTML недостаточно.
 - Токен бота — только в **Supabase → Edge Functions → Secrets**, имя `TELEGRAM_BOT_TOKEN`. Ни в файлы, ни в чат.
 - **Новый владелец** (например, если сменился аккаунт): нажать Start у бота, затем в SQL Editor: `update public.tg_chatlar set rol = 'owner', tasdiqlangan = true where chat_id = <ID>;` (ID: `select chat_id, ism from public.tg_chatlar;`).
+
+## Проверки CRM
+
+Node.js 24+, `pnpm install --frozen-lockfile`, затем `pnpm test`. Проверяются отчёты, повтор частичного импорта, Telegram-вход и права доступа в локальном PostgreSQL (PGlite), без обращения к рабочим данным.

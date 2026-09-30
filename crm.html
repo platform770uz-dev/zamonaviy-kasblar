@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
+<script src="https://telegram.org/js/telegram-web-app.js?63"></script>
 <title>1924 CRM</title>
 <meta name="color-scheme" content="light dark">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -718,7 +719,12 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
 <div id="login" hidden>
   <section class="win" role="dialog" aria-labelledby="lTitle">
     <div class="title"><span class="t" id="lTitle">1924 CRM — kirish</span></div>
+    <div class="wbody" id="tgLogin" hidden>
+      <p id="tgLoginStatus" role="status">Telegram orqali kirilmoqda…</p>
+      <a class="btn main" href="https://t.me/myflow97_bot">Telegram botni ochish</a>
+    </div>
     <form class="wbody" id="lForm">
+      <p><a href="https://t.me/myflow97_bot">Telegram bot orqali parolsiz kirish</a></p>
       <p style="margin:0 0 12px">Admin panel bilan bir xil email va parol.</p>
       <label for="lEmail">Email:</label>
       <input class="field" id="lEmail" type="email" autocomplete="username" required>
@@ -789,7 +795,9 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
 (function(){
   "use strict";
   var cfg = window.ZK_CONFIG || {};
-  var sb = window.supabase.createClient(cfg.url, cfg.key);
+  var sb = window.supabase.createClient(cfg.url, cfg.key, {auth:{detectSessionInUrl:false}});
+  var tgApp = window.Telegram && window.Telegram.WebApp;
+  var tgMode = !!(tgApp && tgApp.initData) || new URLSearchParams(location.search).get("via") === "telegram";
 
   /* ---------- yordamchilar ---------- */
   function $(id){ return document.getElementById(id); }
@@ -1223,23 +1231,62 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
   }
 
   /* ---------- kirish ---------- */
+  function showLogin(message){
+    $("app").hidden = true; $("login").hidden = false;
+    $("lForm").hidden = tgMode; $("tgLogin").hidden = !tgMode;
+    if(tgMode) $("tgLoginStatus").textContent = message || "Botdagi «CRM» tugmasini bosing.";
+    else { $("lErr").textContent = message || ""; $("lEmail").focus(); }
+  }
+  async function crmAccess(){
+    var r = await sb.rpc("is_crm_admin");
+    // Existing email accounts still work while the database upgrade is deployed.
+    if(r.error && (r.error.code === "PGRST202" || r.error.code === "42883")) return sb.rpc("is_admin");
+    return r;
+  }
+  async function clearCrmSession(message){
+    closePanel(); closeModal(); setEdit(false);
+    S.me = ""; S.D = []; S.K = []; S.T = []; S.SK = {}; S.SV = []; S.Q = []; S.SH = {}; S.MQ = {};
+    $("content").textContent = "";
+    showLogin(message);
+    await sb.auth.signOut({scope:"local"});
+  }
+  async function telegramLogin(){
+    showLogin("Telegram orqali kirilmoqda…");
+    if(tgApp){ tgApp.ready(); tgApp.expand(); }
+    if(!tgApp || !tgApp.initData){ showLogin("Telegram botdagi yangi «CRM» tugmasi orqali oching."); return; }
+    try{
+      var response = await fetch(cfg.url + "/functions/v1/crm-telegram-login", {
+        method:"POST", headers:{"Content-Type":"application/json", apikey:cfg.key},
+        body:JSON.stringify({initData:tgApp.initData})
+      });
+      var data = await response.json();
+      if(!response.ok || !data.token_hash){
+        var message = data.error === "approval_required" ? "Kirish uchun bot egasining tasdigʻi kerak."
+          : data.error === "telegram_auth_invalid" ? "Kirish muddati tugadi. Botdagi «CRM» tugmasini qayta bosing."
+          : "Hozir kirib boʻlmadi. Birozdan keyin botdagi «CRM» tugmasini qayta bosing.";
+        await clearCrmSession(message); return;
+      }
+      var signed = await sb.auth.verifyOtp({token_hash:data.token_hash, type:"magiclink"});
+      if(signed.error || !signed.data || !signed.data.session) throw new Error("session unavailable");
+      await enter(signed.data.session.user.email);
+    }catch(e){ await clearCrmSession("Ulanib boʻlmadi. Internetni tekshirib, botdagi «CRM» tugmasini qayta bosing."); }
+  }
   async function boot(){
+    if(tgMode){ await telegramLogin(); return; }
     var s = await sb.auth.getSession();
     if(s.data && s.data.session){ await enter(s.data.session.user.email); }
-    else { $("login").hidden = false; $("lEmail").focus(); }
+    else showLogin();
   }
   async function enter(email){
-    var r = await sb.rpc("is_admin");
+    var r = await crmAccess();
     if(r.error || r.data !== true){
-      await sb.auth.signOut();
-      $("app").hidden = true; $("login").hidden = false;
-      $("lErr").textContent = "Bu email uchun ruxsat yoʻq.";
+      await clearCrmSession(r.error ? "Kirishni tekshirib boʻlmadi. Qayta urinib koʻring." : "CRM'ga kirish uchun ruxsat yoʻq.");
       return;
     }
     S.me = email || "";
     $("login").hidden = true; $("app").hidden = false;
     $("logout").title = S.me;
-    await loadAll();
+    if(!await loadAll()) return;
     if(S.vid != null) S.tf.vor = String(S.vid);
     renderNav(); setView(firstView());
   }
@@ -1253,13 +1300,24 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
     await enter(r.data.user.email);
   });
   $("logout").addEventListener("click", async function(){
-    closePanel(); closeModal(); setEdit(false);
-    await sb.auth.signOut();
-    $("app").hidden = true; $("login").hidden = false; $("lEmail").focus();
+    await clearCrmSession(tgMode ? "CRM'dan chiqdingiz. Qayta kirish uchun botdagi «CRM» tugmasini bosing." : "");
   });
+
+  var accessChecking = false;
+  setInterval(async function(){
+    if(accessChecking || $("app").hidden || document.hidden) return;
+    accessChecking = true;
+    try{
+      var r = await crmAccess();
+      if(!r.error && r.data !== true) await clearCrmSession("CRM'ga kirish ruxsati olib tashlandi.");
+    }finally{ accessChecking = false; }
+  }, 60000);
 
   /* ---------- yuklash ---------- */
   async function loadAll(){
+    var access = await crmAccess();
+    if(access.error){ status("Kirishni tekshirib boʻlmadi. Internetni tekshiring."); return false; }
+    if(access.data !== true){ await clearCrmSession("CRM'ga kirish ruxsati olib tashlandi."); return false; }
     status("Yuklanmoqda…");
     var res = await Promise.all([
       sb.from("crm_voronkalar").select("*").order("tartib", {ascending:true}).limit(100),
@@ -2690,7 +2748,7 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
   var FAIL = {kotarmadi:true, band:true};
   var PRANK = {"yuqori":0, "oʻrta+":1, "oʻrta":2, "past":3};
   function natLbl(n, dm){ if(dm && n === "kotarmadi") return "📵 Javob bermadi"; var x = NAT.filter(function(y){ return y[0] === n; })[0]; return x ? x[1] : n; }
-  function whoName(e){ return !e ? "—" : e === S.me ? "siz" : String(e).split("@")[0]; }
+  function whoName(e){ var t = /^tg(\d+)-[a-f0-9]+@crm\.invalid$/.exec(String(e || "")); return !e ? "—" : e === S.me ? "siz" : t ? "Telegram #" + t[1] : String(e).split("@")[0]; }
   function isDM(t){ return /direct|telegram/i.test(String(t && t.matn || "")); }
   function dayEnd(d){ return new Date(dayStart(d).getTime() + 86400000); }
   function prk(d){ var r = PRANK[probOf(d)]; return r == null ? 4 : r; }

@@ -1,0 +1,6 @@
+[functions.tg-bot]
+verify_jwt = false
+
+[functions.crm-telegram-login]
+# This endpoint verifies Telegram's signed initData before issuing a login token.
+verify_jwt = false
