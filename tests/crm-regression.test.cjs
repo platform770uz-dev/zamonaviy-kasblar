@@ -78,6 +78,7 @@ test('retry recovers a saved note and creates only the missing task', async () =
           select() {
             return {
               eq() { return this; },
+              order() { return this; },
               async limit() { return { data: table === 'crm_tarix' ? [existingNote] : [] }; },
             };
           },
@@ -114,7 +115,7 @@ test('retry does not insert when checking for an existing row fails', async () =
     sb: {
       from() {
         return {
-          select() { return { eq() { return this; }, async limit() { return { error: { message: 'offline' } }; } }; },
+          select() { return { eq() { return this; }, order() { return this; }, async limit() { return { error: { message: 'offline' } }; } }; },
           insert() { inserted = true; throw new Error('must not insert'); },
         };
       },
