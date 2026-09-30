@@ -515,8 +515,14 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
 .tcard:hover{border-color:var(--line-2);box-shadow:var(--shadow)}
 .tcard > input{flex:none;width:18px;height:18px;margin:3px 0 0}
 .tno{display:grid;place-items:center;min-width:32px;height:28px;padding:0 6px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);color:var(--ink-2);font:600 13.5px/1 var(--f-mono);font-variant-numeric:tabular-nums}
-.tk-late{border-color:color-mix(in srgb,var(--stop) 40%,var(--line))}
 .tk-late .tno{border-color:transparent;background:var(--stop-soft);color:var(--stop)}
+/* ehtimol rangi: yuqori — yashil, oʻrta — sariq, past — qizil (muddat oʻtgani raqam va guruh sarlavhasidan koʻrinadi) */
+.tcard.pr-hi{border-color:var(--ok);box-shadow:inset 4px 0 0 var(--ok)}
+.tcard.pr-mid{border-color:var(--warn);box-shadow:inset 4px 0 0 var(--warn)}
+.tcard.pr-lo{border-color:var(--stop);box-shadow:inset 4px 0 0 var(--stop)}
+.tcard.pr-hi:hover{box-shadow:inset 4px 0 0 var(--ok),var(--shadow)}
+.tcard.pr-mid:hover{box-shadow:inset 4px 0 0 var(--warn),var(--shadow)}
+.tcard.pr-lo:hover{box-shadow:inset 4px 0 0 var(--stop),var(--shadow)}
 .tk-today .tno{border-color:transparent;background:var(--warn-soft);color:var(--warn)}
 .tcard.done .tno{opacity:.6}
 .tdue{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -529,6 +535,9 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
 .tcard.done .ttx{text-decoration:line-through;color:var(--muted)}
 .tmeta{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;margin-top:4px;font-size:13px}
 .tlink{font-weight:500;overflow-wrap:anywhere}
+.tname{display:block;font-size:16.5px;font-weight:700;color:var(--ink)}
+.tname:hover{color:var(--accent);text-decoration:none}
+.tnote{margin-top:3px;font-size:13px;color:var(--ink-2);overflow-wrap:anywhere}
 .tgen{color:var(--muted)}
 .chip.tst::before{content:"";width:7px;height:7px;margin-right:6px;border-radius:50%;background:color-mix(in oklab,var(--st,#a6caf0),var(--st-base) var(--st-mix))}
 .tvor{font-size:12.5px;color:var(--muted)}
@@ -2565,24 +2574,32 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
     }
     status(openT.length + " ta ochiq vazifa");
   }
+  // Import va avtomatik vazifalarning shablon matni («Qoʻngʻiroq qilish — skript bitim tarixida», «… — yangi lid»)
+  // kartada koʻrsatilmaydi — 📞 / 📷 tugmalari buni aytib turadi. Qoʻlda yozilgan matn kichik izoh boʻlib chiqadi.
+  function taskNote(m){ m = String(m || "").trim(); return /^(qo\S{0,2}ng\S{0,2}iroq qilish|instagram directga yozish)(\s*—\s*(skript bitim tarixida|yangi lid))?$/i.test(m) ? "" : m; }
+  // Karta chegarasi ehtimol boʻyicha: yuqori — yashil (hozir toʻlashi mumkin), oʻrta — sariq, past — qizil
+  var PRC = {"yuqori":"pr-hi", "oʻrta+":"pr-mid", "oʻrta":"pr-mid", "past":"pr-lo"};
   function taskRow(t, kind, no){
     var r = el("article","tcard tk-" + kind + (t.bajarildi ? " done" : ""));
-    var cb = el("input"); cb.type = "checkbox"; cb.checked = t.bajarildi; cb.setAttribute("aria-label","Bajarildi: " + t.matn);
+    var d = t.bitim_id ? byId(S.D, t.bitim_id) : null;
+    var cb = el("input"); cb.type = "checkbox"; cb.checked = t.bajarildi; cb.setAttribute("aria-label","Bajarildi: " + (d ? d.nom : t.matn));
     cb.addEventListener("change", function(){ toggleTask(t, cb.checked).then(render); });
     r.appendChild(cb);
     var nb = el("span","tno", String(no || "")); nb.title = "Muddat: " + fmtDT(t.muddat);
     r.appendChild(nb);
     var main = el("div","tmain");
-    main.appendChild(el("div","ttx", t.matn));
     var dt = new Date(t.muddat), due = (kind === "late" || kind === "later") ? "📅 " + pad(dt.getDate()) + "." + pad(dt.getMonth()+1) : "";
-    var d = t.bitim_id ? byId(S.D, t.bitim_id) : null;
+    if(!d) main.appendChild(el("div","ttx", t.matn));
     if(d){
       var v = byId(S.V, d.voronka_id), s = byId(S.B, d.bosqich_id), k = contactOf(d);
+      var a = el("a","ttx tname", d.nom); a.href = "#"; a.title = "Bitimni ochish";
+      a.addEventListener("click", function(e){ e.preventDefault(); openDeal(d.id); });
+      main.appendChild(a);
+      var own = taskNote(t.matn); if(own) main.appendChild(el("div","tnote","📝 " + own));
       var meta = el("div","tmeta");
-      var a = el("a","tlink", d.nom); a.href = "#"; a.addEventListener("click", function(e){ e.preventDefault(); openDeal(d.id); });
-      meta.appendChild(a);
+      if(isInbound(d)) meta.appendChild(el("span","chip src", d.manba));
       if(s){ var sc = el("span","chip tst", s.nom); sc.style.setProperty("--st", s.rang); meta.appendChild(sc); }
-      var pr = probOf(d); if(pr) meta.appendChild(el("span","chip" + tagCls(pr), "#" + pr));
+      var pr = probOf(d); if(pr){ meta.appendChild(el("span","chip" + tagCls(pr), "#" + pr)); r.classList.add(PRC[pr]); }
       if(v && S.V.length > 1) meta.appendChild(el("span","tvor", v.nom));
       if(due) meta.appendChild(el("span","tdue", due));
       var hold = savHolders(t.id);
