@@ -1,6 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
-// 1924 admin-bot: Telegram'da havolalar menyusi + CRM'ga tashqaridan yangi lid tushsa xabar.
+// 1924 admin-bot: Telegram'da havolalar menyusi + CRM'da yangi bitim yaratilsa xabar.
 // Bot tokeni faqat Supabase → Edge Functions → Secrets → TELEGRAM_BOT_TOKEN da (kodda ham, bazada ham yoʻq).
 // Telegram soʻrovlari: X-Telegram-Bot-Api-Secret-Token = crm_maxfiy.tg_webhook.
 // Ichki soʻrovlar (baza triggeri, sozlash): x-crm-secret = crm_maxfiy.tg_ichki.
@@ -112,7 +112,7 @@ async function onMessage(m: any) {
       chatId,
       owner
         ? "👑 Вы владелец бота.\n• Кнопки ниже — все ссылки\n• /adminlar — подтвердить или убрать админов\n• Уведомления о новых лидах приходят сюда"
-        : "✅ Tasdiqlandingiz! Tashqaridan yangi lid tushsa, shu yerga xabar keladi. Pastdagi «📋 CRM» tugmasi CRM'ni ochadi.",
+        : "✅ Tasdiqlandingiz! CRM'ga yangi lid qoʻshilsa, shu yerga xabar keladi. Pastdagi «📋 CRM» tugmasi CRM'ni ochadi.",
       { keyboard: [[{ text: owner ? BTN_OWNER : BTN_ADMIN }]], resize_keyboard: true, is_persistent: true },
     );
   }
@@ -132,7 +132,7 @@ async function onCallback(cq: any) {
   const yes = m[1] === "ok";
   await sb.from("tg_chatlar").update({ tasdiqlangan: yes, bloklangan: !yes }).eq("chat_id", id);
   if (yes) {
-    await send(id, "✅ Tasdiqlandingiz! Tashqaridan yangi lid tushsa, shu yerga xabar keladi. Pastdagi «📋 CRM» tugmasi CRM'ni ochadi.", { keyboard: [[{ text: BTN_ADMIN }]], resize_keyboard: true, is_persistent: true });
+    await send(id, "✅ Tasdiqlandingiz! CRM'ga yangi lid qoʻshilsa, shu yerga xabar keladi. Pastdagi «📋 CRM» tugmasi CRM'ni ochadi.", { keyboard: [[{ text: BTN_ADMIN }]], resize_keyboard: true, is_persistent: true });
     await send(id, "Kerakli boʻlimni tanlang:", menuAdmin);
   }
   if (cq.message?.chat?.id && cq.message?.message_id) {
