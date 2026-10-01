@@ -4,3 +4,7 @@ verify_jwt = false
 [functions.crm-telegram-login]
 # This endpoint verifies Telegram's signed initData before issuing a login token.
 verify_jwt = false
+
+[functions.crm-web-login]
+# This endpoint verifies the shared web PIN server-side before issuing a login token.
+verify_jwt = false
