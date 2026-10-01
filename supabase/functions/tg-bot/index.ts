@@ -11,13 +11,14 @@ const HEAD = { "Content-Type": "application/json; charset=utf-8" };
 const SITE = "https://platform770uz-dev.github.io/zamonaviy-kasblar/";
 const CRM_APP_URL = SITE + "crm.html?via=telegram";
 const PAGES_OWNER: [string, string][][] = [
-  [["📋 CRM", "crm.html"], ["👥 Nomzodlar", "admin.html"]],
+  [["📋 CRM", "crm.html"], ["💻 Веб-версия", "crm.html?via=web"]],
+  [["👥 Nomzodlar", "admin.html"]],
   [["📝 Administrator vakansiyasi", "ishga.html"]],
   [["🎓 Brend-feys ustozi", "ustoz.html"], ["🎥 Mobilografiya ustozi", "mobilograf-ustoz.html"]],
   [["🎬 Mobilograf boʻlish", "mobilograf.html"]],
   [["💪 Intizom · YHQ 10 daqiqa", "yhq.html"]], // shaxsiy: yoʻl harakati qoidalari reels (sayt boʻlib ochiladi)
 ];
-const PAGES_ADMIN: [string, string][][] = [[["📋 CRM", "crm.html"]]];
+const PAGES_ADMIN: [string, string][][] = [[["📋 CRM", "crm.html"], ["💻 Веб-версия", "crm.html?via=web"]]];
 const BTN_OWNER = "📋 Menyu";
 const MAX_PENDING = 5; // kutayotgan begonalar chegarasi: spamdan himoya
 
