@@ -6,5 +6,5 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.crm-web-login]
-# This endpoint verifies the shared web PIN server-side before issuing a login token.
-verify_jwt = false
+# Gateway checks the public anon JWT; the function separately checks the shared web PIN.
+verify_jwt = true
