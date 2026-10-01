@@ -722,9 +722,20 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
     <div class="wbody" id="tgLogin" hidden>
       <p id="tgLoginStatus" role="status">Telegram orqali kirilmoqda…</p>
       <a class="btn main" href="https://t.me/myflow97_bot">Telegram botni ochish</a>
+      <a class="btn" href="crm.html?via=web">💻 Веб-версия · ноутбук</a>
+    </div>
+    <div class="wbody" id="webLogin" hidden>
+      <p id="webLoginStatus" role="status">Ноутбукдаги веб-версияга кириш учун PIN-кодни киритинг.</p>
+      <form id="webPinForm">
+        <label for="webPin">PIN-код:</label>
+        <input class="field" id="webPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="one-time-code" required>
+        <p class="err" id="webPinErr" role="alert"></p>
+        <div class="row" style="justify-content:flex-end"><button class="btn main" type="submit" id="webPinBtn">Войти в CRM</button></div>
+      </form>
+      <a class="btn" href="crm.html?via=telegram">📱 Telegram Mini App</a>
     </div>
     <form class="wbody" id="lForm">
-      <p><a href="https://t.me/myflow97_bot">Telegram bot orqali parolsiz kirish</a></p>
+      <p><a href="https://t.me/myflow97_bot">Telegram bot orqali parolsiz kirish</a> · <a href="crm.html?via=web">Веб-версия</a></p>
       <p style="margin:0 0 12px">Admin panel bilan bir xil email va parol.</p>
       <label for="lEmail">Email:</label>
       <input class="field" id="lEmail" type="email" autocomplete="username" required>
@@ -795,9 +806,11 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
 (function(){
   "use strict";
   var cfg = window.ZK_CONFIG || {};
-  var sb = window.supabase.createClient(cfg.url, cfg.key, {auth:{detectSessionInUrl:false}});
+  var query = new URLSearchParams(location.search);
+  var webMode = query.get("via") === "web";
+  var sb = window.supabase.createClient(cfg.url, cfg.key, {auth:{detectSessionInUrl:false, ...(webMode ? {storage:sessionStorage} : {})}});
   var tgApp = window.Telegram && window.Telegram.WebApp;
-  var tgMode = !!(tgApp && tgApp.initData) || new URLSearchParams(location.search).get("via") === "telegram";
+  var tgMode = !!(tgApp && tgApp.initData) || query.get("via") === "telegram";
 
   /* ---------- yordamchilar ---------- */
   function $(id){ return document.getElementById(id); }
@@ -1233,8 +1246,9 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
   /* ---------- kirish ---------- */
   function showLogin(message){
     $("app").hidden = true; $("login").hidden = false;
-    $("lForm").hidden = tgMode; $("tgLogin").hidden = !tgMode;
+    $("lForm").hidden = tgMode || webMode; $("tgLogin").hidden = !tgMode || webMode; $("webLogin").hidden = !webMode;
     if(tgMode) $("tgLoginStatus").textContent = message || "Botdagi «CRM» tugmasini bosing.";
+    else if(webMode){ $("webPinErr").textContent = message || ""; $("webPin").focus(); }
     else { $("lErr").textContent = message || ""; $("lEmail").focus(); }
   }
   async function crmAccess(){
@@ -1271,6 +1285,24 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
       await enter(signed.data.session.user.email);
     }catch(e){ await clearCrmSession("Ulanib boʻlmadi. Internetni tekshirib, botdagi «CRM» tugmasini qayta bosing."); }
   }
+  async function webPinLogin(){
+    $("webPinBtn").disabled = true; $("webPinErr").textContent = "";
+    try{
+      var response = await fetch(cfg.url + "/functions/v1/crm-web-login", {
+        method:"POST", headers:{"Content-Type":"application/json", apikey:cfg.key, Authorization:"Bearer " + cfg.key},
+        body:JSON.stringify({pin:$("webPin").value})
+      });
+      var data = await response.json();
+      if(!response.ok || !data.token_hash){
+        $("webPinErr").textContent = data.error === "pin_invalid" ? "PIN-код неверный." : data.error === "too_many_attempts" ? "Слишком много попыток. Попробуйте через 15 минут." : "Не удалось войти. Попробуйте позже.";
+        $("webPin").value = ""; $("webPin").focus(); return;
+      }
+      var signed = await sb.auth.verifyOtp({token_hash:data.token_hash, type:"magiclink"});
+      if(signed.error || !signed.data || !signed.data.session) throw new Error("session unavailable");
+      await enter(signed.data.session.user.email);
+    }catch(e){ $("webPinErr").textContent = "Нет соединения. Проверьте интернет и попробуйте ещё раз."; }
+    finally{ $("webPinBtn").disabled = false; }
+  }
   async function boot(){
     if(tgMode){ await telegramLogin(); return; }
     var s = await sb.auth.getSession();
@@ -1299,6 +1331,7 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
     $("lPass").value = "";
     await enter(r.data.user.email);
   });
+  $("webPinForm").addEventListener("submit", function(e){ e.preventDefault(); webPinLogin(); });
   $("logout").addEventListener("click", async function(){
     await clearCrmSession(tgMode ? "CRM'dan chiqdingiz. Qayta kirish uchun botdagi «CRM» tugmasini bosing." : "");
   });
