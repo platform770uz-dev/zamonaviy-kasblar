@@ -1289,7 +1289,7 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
     $("webPinBtn").disabled = true; $("webPinErr").textContent = "";
     try{
       var response = await fetch(cfg.url + "/functions/v1/crm-web-login", {
-        method:"POST", headers:{"Content-Type":"application/json", apikey:cfg.key},
+        method:"POST", headers:{"Content-Type":"application/json", apikey:cfg.key, Authorization:"Bearer " + cfg.key},
         body:JSON.stringify({pin:$("webPin").value})
       });
       var data = await response.json();
