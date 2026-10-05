@@ -100,6 +100,7 @@
 <div class="language-gate" id="languageGate"><section class="language-box"><div class="brand-mark">✦</div><h2 data-t="chooseLanguage">Выбери язык</h2><p data-t="languageIntro">Язык можно будет изменить в любой момент.</p><div class="language-options"><button class="btn" data-language="uz">O‘zbekcha</button><button class="btn soft" data-language="ru">Русский</button></div></section></div>
 <script>
 (()=>{
+const entry=new URLSearchParams(location.search);if(entry.get("demo")==="1"){location.replace("reels.html?demo=1&lang="+(entry.get("lang")==="ru"?"ru":"uz"));return}
 const I18N={
 ru:{
 welcome:"Добро пожаловать",titleHome:"Твоя олимпиада",navHome:"Главная",navPractice:"Тренировки",navPracticeShort:"Задания",navOlympiad:"Олимпиада",navOlympiadShort:"Олимпиада",navResults:"Результаты",navResultsShort:"Итоги",navProfile:"Профиль",navProfileShort:"Профиль",
