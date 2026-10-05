@@ -128,7 +128,9 @@ async function onMessage(m: any) {
   }
   if (row?.rol === "owner" && /^\/adminlar(@\w+)?$/.test(text)) return await listPeople(chatId);
   if (/^\/(start|menu)(@\w+)?(?:\s|$)/.test(text) || text === "📋 Меню") {
-    await send(chatId, "Добро пожаловать! Здесь можно открыть олимпиадный мини‑апп, сайт для компьютера и связаться с администратором по оплате.", PUBLIC_MENU);
+    await setCrmMenu(chatId, false);
+    await send(chatId, "Добро пожаловать! Здесь можно открыть олимпиадный мини‑апп, сайт для компьютера и связаться с администратором по оплате.", { remove_keyboard: true });
+    await send(chatId, "Выберите раздел:", PUBLIC_MENU);
     return;
   }
   if (text) await send(chatId, "Выберите нужный раздел:", PUBLIC_MENU);
