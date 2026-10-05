@@ -10,25 +10,16 @@ import { createClient } from "npm:@supabase/supabase-js@2.117.2";
 const HEAD = { "Content-Type": "application/json; charset=utf-8" };
 const SITE = "https://platform770uz-dev.github.io/zamonaviy-kasblar/";
 const CRM_APP_URL = SITE + "crm.html?via=telegram";
-const PAGES_OWNER: [string, string][][] = [
-  [["📋 CRM", "crm.html"], ["👥 Nomzodlar", "admin.html"]],
-  [["📝 Administrator vakansiyasi", "ishga.html"]],
-  [["🎓 Brend-feys ustozi", "ustoz.html"], ["🎥 Mobilografiya ustozi", "mobilograf-ustoz.html"]],
-  [["🎬 Mobilograf boʻlish", "mobilograf.html"]],
-  [["💪 Intizom · YHQ 10 daqiqa", "yhq.html"]], // shaxsiy: yoʻl harakati qoidalari reels (sayt boʻlib ochiladi)
-];
-const PAGES_ADMIN: [string, string][][] = [[["📋 CRM", "crm.html"]]];
-const BTN_OWNER = "📋 Menyu";
-const MAX_PENDING = 5; // kutayotgan begonalar chegarasi: spamdan himoya
-
-const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, { auth: { persistSession: false } });
-
-const json = (o: Record<string, unknown>, status = 200) => new Response(JSON.stringify(o), { status, headers: HEAD });
-const esc = (s: unknown) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-const kb = (pages: [string, string][][]) => ({ inline_keyboard: pages.map((row) => row.map(([text, page]) =>
-  page === "crm.html" ? { text, web_app: { url: CRM_APP_URL } } : { text, url: SITE + page })) });
-const menuOwner = kb(PAGES_OWNER);
-const menuAdmin = kb(PAGES_ADMIN);
+const MINI_APP_URL = SITE + "olimpiada/";
+const OLYMPIAD_WEB_URL = SITE + "olimpiada/index.html?mode=web";
+const PUBLIC_MENU = {
+  inline_keyboard: [
+    [{ text: "💳 Оплата и связь с администратором", callback_data: "payment:help" }],
+    [{ text: "🎓 Открыть мини‑апп", web_app: { url: MINI_APP_URL } }],
+    [{ text: "💻 Открыть сайт на компьютере", url: OLYMPIAD_WEB_URL }],
+  ],
+};
+const PAYMENT_REPLY = (id: number) => ({ inline_keyboard: [[{ text: "↩️ Ответить родителю", callback_data: `payment:reply:${id}` }]] });
 
 function safeEqual(a: string, b: string) {
   if (a.length !== b.length) return false;
@@ -57,8 +48,8 @@ async function tg(method: string, payload: Record<string, unknown> = {}): Promis
 const send = (chat_id: number, text: string, reply_markup?: unknown) =>
   tg("sendMessage", { chat_id, text, parse_mode: "HTML", link_preview_options: { is_disabled: true }, ...(reply_markup ? { reply_markup } : {}) });
 
-const setCrmMenu = (chat_id: number, approved: boolean) => tg("setChatMenuButton", {
-  chat_id, menu_button: approved ? { type: "web_app", text: "CRM", web_app: { url: CRM_APP_URL } } : { type: "commands" },
+const setCrmMenu = (chat_id: number, _approved: boolean) => tg("setChatMenuButton", {
+  chat_id, menu_button: { type: "commands" },
 });
 
 const who = (r: { ism: string | null; username: string | null }, id: number) =>
@@ -86,63 +77,94 @@ async function listPeople(chatId: number) {
   }
 }
 
+async function notifyOlimpiada(chatId: number, payload: any) {
+  const allowed = ["olimpiada_payment_request", "olimpiada_coordinator_contact"];
+  if (!allowed.includes(String(payload?.type ?? ""))) return;
+  const clean = (value: unknown, max = 160) => esc(String(value ?? "").trim().slice(0, max) || "—");
+  const title = payload.type === "olimpiada_payment_request" ? "💳 Запрос по оплате олимпиады" : "💬 Запрос связи с координатором";
+  const details = [
+    title, `👤 Ученик: ${clean(payload.name)}`,
+    `🏫 Класс / школа: ${clean(payload.grade, 40)} / ${clean(payload.school)}`,
+    `📞 Контакт родителя: ${clean(payload.parent)}`, `🌐 Язык: ${clean(payload.language, 12)}`,
+    `Telegram ID: <code>${chatId}</code>`,
+  ].join("\n");
+  const { data: owners } = await sb.from("tg_chatlar").select("chat_id").eq("rol", "owner").eq("tasdiqlangan", true);
+  for (const owner of owners ?? []) await send(owner.chat_id, details, PAYMENT_REPLY(chatId));
+  await send(chatId, owners?.length ? "✅ Запрос отправлен администратору. Ответ придёт сюда в Telegram." : "Не удалось доставить запрос администратору. Напишите ему позже.");
+}
+
 async function onMessage(m: any) {
-  if (!m?.chat || m.chat.type !== "private" || typeof m.text !== "string") return;
+  if (!m?.chat || m.chat.type !== "private") return;
   const chatId = Number(m.chat.id);
   const ism = [m.from?.first_name, m.from?.last_name].filter(Boolean).join(" ").slice(0, 120) || null;
   const username = m.from?.username ? String(m.from.username).slice(0, 64) : null;
-  const text = m.text.trim();
-
+  if (m.web_app_data?.data) {
+    try { await notifyOlimpiada(chatId, JSON.parse(String(m.web_app_data.data).slice(0, 4000))); }
+    catch { await send(chatId, "Не получилось прочитать запрос. Попробуйте ещё раз через кнопку связи."); }
+    return;
+  }
+  const text = typeof m.text === "string" ? m.text.trim() : "";
   const { data: row } = await sb.from("tg_chatlar").select("rol, tasdiqlangan, bloklangan").eq("chat_id", chatId).maybeSingle();
   if (!row) {
-    // Yangi odam: soʻrov yaratamiz va owner'ga tasdiqlashga yuboramiz (kutayotganlar juda koʻp boʻlsa — jim)
-    const { count } = await sb.from("tg_chatlar").select("chat_id", { count: "exact", head: true }).eq("tasdiqlangan", false).eq("bloklangan", false);
-    if ((count ?? 0) >= MAX_PENDING) return;
     const ins = await sb.from("tg_chatlar").insert({ chat_id: chatId, ism, username });
-    if (!ins.error) await askOwners(chatId, { ism, username });
-    await send(chatId, "⏳ Soʻrovingiz egasiga yuborildi. Tasdiqlangach, shu yerda xabar keladi.");
+    if (ins.error) console.error("tg user insert:", String(ins.error.message ?? "").slice(0, 160));
+  } else {
+    await sb.from("tg_chatlar").update({ ism, username }).eq("chat_id", chatId);
+    if (row.bloklangan) return;
+  }
+  const replyText = String(m.reply_to_message?.text ?? "");
+  if (/\[payment-question\]/.test(replyText) && text) {
+    const { data: owners } = await sb.from("tg_chatlar").select("chat_id").eq("rol", "owner").eq("tasdiqlangan", true);
+    const note = [`💬 <b>Вопрос по оплате от ${who({ ism, username }, chatId)}</b>`, esc(text.slice(0, 2000))].join("\n");
+    for (const owner of owners ?? []) await send(owner.chat_id, note, PAYMENT_REPLY(chatId));
+    await send(chatId, owners?.length ? "✅ Вопрос отправлен администратору. Ответ придёт сюда в Telegram." : "Не удалось доставить вопрос администратору.");
     return;
   }
-  await sb.from("tg_chatlar").update({ ism, username }).eq("chat_id", chatId);
-  if (row.bloklangan) { await setCrmMenu(chatId, false); return; } // rad etilgan — jim
-  if (!row.tasdiqlangan) {
-    await send(chatId, "⏳ Soʻrovingiz hali tasdiqlanmagan. Egasi tasdiqlagach, xabar keladi.");
+  const replyMatch = /\[payment-reply:(\d{1,15})\]/.exec(replyText);
+  if (["owner", "admin"].includes(String(row?.rol)) && row?.tasdiqlangan && replyMatch && text) {
+    await send(Number(replyMatch[1]), `💬 <b>Ответ администратора по оплате:</b>\n${esc(text.slice(0, 3000))}`);
+    await send(chatId, "✅ Ответ отправлен родителю.");
     return;
   }
-
-  const owner = row.rol === "owner";
-  await setCrmMenu(chatId, true);
-  if (owner && /^\/adminlar(@\w+)?$/.test(text)) return await listPeople(chatId);
-  if (/^\/start/.test(text)) {
-    await send(
-      chatId,
-      owner
-        ? "👑 Вы владелец бота.\n• Кнопки ниже — все ссылки\n• /adminlar — подтвердить или убрать админов\n• Уведомления о новых лидах приходят сюда"
-        : "✅ Tasdiqlandingiz! «CRM» tugmasi orqali parolsiz kirishingiz mumkin. Yangi lid xabarlari ham shu yerga keladi.",
-      owner ? { keyboard: [[{ text: BTN_OWNER }]], resize_keyboard: true, is_persistent: true } : { remove_keyboard: true },
-    );
+  if (row?.rol === "owner" && /^\/adminlar(@\w+)?$/.test(text)) return await listPeople(chatId);
+  if (/^\/(start|menu)(@\w+)?(?:\s|$)/.test(text) || text === "📋 Меню") {
+    await send(chatId, "Добро пожаловать! Здесь можно открыть олимпиадный мини‑апп, сайт для компьютера и связаться с администратором по оплате.", PUBLIC_MENU);
+    return;
   }
-  await send(chatId, "Kerakli boʻlimni tanlang:", owner ? menuOwner : menuAdmin);
+  if (text) await send(chatId, "Выберите нужный раздел:", PUBLIC_MENU);
 }
 
 async function onCallback(cq: any) {
   const answer = (text: string) => tg("answerCallbackQuery", { callback_query_id: cq.id, text });
   const { data: me } = await sb.from("tg_chatlar").select("rol, tasdiqlangan, bloklangan").eq("chat_id", Number(cq.from?.id)).maybeSingle();
+  const data = String(cq.data ?? "");
+  if (data === "payment:help") {
+    await send(Number(cq.from.id), "Напишите вопрос по оплате ответом на это сообщение — я передам его администратору.\n[payment-question]", {
+      force_reply: true, input_field_placeholder: "Ваш вопрос по оплате",
+    });
+    await answer("Напишите вопрос по оплате");
+    return;
+  }
+  const paymentReply = /^payment:reply:(\d{1,15})$/.exec(data);
+  if (paymentReply) {
+    if (!me?.tasdiqlangan || me.bloklangan || !["owner", "admin"].includes(String(me.rol))) { await answer("Нет доступа"); return; }
+    const targetId = Number(paymentReply[1]);
+    await send(Number(cq.from.id), `Введите ответ для родителя (ID ${targetId}) ответом на это сообщение.\n[payment-reply:${targetId}]`, {
+      force_reply: true, input_field_placeholder: "Ответ по оплате",
+    });
+    await answer("Напишите ответ");
+    return;
+  }
   if (me?.rol !== "owner" || !me.tasdiqlangan || me.bloklangan) { await answer("Нет доступа"); return; }
-  const m = /^(ok|no):(\d{1,15})$/.exec(String(cq.data ?? ""));
+  const m = /^(ok|no):(\d{1,15})$/.exec(data);
   if (!m) { await answer("?"); return; }
   const id = Number(m[2]);
   const { data: t } = await sb.from("tg_chatlar").select("ism, username, rol").eq("chat_id", id).maybeSingle();
   if (!t || t.rol === "owner") { await answer("Не найдено"); return; }
-
   const yes = m[1] === "ok";
   const updated = await sb.from("tg_chatlar").update({ tasdiqlangan: yes, bloklangan: !yes }).eq("chat_id", id);
   if (updated.error) { await answer("Не удалось сохранить. Попробуйте ещё раз."); return; }
   await setCrmMenu(id, yes);
-  if (yes) {
-    await send(id, "✅ Tasdiqlandingiz! «CRM» tugmasini bosing — login va parolsiz ochiladi.", { remove_keyboard: true });
-    await send(id, "Kerakli boʻlimni tanlang:", menuAdmin);
-  }
   if (cq.message?.chat?.id && cq.message?.message_id) {
     await tg("editMessageText", {
       chat_id: cq.message.chat.id, message_id: cq.message.message_id, parse_mode: "HTML",
@@ -231,17 +253,17 @@ async function setup(body: any, webhookSecret: string | undefined) {
   for (const scope of [{ type: "default" }, { type: "all_private_chats" }]) {
     for (const language_code of ["", "ru", "uz", "en"]) await tg("deleteMyCommands", { scope, ...(language_code ? { language_code } : {}) });
   }
-  const cmd = await tg("setMyCommands", { commands: [{ command: "menu", description: "Havolalar menyusi" }] });
+  const cmd = await tg("setMyCommands", { commands: [{ command: "menu", description: "Olimpiada menyusi" }] });
   const { data: owners } = await sb.from("tg_chatlar").select("chat_id").eq("rol", "owner");
   for (const o of owners ?? []) {
     await tg("setMyCommands", {
       scope: { type: "chat", chat_id: o.chat_id },
-      commands: [{ command: "menu", description: "Меню ссылок" }, { command: "adminlar", description: "Админы: подтвердить / убрать" }],
+      commands: [{ command: "menu", description: "Олимпиада" }, { command: "adminlar", description: "Админы: подтвердить / убрать" }],
     });
   }
   const mb = await tg("setChatMenuButton", { menu_button: { type: "commands" } });
-  const { data: approved } = await sb.from("tg_chatlar").select("chat_id").eq("tasdiqlangan", true).eq("bloklangan", false);
-  for (const person of approved ?? []) await setCrmMenu(person.chat_id, true);
+  const { data: existingChats } = await sb.from("tg_chatlar").select("chat_id");
+  for (const person of existingChats ?? []) await setCrmMenu(person.chat_id, false);
   const desc = await tg("getMyDescription");
   const sdesc = await tg("getMyShortDescription");
   return json({
