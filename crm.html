@@ -702,23 +702,23 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
 
 /* 1924 CRM visual refresh */
 :root{
-  --bg:#F4F7F6; --surface:#FFFFFF; --surface-2:#F7FAF9; --col:#EEF3F1;
-  --ink:#162321; --ink-2:#415450; --muted:#73827E;
-  --line:#E3EBE8; --line-2:#CDD9D5;
-  --accent:#16836F; --accent-hover:#106C5B; --accent-ink:#FFFFFF; --accent-soft:#E4F3EF;
+  --bg:#F4F6FA; --surface:#FFFFFF; --surface-2:#F8F9FC; --col:#EDF0F6;
+  --ink:#172033; --ink-2:#46516A; --muted:#737E95;
+  --line:#E4E8F0; --line-2:#CDD4E1;
+  --accent:#3156D9; --accent-hover:#2446C4; --accent-ink:#FFFFFF; --accent-soft:#EAF0FF;
   --ok:#16805B; --ok-soft:#E7F5EF; --warn:#A86B13; --warn-soft:#FFF4DF;
   --stop:#B64C43; --stop-soft:#FCEDEA; --tally:#D8564E;
-  --shadow:0 1px 2px rgba(18,45,38,.04),0 8px 24px rgba(18,45,38,.045);
-  --shadow-lg:0 22px 65px rgba(12,32,27,.20),0 2px 8px rgba(12,32,27,.08);
-  --overlay:rgba(16,35,31,.42); --st-base:#15302A; --st-mix:27%;
+  --shadow:0 1px 2px rgba(25,40,75,.04),0 8px 24px rgba(25,40,75,.045);
+  --shadow-lg:0 22px 65px rgba(25,40,75,.20),0 2px 8px rgba(25,40,75,.08);
+  --overlay:rgba(18,29,53,.42); --st-base:#172344; --st-mix:27%;
   --side:232px; --r:11px; --r-lg:16px; color-scheme:light;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --bg:#101815; --surface:#18211E; --surface-2:#1E2925; --col:#151D1A;
-    --ink:#EAF1EE; --ink-2:#C4D2CD; --muted:#93A29D;
-    --line:#2A3833; --line-2:#3B4B45;
-    --accent:#69C5AC; --accent-hover:#83D6BF; --accent-ink:#11211C; --accent-soft:#20372F;
+    --bg:#111722; --surface:#191F2B; --surface-2:#202838; --col:#141B28;
+    --ink:#E9EDF6; --ink-2:#C5CDDD; --muted:#98A3B8;
+    --line:#2B3448; --line-2:#3B4761;
+    --accent:#91A7FF; --accent-hover:#A6B7FF; --accent-ink:#111827; --accent-soft:#202D50;
     --ok:#69D0A5; --ok-soft:#19352B; --warn:#EDBD67; --warn-soft:#3A2D19;
     --stop:#F18B7F; --stop-soft:#3D211D; --tally:#F0746A;
     --shadow:0 1px 2px rgba(0,0,0,.28),0 8px 24px rgba(0,0,0,.22);
@@ -727,10 +727,10 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
   }
 }
 :root[data-theme="dark"]{
-  --bg:#101815; --surface:#18211E; --surface-2:#1E2925; --col:#151D1A;
-  --ink:#EAF1EE; --ink-2:#C4D2CD; --muted:#93A29D;
-  --line:#2A3833; --line-2:#3B4B45;
-  --accent:#69C5AC; --accent-hover:#83D6BF; --accent-ink:#11211C; --accent-soft:#20372F;
+  --bg:#111722; --surface:#191F2B; --surface-2:#202838; --col:#141B28;
+  --ink:#E9EDF6; --ink-2:#C5CDDD; --muted:#98A3B8;
+  --line:#2B3448; --line-2:#3B4761;
+  --accent:#91A7FF; --accent-hover:#A6B7FF; --accent-ink:#111827; --accent-soft:#202D50;
   --ok:#69D0A5; --ok-soft:#19352B; --warn:#EDBD67; --warn-soft:#3A2D19;
   --stop:#F18B7F; --stop-soft:#3D211D; --tally:#F0746A;
   --shadow:0 1px 2px rgba(0,0,0,.28),0 8px 24px rgba(0,0,0,.22);
@@ -740,33 +740,33 @@ body:has(#panel:not([hidden])) .kbar{max-width:max(300px,calc(100vw - var(--side
 body{font-size:14px;line-height:1.5;background:var(--bg)}
 #app{grid-template-columns:var(--side) minmax(0,1fr)}
 .nav{
-  gap:5px;padding:18px 13px 12px;background:#142722;color:#EEF5F2;
-  border-right:1px solid rgba(255,255,255,.07);scrollbar-color:#3E5149 transparent
+  gap:5px;padding:18px 13px 12px;background:#17213A;color:#EFF2FA;
+  border-right:1px solid rgba(255,255,255,.07);scrollbar-color:#3A4666 transparent
 }
 .nav .logo{
   min-height:71px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
-  gap:4px;margin:0 0 10px;padding:7px 12px 16px;border-bottom:1px solid rgba(231,244,239,.12);
-  color:#F4FAF7;font:700 21px/1.15 var(--f-display);letter-spacing:.01em
+  gap:4px;margin:0 0 10px;padding:7px 12px 16px;border-bottom:1px solid rgba(232,237,249,.12);
+  color:#F7F8FC;font:700 21px/1.15 var(--f-display);letter-spacing:.01em
 }
-.nav .logo::before{width:8px;height:8px;margin-bottom:2px;background:#71D0B5;box-shadow:0 0 0 4px rgba(113,208,181,.16)}
-.nav .logo::after{content:"ZAMONAVIY KASBLAR";color:#91A79F;font:600 9px/1.2 var(--f-body);letter-spacing:.14em}
+.nav .logo::before{width:8px;height:8px;margin-bottom:2px;background:#A5B7FF;box-shadow:0 0 0 4px rgba(165,183,255,.16)}
+.nav .logo::after{content:"ZAMONAVIY KASBLAR";color:#9BA6C1;font:600 9px/1.2 var(--f-body);letter-spacing:.14em}
 .nav button{
   min-height:44px;flex-direction:row;justify-content:flex-start;gap:12px;padding:10px 12px;
-  border-radius:10px;color:#A9B9B2;font-size:13px;font-weight:500;text-align:left
+  border-radius:10px;color:#AEB8D0;font-size:13px;font-weight:500;text-align:left
 }
 .nav button svg{width:19px;height:19px;flex:none}
-.nav button:hover{background:rgba(230,246,239,.08);color:#F0F7F4}
-.nav button[aria-current="page"]{background:#24443A;color:#A9E6D2;font-weight:600;box-shadow:inset 2px 0 0 #71D0B5}
-.nav .badge{top:50%;right:11px;transform:translateY(-50%);box-shadow:0 0 0 2px #142722}
+.nav button:hover{background:rgba(232,237,249,.08);color:#F5F7FC}
+.nav button[aria-current="page"]{background:#26365F;color:#C1CEFF;font-weight:600;box-shadow:inset 2px 0 0 #A5B7FF}
+.nav .badge{top:50%;right:11px;transform:translateY(-50%);box-shadow:0 0 0 2px #17213A}
 .nav .sp{min-height:20px}
-.nav .uied button{justify-content:center;min-height:22px;padding:0;color:#415450}
+.nav .uied button{justify-content:center;min-height:22px;padding:0;color:#46516A}
 .nav #kBtn[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
-#logout{margin-top:6px;border-top:1px solid rgba(231,244,239,.12);border-radius:10px;color:#9BAEA6}
-#logout:hover{color:#F0F7F4}
+#logout{margin-top:6px;border-top:1px solid rgba(232,237,249,.12);border-radius:10px;color:#9DA8C2}
+#logout:hover{color:#F5F7FC}
 .main{background:var(--bg)}
 .top{
   min-height:74px;gap:12px;padding:13px 24px;background:var(--surface);
-  border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(18,45,38,.025)
+  border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(25,40,75,.025)
 }
 .top h1{font-size:18px;letter-spacing:-.025em}
 .top .search{max-width:360px;border-color:var(--line);background-color:var(--surface-2)}
@@ -776,7 +776,7 @@ body{font-size:14px;line-height:1.5;background:var(--bg)}
 .top .btn.main{padding-inline:15px}
 .funnel-switch{border-color:var(--line);background:var(--surface-2);border-radius:11px}
 .funnel-switch button{min-height:32px;font-size:12.5px}
-.funnel-switch button[aria-pressed="true"]{box-shadow:0 2px 6px rgba(14,112,91,.18)}
+.funnel-switch button[aria-pressed="true"]{box-shadow:0 2px 6px rgba(49,86,217,.18)}
 .content{scrollbar-color:var(--line-2) transparent}
 .board{gap:14px;padding:18px 22px 22px}
 .col{width:292px;border:1px solid var(--line);border-radius:15px;background:var(--col)}
@@ -786,9 +786,9 @@ body{font-size:14px;line-height:1.5;background:var(--bg)}
 .colb{gap:9px;padding:3px 9px 12px}
 .card{
   padding:12px 13px 12px 16px;border:1px solid var(--line);border-radius:12px;
-  box-shadow:0 1px 3px rgba(18,45,38,.035);transition:transform .16s,border-color .16s,box-shadow .16s
+  box-shadow:0 1px 3px rgba(25,40,75,.035);transition:transform .16s,border-color .16s,box-shadow .16s
 }
-.card:hover{transform:translateY(-1px);border-color:#B8CBC4;box-shadow:0 8px 18px rgba(18,45,38,.08)}
+.card:hover{transform:translateY(-1px);border-color:#BCC7DC;box-shadow:0 8px 18px rgba(25,40,75,.08)}
 .card .nm{font-size:13.5px}
 .card .ct{font-size:12.5px}
 .card .mt{gap:5px 7px;margin-top:9px}
@@ -796,7 +796,7 @@ body{font-size:14px;line-height:1.5;background:var(--bg)}
 .chip.src{background:#E6F1F7;color:#386479}
 .task-i{margin-top:9px;font-size:11.5px}
 .qadd{margin-inline:9px}
-.qadd .btn{min-height:38px;border-color:#C8D8D2;border-radius:10px}
+.qadd .btn{min-height:38px;border-color:#C6CEE0;border-radius:10px}
 .bpanel{gap:13px;padding:18px 22px 0}
 .bp-top{align-items:center}
 .bp-brand{color:var(--ink-2);font-size:11px;letter-spacing:.07em}
@@ -825,7 +825,7 @@ body{font-size:14px;line-height:1.5;background:var(--bg)}
 }
 #login .win{border-radius:18px}
 #login .title::before{background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
-.nav :focus-visible{outline-color:#9CE4CF}
+.nav :focus-visible{outline-color:#AFC0FF}
 @media(max-width:1120px){
   :root{--side:78px}
   .nav{padding-inline:7px}
