@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#f4f7fb">
+<title>3 ta qisqa mashq | Olimpiada</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#17243b;--muted:#74829a;--line:#e6ebf2;--blue:#4263eb;--teal:#11a88a;--soft:#eaf0ff;--shadow:0 14px 40px rgba(32,55,97,.10)}
+*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden}body{background:var(--bg);color:var(--ink);font:15px/1.45 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+#top{position:fixed;top:0;left:0;right:0;z-index:5;height:58px;background:var(--card);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:0 14px}
+.brand{font-size:11px;font-weight:850;letter-spacing:.08em;color:var(--muted);white-space:nowrap}
+#progress{height:6px;border-radius:9px;background:var(--line);flex:1;overflow:hidden;min-width:40px}
+#progress span{display:block;width:0;height:100%;background:var(--blue);transition:width .3s}
+#pct{font-size:12px;font-weight:750;color:var(--muted);min-width:36px}
+.lang{display:flex;gap:2px;background:var(--bg);padding:3px;border-radius:9px}
+.lang button{border:0;border-radius:7px;padding:6px 7px;background:transparent;color:var(--muted);font-weight:800;font-size:11px}
+.lang button.active{background:var(--card);color:var(--ink);box-shadow:0 1px 4px #17243b18}
+#feed{height:100dvh;overflow-y:auto;scroll-snap-type:y mandatory;scroll-behavior:smooth;overscroll-behavior:contain}
+#feed::-webkit-scrollbar{display:none}
+.reel{min-height:100dvh;scroll-snap-align:start;scroll-snap-stop:always;display:flex;align-items:center;justify-content:center;padding:78px 16px 25px}
+.in{width:min(520px,100%);max-height:calc(100dvh - 105px);overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px 20px;box-shadow:var(--shadow)}
+.tag{font-size:11px;font-weight:850;letter-spacing:.1em;color:var(--blue);margin-bottom:10px}
+.hook{font-size:clamp(34px,10vw,58px);font-weight:900;line-height:1.02;letter-spacing:-.045em;margin:7px 0 12px}
+.scene{border-radius:17px;padding:13px;background:linear-gradient(140deg,#eef2ff,#f8fafc);margin:10px 0 15px;text-align:center}
+.scene svg{display:block;width:min(100%,330px);height:auto;margin:auto}
+h1{font-size:22px;line-height:1.2;margin:12px 0 8px;letter-spacing:-.02em}
+p{margin:0 0 12px;color:var(--muted);line-height:1.5}
+.options{display:grid;gap:9px;margin-top:14px}
+.option{width:100%;text-align:left;border:1.5px solid var(--line);border-radius:13px;background:var(--bg);padding:12px 14px;color:var(--ink);font:inherit;font-weight:700;cursor:pointer;transition:.15s}
+.option:hover{border-color:#98aaff;background:#f7f8ff}
+.option.correct{border-color:var(--teal);background:#e8f8f2}
+.option.wrong{border-color:#db7171;background:#fff1f0}
+.answer{margin-top:14px;padding:12px 14px;border-radius:0 12px 12px 0;border-left:3px solid var(--teal);background:#eaf8f4;color:var(--ink);font-size:14px;line-height:1.5}
+.hint{margin-top:13px;text-align:center;color:var(--muted);font-size:12px;font-weight:700}
+.final{text-align:center}
+.final .star{font-size:54px;line-height:1;margin-bottom:12px}
+.final h1{font-size:26px}
+.final .btn{display:block;text-decoration:none;border-radius:13px;padding:14px 15px;font-weight:800}
+.btn.primary{background:var(--teal);color:#fff;box-shadow:0 4px 0 #0d8d75}
+.btn.secondary{margin-top:10px;background:var(--soft);color:var(--blue)}
+.testmark{display:inline-block;margin-top:4px;padding:5px 10px;border-radius:99px;background:#f0f2f6;color:#647189;font-size:11px;font-weight:800}
+@media(max-width:420px){.in{padding:19px 16px}.hook{font-size:39px}.scene{padding:10px}.option{padding:11px 12px}}
+</style>
+</head>
+<body>
+<header id="top"><span class="brand">OLIMPIADA · <span id="demoName">DEMO · 5-SINF</span></span><div id="progress"><span></span></div><span id="pct">01/03</span><div class="lang"><button id="ruBtn">RU</button><button id="uzBtn" class="active">UZ</button></div></header>
+<main id="feed">
+<section class="reel" data-i="0"><article class="in">
+<div class="tag" data-t="tag0"></div><div class="hook">3 · 6 · 12 · 24 · ?</div>
+<div class="scene"><svg viewBox="0 0 360 92" role="img" aria-label="Har safar ikki baravar"><rect x="6" y="20" width="64" height="50" rx="13" fill="#fff" stroke="#bfcaf2" stroke-width="2"/><rect x="100" y="20" width="64" height="50" rx="13" fill="#fff" stroke="#bfcaf2" stroke-width="2"/><rect x="194" y="20" width="64" height="50" rx="13" fill="#fff" stroke="#bfcaf2" stroke-width="2"/><rect x="288" y="20" width="64" height="50" rx="13" fill="#4263eb"/><g font-family="Arial,sans-serif" font-size="21" font-weight="700" text-anchor="middle" fill="#17243b"><text x="38" y="52">3</text><text x="132" y="52">6</text><text x="226" y="52">12</text></g><text x="320" y="53" font-family="Arial,sans-serif" font-size="22" font-weight="700" text-anchor="middle" fill="#fff">?</text><g stroke="#74829a" stroke-width="2" fill="none"><path d="M74 45h17m-6-6 6 6-6 6"/><path d="M168 45h17m-6-6 6 6-6 6"/><path d="M262 45h17m-6-6 6 6-6 6"/></g></svg></div>
+<h1 data-t="q0"></h1><p data-t="sub0"></p><div class="options" id="opts0"></div><div class="answer" id="ans0" hidden></div><div class="hint" data-t="swipe"></div>
+</article></section>
+<section class="reel" data-i="1"><article class="in">
+<div class="tag" data-t="tag1"></div><div class="hook" style="font-size:clamp(28px,8vw,42px)" data-t="hook1"></div>
+<div class="scene"><svg viewBox="0 0 360 120" role="img" aria-label="Uch rangli qalam"><rect x="29" y="37" width="82" height="44" rx="22" fill="#f7d6d2"/><rect x="139" y="37" width="82" height="44" rx="22" fill="#dbe5ff"/><rect x="249" y="37" width="82" height="44" rx="22" fill="#d8f3e9"/><text x="70" y="65" text-anchor="middle" font-size="13" font-family="Arial" font-weight="700" fill="#8d3430" data-svg-t="red">QIZIL</text><text x="180" y="65" text-anchor="middle" font-size="13" font-family="Arial" font-weight="700" fill="#3453a5" data-svg-t="blue">KO‘K</text><text x="290" y="65" text-anchor="middle" font-size="13" font-family="Arial" font-weight="700" fill="#087955" data-svg-t="green">YASHIL</text></svg></div>
+<h1 data-t="q1"></h1><p data-t="sub1"></p><div class="options" id="opts1"></div><div class="answer" id="ans1" hidden></div><div class="hint" data-t="swipe"></div>
+</article></section>
+<section class="reel" data-i="2"><article class="in">
+<div class="tag" data-t="tag2"></div><div class="hook" data-t="hook2"></div>
+<div class="scene"><svg viewBox="0 0 360 92" role="img" aria-label="Ketma-ket keladigan sonlar"><circle cx="82" cy="46" r="32" fill="#fff" stroke="#bfcaf2" stroke-width="2"/><circle cx="180" cy="46" r="32" fill="#fff" stroke="#bfcaf2" stroke-width="2"/><text x="82" y="54" text-anchor="middle" font-family="Arial" font-size="25" font-weight="700" fill="#4263eb">?</text><text x="180" y="54" text-anchor="middle" font-family="Arial" font-size="25" font-weight="700" fill="#4263eb">?</text><text x="290" y="54" text-anchor="middle" font-family="Arial" font-size="24" font-weight="700" fill="#17243b">= 17</text></svg></div>
+<h1 data-t="q2"></h1><p data-t="sub2"></p><div class="options" id="opts2"></div><div class="answer" id="ans2" hidden></div><div class="hint" data-t="finish"></div>
+</article></section>
+<section class="reel" id="end" data-i="3"><article class="in final">
+<div class="star">✦</div><span class="testmark" data-t="demoLabel"></span><h1 data-t="endTitle"></h1><p data-t="endBody"></p>
+<a class="btn primary" href="https://t.me/myflowadmin" target="_blank" rel="noopener" data-t="contact"></a>
+<a class="btn secondary" id="restart" href="" data-t="restart"></a>
+</article></section>
+</main>
+<script>
+const copy={
+uz:{demo:"DEMO · 5-SINF",tag:["01 · MATEMATIKA","02 · MANTIQIY FIKRLASH","03 · SONLI MANTIQ"],q:["Keyingi son qaysi?","Vali qaysi rangdagi qalamni oldi?","Yig‘indi 17 bo‘lsa, sonlar qaysi?"],sub:["Qonuniyatni top: har safar oldingi son ikki baravar bo‘ladi.","Ali, Vali va Salim uch xil rangdagi qalam oldi. Ali qizil, Vali esa qizil ham ko‘k ham emas.","Ikki ketma-ket butun sonning yig‘indisi 17 ga teng. Ularni top."],hook1:"ALI · VALI · SALIM",hook2:"? + ? = 17",opt:[["32","36","48","54"],["Qizil","Ko‘k","Yashil","Aniqlab bo‘lmaydi"],["7 va 10","8 va 9","9 va 10","6 va 11"]],right:["To‘g‘ri javob: 48. Sonlar har safar 2 ga ko‘payadi: 24 × 2 = 48.","To‘g‘ri javob: yashil. Ali qizilni oldi; Vali qizil va ko‘kni olmaydi, demak yashil qoladi.","To‘g‘ri javob: 8 va 9. Bu ikki ketma-ket son va 8 + 9 = 17."],wrong:["Javob 48: 3 → 6 → 12 → 24 → 48. Har safar 2 ga ko‘paytiramiz.","Javob yashil: qizil Ali olgan, ko‘k Vali olmagan. Vali yashil qalamni olgan.","Javob 8 va 9: ular ketma-ket sonlar va yig‘indisi 17."],swipe:"Yuqoriga suring · keyingi mashq",finish:"Javobni tanlang. Keyin aloqa sahifasi ochiladi.",demoLabel:"NAMOYISH AKKAUNTI",endTitle:"Ajoyib! 3 ta mashq tugadi",endBody:"Olimpiadaga qatnashish, ro‘yxatdan o‘tish va to‘lov haqida administrator bilan bog‘laning.",contact:"Administratorga yozish",restart:"Mashqlarni qayta boshlash"},
+ru:{demo:"ДЕМО · 5 КЛАСС",tag:["01 · МАТЕМАТИКА","02 · ЛОГИЧЕСКОЕ МЫШЛЕНИЕ","03 · ЧИСЛОВАЯ ЛОГИКА"],q:["Какое число дальше?","Какой карандаш взял Вали?","Какие числа в сумме дают 17?"],sub:["Найди закономерность: каждое следующее число вдвое больше предыдущего.","Али, Вали и Салим взяли карандаши трёх разных цветов. Али взял красный, а Вали - не красный и не синий.","Сумма двух соседних целых чисел равна 17. Найди их."],hook1:"АЛИ · ВАЛИ · САЛИМ",hook2:"? + ? = 17",opt:[["32","36","48","54"],["Красный","Синий","Зелёный","Нельзя определить"],["7 и 10","8 и 9","9 и 10","6 и 11"]],right:["Верный ответ: 48. Каждое число умножается на 2: 24 × 2 = 48.","Верный ответ: зелёный. Али взял красный, Вали не берёт ни красный, ни синий - остаётся зелёный.","Верный ответ: 8 и 9. Это соседние числа, и 8 + 9 = 17."],wrong:["Ответ 48: 3 → 6 → 12 → 24 → 48. Каждый раз умножаем на 2.","Ответ зелёный: красный взял Али, синий Вали не берёт. Значит, у Вали зелёный карандаш.","Ответ 8 и 9: это соседние числа, и их сумма равна 17."],swipe:"Свайп вверх · следующее задание",finish:"Выберите ответ. После третьего задания откроется связь с администратором.",demoLabel:"ДЕМО-АККАУНТ",endTitle:"Отлично! Вы прошли 3 задания",endBody:"Свяжитесь с администратором, чтобы узнать об участии в олимпиаде, регистрации и оплате.",contact:"Написать администратору",restart:"Пройти задания ещё раз"}
+};
+let lang=new URLSearchParams(location.search).get("lang")==="ru"?"ru":"uz";
+let current=0,selected=[null,null,null];const correct=[2,2,1];
+const tr=k=>copy[lang][k];
+function render(){document.documentElement.lang=lang;document.title=lang==="uz"?"3 ta qisqa mashq | Olimpiada":"3 коротких задания | Олимпиада";document.getElementById("demoName").textContent=copy[lang].demo;document.getElementById("ruBtn").classList.toggle("active",lang==="ru");document.getElementById("uzBtn").classList.toggle("active",lang==="uz");document.querySelectorAll("[data-t]").forEach(el=>{const k=el.dataset.t;if(k==="swipe"||k==="finish")el.textContent=tr(k);else if(k==="demoLabel"||k==="endTitle"||k==="endBody"||k==="contact"||k==="restart")el.textContent=tr(k);else if(k==="tag0"||k==="tag1"||k==="tag2")el.textContent=copy[lang].tag[+k.slice(-1)];else if(k==="q0"||k==="q1"||k==="q2")el.textContent=copy[lang].q[+k.slice(-1)];else if(k==="sub0"||k==="sub1"||k==="sub2")el.textContent=copy[lang].sub[+k.slice(-1)];else if(k==="hook1"||k==="hook2")el.textContent=copy[lang][k]});document.querySelectorAll("[data-svg-t]").forEach(el=>el.textContent=lang==="uz"?({red:"QIZIL",blue:"KO‘K",green:"YASHIL"}[el.dataset.svgT]):({red:"КРАСНЫЙ",blue:"СИНИЙ",green:"ЗЕЛЁНЫЙ"}[el.dataset.svgT]));for(let i=0;i<3;i++){drawOptions(i);const answer=document.getElementById("ans"+i);answer.hidden=selected[i]===null;if(selected[i]!==null)answer.textContent=copy[lang][selected[i]===correct[i]?"right":"wrong"][i]}document.getElementById("restart").href="reels.html?demo=1&lang="+lang;document.getElementById("pct").textContent=String(Math.min(current+1,3)).padStart(2,"0")+"/03"}
+function drawOptions(i){const box=document.getElementById("opts"+i);box.innerHTML="";copy[lang].opt[i].forEach((label,j)=>{const b=document.createElement("button");b.className="option";b.textContent=label;if(selected[i]!==null){b.disabled=true;if(j===correct[i])b.classList.add("correct");else if(j===selected[i])b.classList.add("wrong")}b.addEventListener("click",()=>choose(i,j,b));box.appendChild(b)})}
+function choose(i,j,b){if(selected[i]!==null)return;selected[i]=j;drawOptions(i);const box=document.getElementById("ans"+i);box.hidden=false;box.textContent=copy[lang][j===correct[i]?"right":"wrong"][i];document.getElementById("progress").firstElementChild.style.width=((i+1)/3*100)+"%";current=i+1;if(i===2){document.querySelector(".hint[data-t=finish]").textContent=copy[lang].finish;setTimeout(()=>document.getElementById("end").scrollIntoView({behavior:"smooth"}),900)}}
+document.getElementById("ruBtn").addEventListener("click",()=>{lang="ru";render()});document.getElementById("uzBtn").addEventListener("click",()=>{lang="uz";render()});document.getElementById("restart").addEventListener("click",e=>{e.preventDefault();location.href="reels.html?demo=1&lang="+lang});render();
+const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){current=Math.min(3,+e.target.dataset.i);document.getElementById("pct").textContent=String(Math.min(current+1,3)).padStart(2,"0")+"/03";if(current<3)document.getElementById("progress").firstElementChild.style.width=(current/3*100)+"%"}}),{threshold:.55});document.querySelectorAll(".reel").forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
