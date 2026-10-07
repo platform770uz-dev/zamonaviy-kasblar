@@ -10,7 +10,7 @@ import { createClient } from "npm:@supabase/supabase-js@2.117.2";
 const HEAD = { "Content-Type": "application/json; charset=utf-8" };
 const SITE = "https://platform770uz-dev.github.io/zamonaviy-kasblar/";
 const CRM_APP_URL = SITE + "crm.html?via=telegram";
-const MINI_APP_URL = SITE + "olimpiada/";
+const MINI_APP_URL = SITE + "olimpiada/reels.html?demo=1&lang=uz&v=4cb941fb562d6677264faad0d2f835d7dce7f23e";
 const OLYMPIAD_WEB_URL = SITE + "olimpiada/index.html?mode=web";
 const PUBLIC_MENU = {
   inline_keyboard: [
